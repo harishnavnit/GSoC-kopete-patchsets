@@ -1,0 +1,183 @@
+diff --git a/protocols/gadu/gaduaddcontactpage.cpp b/protocols/gadu/gaduaddcontactpage.cpp
+index e55bd301b2bf4a6205c88b02c798b0094ceced5f..fefb5865ea8077467ab41bad87bd9fa27479cf64 100644
+--- a/protocols/gadu/gaduaddcontactpage.cpp
++++ b/protocols/gadu/gaduaddcontactpage.cpp
+@@ -39,7 +39,7 @@
+ #include <qlabel.h>
+ #include <qlayout.h>
+ #include <qlineedit.h>
+-#include <q3listview.h>
++#include <QTreeWidget>
+ #include <qcombobox.h>
+ #include <QShowEvent>
+ #include <QVBoxLayout>
+diff --git a/protocols/gadu/gadupubdir.cpp b/protocols/gadu/gadupubdir.cpp
+index c264519c44aa273039f0acb664e1a5df90b1640f..f0c2a1e0c729b1bf4ddddfafc9b5fd0c37cc66e4 100644
+--- a/protocols/gadu/gadupubdir.cpp
++++ b/protocols/gadu/gadupubdir.cpp
+@@ -84,7 +84,7 @@ GaduPublicDir::GaduPublicDir( GaduAccount* account, int searchFor, QWidget* pare
+ 
+ 	// now it is time to switch to Right Page(tm)
+ 	rs.uin = searchFor;
+-	
++
+ 	fName.clear();
+   fSurname.clear();
+   fNick.clear();
+@@ -113,6 +113,7 @@ GaduPublicDir::createWidget()
+ 	setMainWidget( w );
+ 
+ 	mMainWidget->UIN->setValidChars( "1234567890" );
++	//mMainWidget->listFound->headerItem()->setSortIndicator(true);
+ 
+ 	setButtonGuiItem( KDialog::User1, KGuiItem( i18n( "&New Search" ) ) );
+ 	setButtonGuiItem( KDialog::User2, KGuiItem( i18n( "S&earch" ) ) );
+@@ -133,7 +134,7 @@ void
+ GaduPublicDir::slotAddContact()
+ {
+ 	GaduContactsList::ContactLine* cl = new GaduContactsList::ContactLine;
+-	Q3ListViewItem* item = mMainWidget->listFound->currentItem();
++	QTreeWidgetItem *item = mMainWidget->listFound->currentItem();
+ 
+ 	cl->ignored	= false;
+ 	cl->firstname	= item->text( 1 );
+@@ -142,14 +143,14 @@ GaduPublicDir::slotAddContact()
+ 
+ 	cl->surname	= fSurname;
+ 
+-//	GaduEditContact *ed = 
++//	GaduEditContact *ed =
+ 	new GaduEditContact( mAccount, cl, this );
+ }
+ 
+ void
+ GaduPublicDir::slotListSelected(  )
+ {
+-	Q3ListViewItem* item = mMainWidget->listFound->currentItem();
++	QTreeWidgetItem *item = mMainWidget->listFound->currentItem();
+ 	if ( item ) {
+ 		enableButton( KDialog::User3, true );
+ 	}
+@@ -253,7 +254,7 @@ GaduPublicDir::iconForStatus( uint status )
+ void
+ GaduPublicDir::slotSearchResult( const SearchResult& result, unsigned int )
+ {
+-	Q3ListView* list = mMainWidget->listFound;
++	QTreeWidget *list = mMainWidget->listFound;
+ 
+ 	kDebug(14100) << "searchResults(" << result.count() <<")";
+ 
+@@ -339,15 +340,15 @@ GaduPublicDir::slotSearch()
+ 	rs.nickname	= fNick;
+ 	rs.uin		= fUin;
+ 	rs.city		= fCity;
+-	
++
+ 	if ( fGender == 1 ) {
+ 		rs.gender =  GG_PUBDIR50_GENDER_MALE;
+ 	}
+ 	if ( fGender == 2 ) {
+ 		rs.gender = GG_PUBDIR50_GENDER_FEMALE;
+ 	}
+-	
+-	
++
++
+ 	if ( mMainWidget->radioByData->isChecked() ) {
+ 		mAccount->pubDirSearch( rs, fAgeFrom, fAgeTo, fOnlyOnline );
+ 	}
+diff --git a/protocols/gadu/gadusession.h b/protocols/gadu/gadusession.h
+index 02a0242b3e41ced78f7c20af434a76ba0486af63..bc92f8a5f656e997929766c9d59f3df0cf87615a 100644
+--- a/protocols/gadu/gadusession.h
++++ b/protocols/gadu/gadusession.h
+@@ -27,7 +27,6 @@
+ #include <qstring.h>
+ #include <qstringlist.h>
+ #include <qdatetime.h>
+-#include <q3cstring.h>
+ #include <qhostaddress.h>
+ #include <QList>
+ 
+diff --git a/protocols/gadu/ui/gaduadd.ui b/protocols/gadu/ui/gaduadd.ui
+index fdbe4a63fe1336095479b8f690a039e1652e7195..8c45e9a707ea34144e1eda22511a735eea8593f7 100644
+--- a/protocols/gadu/ui/gaduadd.ui
++++ b/protocols/gadu/ui/gaduadd.ui
+@@ -304,7 +304,7 @@
+     </widget>
+    </item>
+    <item row="3" column="0" >
+-    <widget class="Q3ListView" name="groups" >
++    <widget class="QTreeWidget" name="groups" >
+      <column>
+       <property name="text" >
+        <string>Group</string>
+@@ -316,13 +316,6 @@
+  </widget>
+  <customwidgets>
+   <customwidget>
+-   <class>Q3ListView</class>
+-   <extends></extends>
+-   <header>q3listview.h</header>
+-   <container>0</container>
+-   <pixmap></pixmap>
+-  </customwidget>
+-  <customwidget>
+    <class>KRestrictedLine</class>
+    <extends></extends>
+    <header>krestrictedline.h</header>
+diff --git a/protocols/gadu/ui/gadusearch.ui b/protocols/gadu/ui/gadusearch.ui
+index 3011347434e10205a390adf872a6a80077afb6b2..93458947e79a2c507f6b2de5ae2f9324140a8c1e 100644
+--- a/protocols/gadu/ui/gadusearch.ui
++++ b/protocols/gadu/ui/gadusearch.ui
+@@ -32,7 +32,7 @@
+         <number>0</number>
+        </property>
+        <item>
+-        <widget class="Q3ButtonGroup" name="buttonGroup2" >
++        <widget class="QGroupBox" name="buttonGroup2" >
+          <property name="title" >
+           <string/>
+          </property>
+@@ -378,7 +378,7 @@
+       </property>
+       <layout class="QGridLayout" name="gridLayout" >
+        <item row="0" column="0" >
+-        <widget class="K3ListView" name="listFound" >
++        <widget class="QTreeWidget" name="listFound" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+            <horstretch>0</horstretch>
+@@ -404,16 +404,16 @@
+           <enum>Q3ScrollView::AutoOneFit</enum>
+          </property>
+          <property name="selectionMode" >
+-          <enum>Q3ListView::Extended</enum>
++          <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
+          <property name="allColumnsShowFocus" >
+           <bool>true</bool>
+          </property>
+-         <property name="showSortIndicator" >
++         <property name="sortIndicator" >
+           <bool>true</bool>
+          </property>
+-         <property name="resizeMode" >
+-          <enum>Q3ListView::NoColumn</enum>
++         <property name="sectionResizeMode" >
++          <enum>QHeaderView::Fixed</enum>
+          </property>
+         </widget>
+        </item>
+@@ -448,12 +448,6 @@
+    <header>q3widgetstack.h</header>
+    <container>1</container>
+   </customwidget>
+-  <customwidget>
+-   <class>Q3ButtonGroup</class>
+-   <extends>Q3GroupBox</extends>
+-   <header>Qt3Support/Q3ButtonGroup</header>
+-   <container>1</container>
+-  </customwidget>
+  </customwidgets>
+  <resources/>
+  <connections>

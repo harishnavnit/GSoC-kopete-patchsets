@@ -1,0 +1,174 @@
+diff --git a/protocols/groupwise/ui/gwprivacy.ui b/protocols/groupwise/ui/gwprivacy.ui
+index 34fc4e41a669994d90e0fd2de218367d4e2917ea..3fa142b3c3df0843922e6431a44cb8a0154307fb 100644
+--- a/protocols/groupwise/ui/gwprivacy.ui
++++ b/protocols/groupwise/ui/gwprivacy.ui
+@@ -83,7 +83,7 @@
+         </widget>
+        </item>
+        <item>
+-        <widget class="Q3ListBox" name="allowList" />
++        <widget class="QListWidget" name="allowList" />
+        </item>
+       </layout>
+      </item>
+@@ -213,7 +213,7 @@
+         </widget>
+        </item>
+        <item>
+-        <widget class="Q3ListBox" name="denyList" />
++        <widget class="QListWidget" name="denyList" />
+        </item>
+       </layout>
+      </item>
+@@ -231,13 +231,6 @@
+    </item>
+   </layout>
+  </widget>
+- <customwidgets>
+-  <customwidget>
+-   <class>Q3ListBox</class>
+-   <extends>Q3Frame</extends>
+-   <header>q3listbox.h</header>
+-  </customwidget>
+- </customwidgets>
+  <resources/>
+  <connections/>
+ </ui>
+diff --git a/protocols/groupwise/ui/gwprivacydialog.cpp b/protocols/groupwise/ui/gwprivacydialog.cpp
+index 3b2210f6907d29931de50e27f299fa67b6c7fdc6..dfde75fb47a317e5f56e658d8ed37b39275f81c1 100644
+--- a/protocols/groupwise/ui/gwprivacydialog.cpp
++++ b/protocols/groupwise/ui/gwprivacydialog.cpp
+@@ -18,7 +18,9 @@
+ */
+ 
+ #include "gwprivacydialog.h"
+-#include <q3listbox.h>
++#include <QListWidget>
++#include <QListWidgetItem>
++#include <QAbstractItemView>
+ #include <QtCore/QStringList>
+ #include <QtCore/QList>
+ #include <QtGui/QPainter>
+@@ -72,8 +74,8 @@ GroupWisePrivacyDialog::GroupWisePrivacyDialog( GroupWiseAccount * account, QWid
+ 
+ 	populateWidgets();
+ 
+-	m_privacy.allowList->setSelectionMode( Q3ListBox::Extended );
+-	m_privacy.denyList->setSelectionMode( Q3ListBox::Extended );
++	m_privacy.allowList->setSelectionMode( QAbstractItemView::ExtendedSelection );
++	m_privacy.denyList->setSelectionMode( QAbstractItemView::ExtendedSelection );
+ 
+ 	connect( m_privacy.btnAllow, SIGNAL(clicked()), SLOT(slotAllowClicked()) );
+ 	connect( m_privacy.btnBlock, SIGNAL(clicked()), SLOT(slotBlockClicked()) );
+@@ -151,12 +153,12 @@ void GroupWisePrivacyDialog::slotBlockClicked()
+ 	// start at the bottom, as we are changing the contents of the list as we go
+ 	for( int i = m_privacy.allowList->count() - 1; i >= 0 ; --i )
+ 	{
+-		if ( m_privacy.allowList->isSelected( i ) )
++		if ( m_privacy.allowList->item( i ) )
+ 		{
+ 			m_dirty = true;
+-			Q3ListBoxItem * lbi = m_privacy.allowList->item( i );
+-			m_privacy.allowList->takeItem( lbi );
+-			m_privacy.denyList->insertItem( lbi );
++			QListWidgetItem * lbi = m_privacy.allowList->item( i );
++			m_privacy.allowList->takeItem( lbi->listWidget()->currentRow() );
++			m_privacy.denyList->insertItem( -1, lbi );
+ 		}
+ 	}
+ 	updateButtonState();
+@@ -167,12 +169,12 @@ void GroupWisePrivacyDialog::slotAllowClicked()
+ 	// take each selected item from the deny list and add it to the allow list
+ 	for( int i = m_privacy.denyList->count() - 1; i >= 0 ; --i )
+ 	{
+-		if ( m_privacy.denyList->isSelected( i ) )
++		if ( m_privacy.denyList->item( i ) )
+ 		{
+ 			m_dirty = true;
+-			Q3ListBoxItem * lbi = m_privacy.denyList->item( i );
+-			m_privacy.denyList->takeItem( lbi );
+-			m_privacy.allowList->insertItem( lbi );
++			QListWidgetItem * lbi = m_privacy.denyList->item( i );
++			m_privacy.denyList->takeItem( lbi->listWidget()->currentRow() );
++			m_privacy.allowList->insertItem( -1, lbi );
+ 		}
+ 	}
+ 	updateButtonState();
+@@ -218,26 +220,26 @@ void GroupWisePrivacyDialog::slotRemoveClicked()
+ 	// remove any selected items from either list, except the default policy
+ 	for( int i = m_privacy.denyList->count() - 1; i >= 0 ; --i )
+ 	{
+-		if ( m_privacy.denyList->isSelected( i ) )
++		if ( m_privacy.denyList->item( i ) )
+ 		{
+ 			m_dirty = true;
+-			Q3ListBoxItem * lbi = m_privacy.denyList->item( i );
++			QListWidgetItem * lbi = m_privacy.denyList->item( i );
+ 			// can't remove the default policy
+ 			if ( lbi == m_defaultPolicy )
+ 				continue;
+-			m_privacy.denyList->removeItem( i );
++			m_privacy.denyList->removeItemWidget(m_privacy.denyList->takeItem( i ));
+ 		}
+ 	}
+ 	for( int i = m_privacy.allowList->count() - 1; i >= 0 ; --i )
+ 	{
+-		if ( m_privacy.allowList->isSelected( i ) )
++		if ( m_privacy.allowList->item( i ) )
+ 		{
+ 			m_dirty = true;
+-			Q3ListBoxItem * lbi = m_privacy.allowList->item( i );
++			QListWidgetItem * lbi = m_privacy.allowList->item( i );
+ 			// can't remove the default policy
+ 			if ( lbi == m_defaultPolicy )
+ 				continue;
+-			m_privacy.allowList->removeItem( i );
++			m_privacy.allowList->removeItemWidget(m_privacy.allowList->takeItem( i ));
+ 		}
+ 	}
+ 	updateButtonState();
+@@ -252,7 +254,7 @@ void GroupWisePrivacyDialog::slotAllowListClicked()
+ 	bool selected = false;
+ 	for( int i = m_privacy.allowList->count() - 1; i >= 0 ; --i )
+ 	{
+-		if ( m_privacy.allowList->isSelected( i ) )
++		if ( m_privacy.allowList->item( i ) )
+ 		{
+ 			selected = true;
+ 			break;
+@@ -272,7 +274,7 @@ void GroupWisePrivacyDialog::slotDenyListClicked()
+ 	bool selected = false;
+ 	for( int i = m_privacy.denyList->count() - 1; i >= 0 ; --i )
+ 	{
+-		if ( m_privacy.denyList->isSelected( i ) )
++		if ( m_privacy.denyList->item( i ) )
+ 		{
+ 			selected = true;
+ 			break;
+diff --git a/protocols/groupwise/ui/gwprivacydialog.h b/protocols/groupwise/ui/gwprivacydialog.h
+index 595a031de6383ea27e9b2d54e270044b4e715cf2..d8f2478325392d42eea4f5d5fb4e2e65c5c2c2c7 100644
+--- a/protocols/groupwise/ui/gwprivacydialog.h
++++ b/protocols/groupwise/ui/gwprivacydialog.h
+@@ -25,7 +25,6 @@
+ #include "ui_gwprivacy.h"
+ 
+ class GroupWiseAccount;
+-class Q3ListBoxItem;
+ 
+ /**
+ Logic for the UI part managing the allow and deny lists, and the default privacy setting.
+@@ -55,12 +54,12 @@ protected slots:
+ 	void slotSearchedForUsers();
+ 	void slotOk();
+ 	void slotApply();
+-	
++
+ private:
+ 	GroupWiseAccount * m_account;
+ 	Ui::GroupWisePrivacy m_privacy;
+ 	GroupWiseContactSearch * m_search;
+-	Q3ListBoxItem * m_defaultPolicy;
++	QListWidgetItem * m_defaultPolicy;
+ 	bool m_dirty;
+ 	KDialog * m_searchDlg;
+ };

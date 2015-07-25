@@ -1,0 +1,13 @@
+diff --git a/libkopete/ui/kopetestdaction.cpp b/libkopete/ui/kopetestdaction.cpp
+index e069e9110ce68b51280f37a7e4747239e028626c..596219b85e13d223148de4738840d4630dff38c5 100644
+--- a/libkopete/ui/kopetestdaction.cpp
++++ b/libkopete/ui/kopetestdaction.cpp
+@@ -39,7 +39,7 @@
+ KSettings::Dialog *KopetePreferencesAction::s_settingsDialog = 0L;
+ 
+ KopetePreferencesAction::KopetePreferencesAction( KActionCollection *parent, const char *name )
+-: KAction( KIcon(KStandardGuiItem::configure().iconName()), KStandardGuiItem::configure().text(), parent )
++: KAction( KIcon(KStandardGuiItem::configure().iconName()), i18n("&Configure Kopete..."), parent )
+ {
+ 	connect( this, SIGNAL(triggered(bool)), this, SLOT(slotShowPreferences()) );
+         parent->addAction( name, this );

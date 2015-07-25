@@ -1,0 +1,142 @@
+diff --git a/plugins/autoreplace/autoreplacepreferences.cpp b/plugins/autoreplace/autoreplacepreferences.cpp
+index edbe2808ce430e9ec56e6c25beade98de38bc0d2..773a66b401f9a231da84236639f7db9404a96755 100644
+--- a/plugins/autoreplace/autoreplacepreferences.cpp
++++ b/plugins/autoreplace/autoreplacepreferences.cpp
+@@ -216,7 +216,7 @@ void AutoReplacePreferences::defaults()
+     m_config->loadDefaultAutoReplaceList();
+     AutoReplaceConfig::WordsToReplace::Iterator it;
+     AutoReplaceConfig::WordsToReplace map = m_config->map();
+-    for ( it = map.begin(); it != map.end(); ++it )
++	 for ( it = map.begin(); it != map.end(); ++it )
+     {
+ 		args = (QStringList() << it.key() << it.value());
+         // notice: insertItem is called automatically by the constructor
+diff --git a/protocols/qq/qqsocket.cpp b/protocols/qq/qqsocket.cpp
+index dbbc79b70346a0af2724270e5bcef9350070e105..d9797ce8faf6804285d5d49b2720716f88ea3c5e 100644
+--- a/protocols/qq/qqsocket.cpp
++++ b/protocols/qq/qqsocket.cpp
+@@ -26,17 +26,18 @@
+ #include "qqsocket.h"
+ #include "qqprotocol.h"
+ 
++#include <QUrl>
++#include <QString>
+ #include <QTimer>
+ #include <QByteArray>
++#include <QHostInfo>
++#include <QAbstractSocket>
++#include <QHostAddress>
+ 
+ #include <kdebug.h>
+ #include <kconfig.h>
+-#include <k3bufferedsocket.h>
+-#include <k3serversocket.h>
+-#include <k3resolver.h>
+ #include <klocale.h>
+ #include <kmessagebox.h>
+-#include <kurl.h>
+ 
+ #include "kopeteuiglobal.h"
+ 
+@@ -57,6 +58,7 @@ QQSocket::~QQSocket()
+ 
+ void QQSocket::connect( const QString &server, uint port )
+ {
++
+ 	if ( m_onlineStatus == Connected || m_onlineStatus == Connecting )
+ 	{
+ 		kWarning( 14140 ) << "Already connected or connecting! Not connecting again.";
+@@ -75,12 +77,19 @@ void QQSocket::connect( const QString &server, uint port )
+ 	m_server = server;
+ 	m_port = port;
+ 	kDebug( 14140 ) << "connecting to :" << server << ":" << port;
+-	m_socket = new KBufferedSocket( server, QString::number(port) );
+-	m_socket->enableRead( true );
++
++	QString protocol, host;
++	QUrl url = QUrl(QString("%1://%2:%3").arg(protocol, port).arg(port));
++
++	/*m_socket->enableRead( true );
+ 
+ 	// enableWrite eats the CPU, and we only need it when the queue is
+ 	// non-empty, so disable it until we have actual data in the queue
+ 	m_socket->enableWrite( false );
++	*/
++
++	QObject::connect(m_socket, SIGNAL(connected()), SLOT(socketConnected()));
++	QObject::connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(QAbstractSocket::SocketError));
+ 
+ 	QObject::connect( m_socket, SIGNAL(readyRead()),             this, SLOT(slotDataReceived()) );
+ 	QObject::connect( m_socket, SIGNAL(readyWrite()),            this, SLOT(slotReadyWrite()) );
+@@ -92,7 +101,7 @@ void QQSocket::connect( const QString &server, uint port )
+ 	aboutToConnect();
+ 
+ 	// start the asynchronous connection
+-	m_socket->connect();
++	m_socket = KSocketFactory::connectToHostUrl(url, parent);
+ }
+ 
+ void QQSocket::disconnect()
+@@ -100,7 +109,7 @@ void QQSocket::disconnect()
+ 	kDebug(14140) ;
+ 	if ( m_socket )
+ 	{
+-		m_socket->closeNow();
++		m_socket->close();
+ 		setOnlineStatus( Disconnecting );
+ 	}
+ 	else
+@@ -151,7 +160,7 @@ void QQSocket::slotSocketError( int error )
+ 
+ 	QString errormsg = i18n( "There was an error while connecting to the QQ server.\nError message:\n" );
+ 	if ( error == KSocketBase::LookupFailure )
+-		errormsg += i18n( "Unable to lookup %1", m_socket->peerResolver().nodeName() );
++		errormsg += i18n( "Unable to lookup %1", m_socket->peerAddress().toString() );
+ 	else
+ 		errormsg +=  m_socket->errorString() ;
+ 
+@@ -299,9 +308,9 @@ QString QQSocket::getLocalIP()
+ 	if ( !m_socket )
+ 		return QString();
+ 
+-	const KSocketAddress address = m_socket->localAddress();
++	const QHostAddress address = static_cast<QHostAddress >(m_socket->localAddress());
+ 
+-	QString ip = address.nodeName();
++	QString ip = address.toString();
+ 
+ 	kDebug( 14140 ) << "IP: " << ip;
+ 	return ip;
+diff --git a/protocols/qq/qqsocket.h b/protocols/qq/qqsocket.h
+index cdcbb1c08b55ee7e958208eb80d9b89d06924ccb..c25b30c431daaf6fb45f79ce96f3ce86ecf64341 100644
+--- a/protocols/qq/qqsocket.h
++++ b/protocols/qq/qqsocket.h
+@@ -16,14 +16,17 @@
+ #ifndef QQSOCKET_H
+ #define QQSOCKET_H
+ 
+-#include <qobject.h>
+ #include <QList>
++#include <QObject>
++#include <QTcpSocket>
++#include <QTcpServer>
++
+ #include <kopeteprotocol.h>
+ 
+ #include "kopete_export.h"
+ 
+ namespace KNetwork {
+-    class KBufferedSocket;
++	class KSocketFactory;
+ }
+ 
+ 
+@@ -168,7 +171,7 @@ private:
+ 	QList<QByteArray> m_sendQueue;
+ 	QList<QByteArray> m_buffer;
+ 
+-	KNetwork::KBufferedSocket *m_socket;
++	QTcpSocket *m_socket;
+ 	OnlineStatus m_onlineStatus;
+ 
+ 	QString m_server;

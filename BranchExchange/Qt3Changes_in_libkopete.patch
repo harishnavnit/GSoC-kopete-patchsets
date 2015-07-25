@@ -1,0 +1,353 @@
+commit 17db7740fe65596a06b11dbc01040102afc44209
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Tue Jul 14 15:52:10 2015 +0530
+
+    Remove listviews and listviewsearchlines in libkopete
+
+diff --git a/libkopete/ui/addressbookselectordialog.cpp b/libkopete/ui/addressbookselectordialog.cpp
+index afd2f3a6623fbd3f2612eb2f7bb3922a1185d405..05678fd2b47360dc68b4e81826938aba5f94c69c 100644
+--- a/libkopete/ui/addressbookselectordialog.cpp
++++ b/libkopete/ui/addressbookselectordialog.cpp
+@@ -18,18 +18,22 @@
+ 
+ #include "addressbookselectordialog.h"
+ #include "addressbookselectorwidget.h"
++
+ #include <qdialog.h>
+-#include <q3listview.h>
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
++
+ #include <kvbox.h>
+ #include <klocale.h>
+ #include <kdialog.h>
++#include <ktreewidgetsearchline.h>
+ 
+ namespace Kopete
+ {
+ namespace UI
+ {
+ 
+-AddressBookSelectorDialog::AddressBookSelectorDialog(const QString &title, const QString &message, const QString &preSelectUid, QWidget *parent ) 
++AddressBookSelectorDialog::AddressBookSelectorDialog(const QString &title, const QString &message, const QString &preSelectUid, QWidget *parent )
+  : KDialog( parent )
+ {
+ 	setCaption( title );
+@@ -46,7 +50,7 @@ AddressBookSelectorDialog::AddressBookSelectorDialog(const QString &title, const
+ 	enableButtonOk(false);
+ 	//setHelp("linkaddressbook");
+ 	setHelp(QString(), "kopete");
+-	connect(m_addressBookSelectorWidget, SIGNAL(addresseeListClicked(Q3ListViewItem*)), SLOT(slotWidgetAddresseeListClicked(Q3ListViewItem*)));
++	connect(m_addressBookSelectorWidget, SIGNAL(addresseeListClicked(QTreeWidgetItem*)), SLOT(slotWidgetAddresseeListClicked(QTreeWidgetItem*)));
+ 
+ 	if ( !preSelectUid.isEmpty() )
+ 		m_addressBookSelectorWidget->selectAddressee(preSelectUid);
+@@ -70,7 +74,7 @@ KABC::Addressee AddressBookSelectorDialog::getAddressee( const QString &title, c
+ 	return adr;
+ }
+ 
+-void AddressBookSelectorDialog::slotWidgetAddresseeListClicked( Q3ListViewItem *addressee )
++void AddressBookSelectorDialog::slotWidgetAddresseeListClicked( QTreeWidgetItem *addressee )
+ {
+ 	// enable ok if a valid addressee is selected
+ 	enableButtonOk( addressee ? addressee->isSelected() : false);
+diff --git a/libkopete/ui/addressbookselectordialog.h b/libkopete/ui/addressbookselectordialog.h
+index 0586a7a39d31688362199a626d19fed33d8e737d..446e72821726c72a29f6b58044e833c99ca266ae 100644
+--- a/libkopete/ui/addressbookselectordialog.h
++++ b/libkopete/ui/addressbookselectordialog.h
+@@ -22,8 +22,10 @@
+ #include <kdemacros.h>
+ #include "kopete_export.h"
+ #include <kdialog.h>
++#include <ktreewidgetsearchline.h>
+ 
+-#include <Qt3Support/Q3ListView>
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
+ 
+ namespace KABC
+ {
+@@ -80,7 +82,7 @@ public:
+ protected slots:
+ 	virtual void accept();
+ 	virtual void reject();
+-	void slotWidgetAddresseeListClicked( Q3ListViewItem *addressee );
++	void slotWidgetAddresseeListClicked( QTreeWidgetItem *addressee );
+ protected:
+ 	 AddressBookSelectorWidget *m_addressBookSelectorWidget;
+ };
+diff --git a/libkopete/ui/addressbookselectorwidget.cpp b/libkopete/ui/addressbookselectorwidget.cpp
+index 5c8675199cb3734435735f66bcca709c49267cca..c6ab63aa3fde8bb98de75da67e724f407cf470aa 100644
+--- a/libkopete/ui/addressbookselectorwidget.cpp
++++ b/libkopete/ui/addressbookselectorwidget.cpp
+@@ -36,9 +36,12 @@
+ 
+ #include <kpushbutton.h>
+ #include <kdebug.h>
+-#include <k3listview.h>
+-#include <k3listviewsearchline.h>
++#include <QTreeWidget>
++#include <ktreewidgetsearchline.h>
+ #include <QLabel>
++#include <QList>
++#include <QHeaderView>
++#include <QAbstractItemView>
+ 
+ 
+ #include <addresseeitem.h>
+@@ -63,23 +66,24 @@ AddressBookSelectorWidget::AddressBookSelectorWidget( QWidget *parent, const cha
+ 	connect( addAddresseeButton, SIGNAL(clicked()), SLOT(slotAddAddresseeClicked()) );
+ 	connect( addAddresseeButton, SIGNAL(clicked()), SIGNAL(addAddresseeClicked()) );
+ 
+-	connect( addresseeListView, SIGNAL(clicked(Q3ListViewItem*)),
+-			SIGNAL(addresseeListClicked(Q3ListViewItem*)) );
+-	connect( addresseeListView, SIGNAL(selectionChanged(Q3ListViewItem*)),
+-			SIGNAL(addresseeListClicked(Q3ListViewItem*)) );
+-	connect( addresseeListView, SIGNAL(spacePressed(Q3ListViewItem*)),
+-			SIGNAL(addresseeListClicked(Q3ListViewItem*)) );
++	connect( addresseeListView, SIGNAL(clicked(QTreeWidgetItem*)),
++			SIGNAL(addresseeListClicked(QTreeWidgetItem*)) );
++	connect( addresseeListView, SIGNAL(selectionChanged(QTreeWidgetItem*)),
++			SIGNAL(addresseeListClicked(QTreeWidgetItem*)) );
++	connect( addresseeListView, SIGNAL(spacePressed(QTreeWidgetItem*)),
++			SIGNAL(addresseeListClicked(QTreeWidgetItem*)) );
+ 
+ 	connect( m_addressBook, SIGNAL(addressBookChanged(AddressBook*)), this, SLOT(slotLoadAddressees()) );
+ 
+ 	//We should add a clear KAction here.  But we can't really do that with a designer file :\  this sucks
+ 
+-	addresseeListView->setColumnText(2, KIcon(QLatin1String("internet-mail")), i18n("Email"));
++	addresseeListView->currentItem()->setIcon(2, QIcon(QLatin1String("internet-mail")));
++	addresseeListView->currentItem()->setText(2, i18n("Email"));
+ 
+-	kListViewSearchLine->setListView(addresseeListView);
++	kListViewSearchLine->setTreeWidget(addresseeListView);
+ 	slotLoadAddressees();
+ 
+-	addresseeListView->setColumnWidthMode(0, Q3ListView::Manual);
++	addresseeListView->header()->setResizeMode(QHeaderView::ResizeToContents);
+ 	addresseeListView->setColumnWidth(0, 63); //Photo is 60, and it's nice to have a small gap, imho
+ }
+ 
+@@ -93,7 +97,7 @@ AddressBookSelectorWidget::~AddressBookSelectorWidget()
+ KABC::Addressee AddressBookSelectorWidget::addressee()
+ {
+ 	AddresseeItem *item = 0L;
+-	item = static_cast<AddresseeItem *>( addresseeListView->selectedItem() );
++	item = static_cast<AddresseeItem *>( addresseeListView->currentItem() );
+ 
+ 	if ( item )
+ 		m_addressee = item->addressee();
+@@ -104,15 +108,15 @@ KABC::Addressee AddressBookSelectorWidget::addressee()
+ void AddressBookSelectorWidget::selectAddressee( const QString &uid )
+ {
+ 	// iterate trough list view
+-	Q3ListViewItemIterator it( addresseeListView );
+-	while( it.current() )
++	QTreeWidgetItemIterator it( addresseeListView );
++	while( (*it) )
+ 	{
+-		AddresseeItem *addrItem = (AddresseeItem *) it.current();
++		AddresseeItem *addrItem = (AddresseeItem *) ( (*it) );
+ 		if ( addrItem->addressee().uid() == uid )
+ 		{
+ 			// select the contact item
+-			addresseeListView->setSelected( addrItem, true );
+-			addresseeListView->ensureItemVisible( addrItem );
++			addrItem->setSelected( true );
++			addresseeListView->scrollToItem( addrItem, QAbstractItemView::EnsureVisible );
+ 		}
+ 		++it;
+ 	}
+@@ -120,7 +124,7 @@ void AddressBookSelectorWidget::selectAddressee( const QString &uid )
+ 
+ bool AddressBookSelectorWidget::addresseeSelected()
+ {
+-	return addresseeListView->selectedItem() ? true : false;
++	return addresseeListView->currentItem() ? true : false;
+ }
+ 
+ /**  Read in contacts from addressbook, and select the contact that is for our nick. */
+@@ -153,13 +157,16 @@ void AddressBookSelectorWidget::slotAddAddresseeClicked()
+ 		Kopete::KABCPersistence::self()->writeAddressBook( 0 );
+ 		slotLoadAddressees();
+ 		// select the addressee we just added
+-		Q3ListViewItem * added = addresseeListView->findItem( addresseeName, 1 );
++		QList<QTreeWidgetItem *> added = addresseeListView->findItems( addresseeName, 0, 1 );
++		foreach(QTreeWidgetItem *wi, added) {
++			wi->setSelected( true );
++			addresseeListView->scrollToItem(wi, QAbstractItemView::EnsureVisible);
++		}
+ 		kListViewSearchLine->clear();
+ 		kListViewSearchLine->updateSearch();
+ 		kListViewSearchLine->clear();
+ 		kListViewSearchLine->updateSearch();
+-		addresseeListView->setSelected( added, true );
+-		addresseeListView->ensureItemVisible( added );
++		//addresseeListView->scrollToItem( added, 0 );
+ 	}
+ }
+ 
+diff --git a/libkopete/ui/addressbookselectorwidget.h b/libkopete/ui/addressbookselectorwidget.h
+index a565d5593b8478eb50f1e46a1603cc930a3b4fde..12ecb52786698e479fd88f41d32f89dfbcfc1d24 100644
+--- a/libkopete/ui/addressbookselectorwidget.h
++++ b/libkopete/ui/addressbookselectorwidget.h
+@@ -77,7 +77,7 @@ protected slots:
+ 	 */
+ 	void slotLoadAddressees();
+ signals:
+-	void addresseeListClicked( Q3ListViewItem *addressee );
++	void addresseeListClicked( QTreeWidgetItem *addressee );
+ 	void addAddresseeClicked();
+ };
+ 
+diff --git a/libkopete/ui/addressbookselectorwidget_base.ui b/libkopete/ui/addressbookselectorwidget_base.ui
+index 545d7e23de289445e2f5b6093bc108489ddc3127..c9bda6a66d2ae681a1cc0ac9b3edc17ec3ef2921 100644
+--- a/libkopete/ui/addressbookselectorwidget_base.ui
++++ b/libkopete/ui/addressbookselectorwidget_base.ui
+@@ -74,7 +74,7 @@
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2" >
+-    <widget class="K3ListView" name="addresseeListView" >
++    <widget class="QTreeWidget" name="addresseeListView" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <horstretch>0</horstretch>
+@@ -87,9 +87,6 @@
+      <property name="allColumnsShowFocus" >
+       <bool>true</bool>
+      </property>
+-     <property name="resizeMode" >
+-      <enum>Q3ListView::LastColumn</enum>
+-     </property>
+      <column>
+       <property name="text" >
+        <string>Photo</string>
+@@ -141,31 +138,16 @@
+       </widget>
+      </item>
+      <item>
+-      <widget class="K3ListViewSearchLine" native="1" name="kListViewSearchLine" />
++      <widget class="KTreeWidgetSearchLine" native="1" name="kListViewSearchLine" />
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+-  <customwidgets>
+-  <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
+-  </customwidget>
+-  <customwidget>
+-   <class>K3ListViewSearchLine</class>
+-   <extends></extends>
+-   <header>k3listviewsearchline.h</header>
+-  </customwidget>
+- </customwidgets>
+  <tabstops>
+   <tabstop>addresseeListView</tabstop>
+   <tabstop>addAddresseeButton</tabstop>
+  </tabstops>
+- <includes>
+-  <include location="global" >k3listviewsearchline.h</include>
+- </includes>
+  <resources/>
+  <connections/>
+ </ui>
+diff --git a/libkopete/ui/addresseeitem.cpp b/libkopete/ui/addresseeitem.cpp
+index e47f36c8c79e62ca593e282dc66b7874a12d789f..228f2857f1cf8256f6267b9733a789500b5801f5 100644
+--- a/libkopete/ui/addresseeitem.cpp
++++ b/libkopete/ui/addresseeitem.cpp
+@@ -28,8 +28,8 @@
+ #include <klocale.h>
+ #include <kdebug.h>
+ 
+-AddresseeItem::AddresseeItem( Q3ListView *parent, const KABC::Addressee &addressee) :
+-  K3ListViewItem( parent ),
++AddresseeItem::AddresseeItem( QTreeWidget *parent, const KABC::Addressee &addressee) :
++  QTreeWidgetItem( parent ),
+   mAddressee( addressee )
+ {
+   //We can't save showphoto because we don't have a d pointer
+@@ -38,8 +38,9 @@ AddresseeItem::AddresseeItem( Q3ListView *parent, const KABC::Addressee &address
+     pic = mAddressee.logo();
+   if(pic.isIntern())
+   {
+-    QPixmap qpixmap = QPixmap::fromImage( pic.data().scaledToWidth(60) ); //60 pixels seems okay.. kmail uses 60 btw
+-    setPixmap( Photo,qpixmap );
++	// TODO : Fix the QPixmap with KDE/Qt4. Breaks build.
++    /*QPixmap qpixmap = QPixmap::fromImage( pic.data().scaledToWidth(60) ); //60 pixels seems okay.. kmail uses 60 btw
++	setPixmap( Photo,qpixmap );*/
+   }
+ 
+   setText( Name, addressee.realName() );
+diff --git a/libkopete/ui/addresseeitem.h b/libkopete/ui/addresseeitem.h
+index 080f770a1d3c316b8fbf4e4a7fc9d1c130f756fc..4f0b484ad5a3f27af7662c09db42af7ea20ed142 100644
+--- a/libkopete/ui/addresseeitem.h
++++ b/libkopete/ui/addresseeitem.h
+@@ -21,15 +21,17 @@
+ #ifndef ADDRESSEEITEM_H
+ #define ADDRESSEEITEM_H
+ 
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
++
+ #include <klineedit.h>
+-#include <k3listview.h>
+ 
+ #include <kabc/addressbook.h>
+ 
+ /**
+   @short Special ListViewItem
+ */
+-class AddresseeItem : public K3ListViewItem
++class AddresseeItem : public QTreeWidgetItem
+ {
+   public:
+ 
+@@ -38,7 +40,7 @@ class AddresseeItem : public K3ListViewItem
+       @li @p Name -  Name in Addressee
+       @li @p Email - Email in Addressee
+     */
+-    enum columns { Photo =0, Name = 1, Email = 2 };
++    enum columns { Photo = 0, Name = 1, Email = 2 };
+ 
+     /**
+       Constructor.
+@@ -46,8 +48,8 @@ class AddresseeItem : public K3ListViewItem
+       @param parent    The parent listview.
+       @param addressee The associated addressee.
+     */
+-    AddresseeItem( Q3ListView *parent, const KABC::Addressee &addressee );
+-   
++	AddresseeItem( QTreeWidget *parent, const KABC::Addressee &addressee );
++
+     /**
+       Returns the addressee.
+     */
+diff --git a/libkopete/ui/metacontactselectorwidget.cpp b/libkopete/ui/metacontactselectorwidget.cpp
+index a877ad0588d81cab347593708ea4eb3959d0660f..18c75676bbc909c99d47cb1555e77b186a7bc0bc 100644
+--- a/libkopete/ui/metacontactselectorwidget.cpp
++++ b/libkopete/ui/metacontactselectorwidget.cpp
+@@ -26,6 +26,8 @@
+ #include <qlayout.h>
+ #include <QVBoxLayout>
+ #include <QBoxLayout>
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
+ 
+ #include <kconfig.h>
+ #include <klocale.h>
+@@ -35,8 +37,7 @@
+ #include <kinputdialog.h>
+ #include <kpushbutton.h>
+ #include <kdebug.h>
+-#include <k3listview.h>
+-#include <k3listviewsearchline.h>
++#include <ktreewidgetsearchline.h>
+ 
+ #include "kopetelistview.h"
+ #include "kopetelistviewsearchline.h"

@@ -1,0 +1,2899 @@
+diff --git a/kopete/addaccountwizard/addaccountwizard.cpp b/kopete/addaccountwizard/addaccountwizard.cpp
+index cc9fc8a5a4960e6a1eb00100bca1aab4952e8ed2..5e8c0e626525895ff6d3d37fcc429b57f97608df 100644
+--- a/kopete/addaccountwizard/addaccountwizard.cpp
++++ b/kopete/addaccountwizard/addaccountwizard.cpp
+@@ -291,6 +291,3 @@ void AddAccountWizard::setIdentity( Kopete::Identity *identity )
+ 
+ 
+ #include "addaccountwizard.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/addaccountwizard/addaccountwizard.h b/kopete/addaccountwizard/addaccountwizard.h
+index 512e90644153d12c7561338d8433c310fe1887ca..bb9bdd5813ad832ff4c3bb749753e9199e4a7c8d 100644
+--- a/kopete/addaccountwizard/addaccountwizard.h
++++ b/kopete/addaccountwizard/addaccountwizard.h
+@@ -69,6 +69,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/chatmemberslistview.cpp b/kopete/chatwindow/chatmemberslistview.cpp
+index 1d55d215c7f0df30aac169f359f9f13ae3c59207..f3f227db476c173cfc7895a4c96fb09a7f470830 100644
+--- a/kopete/chatwindow/chatmemberslistview.cpp
++++ b/kopete/chatwindow/chatmemberslistview.cpp
+@@ -62,6 +62,3 @@ ChatMembersListView::~ChatMembersListView()
+ }
+ 
+ #include "chatmemberslistview.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/chatmemberslistview.h b/kopete/chatwindow/chatmemberslistview.h
+index 7f017d29fa12d4114dd874e8888ca19bd752ac88..c7a12452f89bd5ecd598576425bc1e606b8e59b0 100644
+--- a/kopete/chatwindow/chatmemberslistview.h
++++ b/kopete/chatwindow/chatmemberslistview.h
+@@ -46,6 +46,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/chatmessagepart.cpp b/kopete/chatwindow/chatmessagepart.cpp
+index 5728385fe7769f0ce05b6f0a64ee55f36e4c42a7..5dbd546dc0a3fa9061ac210ae109621358d45016 100644
+--- a/kopete/chatwindow/chatmessagepart.cpp
++++ b/kopete/chatwindow/chatmessagepart.cpp
+@@ -1614,5 +1614,3 @@ void HTMLEventListener::handleEvent( DOM::Event &event )
+ }
+ 
+ #include "chatmessagepart.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/chatwindow/chatmessagepart.h b/kopete/chatwindow/chatmessagepart.h
+index e2a3bb46e37a129b21a3455c9c85e52d3c490845..3aeae64807d078c2a663e48214034a3d743f5ba3 100644
+--- a/kopete/chatwindow/chatmessagepart.h
++++ b/kopete/chatwindow/chatmessagepart.h
+@@ -316,6 +316,3 @@ Q_SIGNALS:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/chattexteditpart.cpp b/kopete/chatwindow/chattexteditpart.cpp
+index 43fd791e94d05dbc42009ef5803c0f6b3b7ebaa5..5b3136f95a82077bc85c2300cb4d7beaabf8e37e 100644
+--- a/kopete/chatwindow/chattexteditpart.cpp
++++ b/kopete/chatwindow/chattexteditpart.cpp
+@@ -572,5 +572,3 @@ bool ChatTextEditPart::isRichTextEnabled() const
+ }
+ 
+ #include "chattexteditpart.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/chatwindow/chattexteditpart.h b/kopete/chatwindow/chattexteditpart.h
+index 0cf43932cd3f36959737ebd90a0bec5ffc0a716a..cb9095f24ddac3b13f366c6924aac7e2b1fbfe8b 100644
+--- a/kopete/chatwindow/chattexteditpart.h
++++ b/kopete/chatwindow/chattexteditpart.h
+@@ -262,5 +262,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/chatwindow/chatview.cpp b/kopete/chatwindow/chatview.cpp
+index f92d5fe8c58420ce2d7008d33441e26020cb9dd4..4cf6b3a658d2dd2bd5f5be8a79d0385926f69647 100644
+--- a/kopete/chatwindow/chatview.cpp
++++ b/kopete/chatwindow/chatview.cpp
+@@ -1038,6 +1038,3 @@ void ChatView::registerTooltipHandler( QObject *target, const char* slot )
+ }
+ 
+ #include "chatview.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/chatview.h b/kopete/chatwindow/chatview.h
+index ca1965de82071c720568370906f6d5169d5b7aa6..e559e00fbc22224f02bbb38ce736db7974fb5277 100644
+--- a/kopete/chatwindow/chatview.h
++++ b/kopete/chatwindow/chatview.h
+@@ -385,6 +385,3 @@ class ChatWindowPlugin : public Kopete::ViewPlugin
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/emoticonselector.cpp b/kopete/chatwindow/emoticonselector.cpp
+index d9eb8b81dd48bc41a6672df13f14df6953840da7..cb0eba6f0500d57350652b48f145703a92f72321 100644
+--- a/kopete/chatwindow/emoticonselector.cpp
++++ b/kopete/chatwindow/emoticonselector.cpp
+@@ -154,6 +154,3 @@ void EmoticonSelector::showEvent( QShowEvent* )
+ }
+ 
+ #include "emoticonselector.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/emoticonselector.h b/kopete/chatwindow/emoticonselector.h
+index 6c81b97869af42990fec04af58e9f4e335ee13a3..c6bd524e68637202a533347f62f31e6af0e294d3 100644
+--- a/kopete/chatwindow/emoticonselector.h
++++ b/kopete/chatwindow/emoticonselector.h
+@@ -82,4 +82,3 @@ private:
+ };
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/chatwindow/kopetechatwindow.cpp b/kopete/chatwindow/kopetechatwindow.cpp
+index 6216ad77a6f66b3e994946b9a68c3f73cc69017a..ad41b6efd3041c04a85bcdae64c35556eb715dd7 100644
+--- a/kopete/chatwindow/kopetechatwindow.cpp
++++ b/kopete/chatwindow/kopetechatwindow.cpp
+@@ -1366,5 +1366,3 @@ bool KopeteChatWindow::eventFilter( QObject *obj, QEvent *event )
+ }
+ 
+ #include "kopetechatwindow.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/chatwindow/kopetechatwindow.h b/kopete/chatwindow/kopetechatwindow.h
+index 3e99cc89c2c57f073eff3b9b4d692e34b8c635c3..49fa789978b4bdb582038067037296fe0e4f8c32 100644
+--- a/kopete/chatwindow/kopetechatwindow.h
++++ b/kopete/chatwindow/kopetechatwindow.h
+@@ -253,6 +253,3 @@ protected:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/kopeteemailwindow.cpp b/kopete/chatwindow/kopeteemailwindow.cpp
+index 7bb04b2955cd96d46f9bf00d516048a50f25bf9a..a5288198f72e86afacd28a5380d0a401ffbce667 100644
+--- a/kopete/chatwindow/kopeteemailwindow.cpp
++++ b/kopete/chatwindow/kopeteemailwindow.cpp
+@@ -595,6 +595,3 @@ void KopeteEmailWindow::slotCloseView()
+ 
+ 
+ #include "kopeteemailwindow.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/kopeteemailwindow.h b/kopete/chatwindow/kopeteemailwindow.h
+index c931110a6e806ad705fc8d390fc153b9120990f5..d091ca029966061af14ff75272f4a33234cfdd56 100644
+--- a/kopete/chatwindow/kopeteemailwindow.h
++++ b/kopete/chatwindow/kopeteemailwindow.h
+@@ -99,6 +99,3 @@ class EmailWindowPlugin : public Kopete::ViewPlugin
+ };
+ 
+ #endif // __KOPETEEMAILWINDOW_H__
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/kopeteemoticonaction.cpp b/kopete/chatwindow/kopeteemoticonaction.cpp
+index b9c1b6a1714a2cb0ecee547a18bb0e74364ea6cd..3068fce73e8779d5947fc5bff6af59c9e2dc4741 100644
+--- a/kopete/chatwindow/kopeteemoticonaction.cpp
++++ b/kopete/chatwindow/kopeteemoticonaction.cpp
+@@ -101,6 +101,3 @@ KopeteEmoticonAction::~KopeteEmoticonAction()
+ }
+ 
+ #include "kopeteemoticonaction.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/chatwindow/kopeteemoticonaction.h b/kopete/chatwindow/kopeteemoticonaction.h
+index 63b48a5746dea551477a0dbd8c29e4dca4154fdf..7f14b20afd8c7d07053b98b055b410697c5f0573 100644
+--- a/kopete/chatwindow/kopeteemoticonaction.h
++++ b/kopete/chatwindow/kopeteemoticonaction.h
+@@ -43,6 +43,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/config/accounts/kopeteaccountconfig.cpp b/kopete/config/accounts/kopeteaccountconfig.cpp
+index 7b3dfb1947a7fa3a7fa47a111817a48c0e8a559f..04009bc0a2820a36ed6beb4e980a052927ba6daf 100644
+--- a/kopete/config/accounts/kopeteaccountconfig.cpp
++++ b/kopete/config/accounts/kopeteaccountconfig.cpp
+@@ -646,5 +646,3 @@ void KopeteAccountConfig::slotItemClicked( QTreeWidgetItem * item, int /*column*
+ 
+ 
+ #include "kopeteaccountconfig.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/config/accounts/kopeteaccountconfig.h b/kopete/config/accounts/kopeteaccountconfig.h
+index d19e27a3959a69276fa2ec44d30140ef8e6671b0..5237ee51671b350ff3fce9037ed014ebcd4515b7 100644
+--- a/kopete/config/accounts/kopeteaccountconfig.h
++++ b/kopete/config/accounts/kopeteaccountconfig.h
+@@ -104,5 +104,3 @@ private slots:
+ 	void slotItemClicked ( QTreeWidgetItem * item, int column );
+ };
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/config/appearance/appearanceconfig.cpp b/kopete/config/appearance/appearanceconfig.cpp
+index f29d12bec4d250790daac1eaf1a57de364bcd720..eb07799499d9161ef9ba577f5839425bd55b766f 100644
+--- a/kopete/config/appearance/appearanceconfig.cpp
++++ b/kopete/config/appearance/appearanceconfig.cpp
+@@ -189,4 +189,3 @@ void AppearanceConfig::slotEditTooltips()
+ }
+ 
+ #include "appearanceconfig.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/config/appearance/appearanceconfig.h b/kopete/config/appearance/appearanceconfig.h
+index 9429ff882e1088d4c0fe0f20f206e8098027019c..c37de1da1f71f39f7eb2e61889d5f80f18115271 100644
+--- a/kopete/config/appearance/appearanceconfig.h
++++ b/kopete/config/appearance/appearanceconfig.h
+@@ -49,4 +49,3 @@ private:
+ 	Private * const d;
+ };
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/config/appearance/tooltipeditdialog.h b/kopete/config/appearance/tooltipeditdialog.h
+index b5c7102872d64c7e6677e0ada4cc1dabfa8d5e92..b9ecb19bd0a29b01d97da626e69cebd053def070 100644
+--- a/kopete/config/appearance/tooltipeditdialog.h
++++ b/kopete/config/appearance/tooltipeditdialog.h
+@@ -52,4 +52,3 @@ class TooltipEditDialog : public KDialog, private Ui::TooltipEditWidget
+ };
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/config/behavior/behaviorconfig.cpp b/kopete/config/behavior/behaviorconfig.cpp
+index 32ae9050645074012ecf4ac7ca00bca238661a24..98f14ebaa8828a11b81420ab41dcd6e6eb76cc39 100644
+--- a/kopete/config/behavior/behaviorconfig.cpp
++++ b/kopete/config/behavior/behaviorconfig.cpp
+@@ -153,4 +153,3 @@ void BehaviorConfig::slotTextChanged()
+ }
+ 
+ #include "behaviorconfig.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/config/behavior/behaviorconfig.h b/kopete/config/behavior/behaviorconfig.h
+index 33d32e507a102eac43d3d56b9220a96fb2c71c7c..0128bb432d5988096a7b5f1fd6b16513f6c2a73c 100644
+--- a/kopete/config/behavior/behaviorconfig.h
++++ b/kopete/config/behavior/behaviorconfig.h
+@@ -52,4 +52,3 @@ class BehaviorConfig : public KCModule
+ 		QList<KPluginInfo> viewPlugins;
+ };
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/config/plugins/kopetepluginconfig.cpp b/kopete/config/plugins/kopetepluginconfig.cpp
+index f41327d9bd29d3a29f451157ce610f08a943c973..7fcbad8b94c5969a1c5088278f9c5feb9113618e 100644
+--- a/kopete/config/plugins/kopetepluginconfig.cpp
++++ b/kopete/config/plugins/kopetepluginconfig.cpp
+@@ -86,6 +86,3 @@ void KopetePluginConfig::save()
+ }
+ 
+ #include "kopetepluginconfig.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/config/plugins/kopetepluginconfig.h b/kopete/config/plugins/kopetepluginconfig.h
+index 304321de1170b585b1597cedd82d9d46c4f8c304..dc286b7aeab249f474fb914d09aa1e9b89edf488 100644
+--- a/kopete/config/plugins/kopetepluginconfig.h
++++ b/kopete/config/plugins/kopetepluginconfig.h
+@@ -48,6 +48,3 @@ private:
+ };
+ 
+ #endif // KOPETEPLUGINCONFIG_H
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/contactlist/kopetecontactlistview.cpp b/kopete/contactlist/kopetecontactlistview.cpp
+index b32a500cf1e5359ec1af7200749f9aa8c7503512..8a75fe6d32fbe969bacfa00acd5f5027ea2efdf2 100644
+--- a/kopete/contactlist/kopetecontactlistview.cpp
++++ b/kopete/contactlist/kopetecontactlistview.cpp
+@@ -1216,5 +1216,3 @@ int KopeteContactListView::visibleContentHeight( const QModelIndex& parent ) con
+ }
+ 
+ #include "kopetecontactlistview.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/contactlist/kopetecontactlistview.h b/kopete/contactlist/kopetecontactlistview.h
+index 385485e9738b4cc0bd263c81ebbe0f7e6e020e94..aab75cb4d5c514460a221187d5f08c7eb7d28761 100644
+--- a/kopete/contactlist/kopetecontactlistview.h
++++ b/kopete/contactlist/kopetecontactlistview.h
+@@ -135,4 +135,3 @@ private:
+ 
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/identity/accountidentitydialog.cpp b/kopete/identity/accountidentitydialog.cpp
+index df2faf21264748887931d9cea946aa3637b24cfb..d06f78e6c320e3c561e576cc2d7a13e2bd372ff3 100644
+--- a/kopete/identity/accountidentitydialog.cpp
++++ b/kopete/identity/accountidentitydialog.cpp
+@@ -228,6 +228,3 @@ bool AccountIdentityDialog::changeAccountIdentity( QWidget *parent, QList<Kopete
+ }
+ 
+ #include "accountidentitydialog.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/identity/accountidentitydialog.h b/kopete/identity/accountidentitydialog.h
+index e0f208d4d7a1c602a0e41d03051a5196843136b7..6fbf21e1daf1f732c4d3cc3f6a4113aa82b0c90f 100644
+--- a/kopete/identity/accountidentitydialog.h
++++ b/kopete/identity/accountidentitydialog.h
+@@ -119,6 +119,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/identity/identitydialog.cpp b/kopete/identity/identitydialog.cpp
+index ac0fd6b8e22e335b316389f9ba9f3023e39503a6..9b5654e3c32e78489e463b5edfd371dc74879426 100644
+--- a/kopete/identity/identitydialog.cpp
++++ b/kopete/identity/identitydialog.cpp
+@@ -167,4 +167,3 @@ void IdentityDialog::slotClearPhoto()
+ }
+ 
+ #include "identitydialog.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/identity/identitydialog.h b/kopete/identity/identitydialog.h
+index 597bbb528f0c6c34f5741b7b1935220d7247100a..3c2c12992bae7154848af02d2ce847ad70f09040 100644
+--- a/kopete/identity/identitydialog.h
++++ b/kopete/identity/identitydialog.h
+@@ -52,5 +52,3 @@ private:
+ 
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/identity/identitystatuswidget.cpp b/kopete/identity/identitystatuswidget.cpp
+index 94f5b05845116bec172f6607787256207a67b831..7d1bcd2b401aa590e9afc925c5ca2e86c7b7f9f1 100644
+--- a/kopete/identity/identitystatuswidget.cpp
++++ b/kopete/identity/identitystatuswidget.cpp
+@@ -399,5 +399,3 @@ void IdentityStatusWidget::slotIdentityChanged(Kopete::Identity *identity)
+ }
+ 
+ #include "identitystatuswidget.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/identity/identitystatuswidget.h b/kopete/identity/identitystatuswidget.h
+index 2d19e9eae4d5d0c21a9952b21963c5b60922f58c..343f9121c16c60d6d7e3d6f8b4260632d8a0d5b6 100644
+--- a/kopete/identity/identitystatuswidget.h
++++ b/kopete/identity/identitystatuswidget.h
+@@ -93,6 +93,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/kconf_update/kopete-account-kconf_update.cpp b/kopete/kconf_update/kopete-account-kconf_update.cpp
+index 522be37ad93b3c1a0cf89655cd555e5c468b89e4..017a9c18671f1bd3fd178ae3279dbc2fede0ee9c 100644
+--- a/kopete/kconf_update/kopete-account-kconf_update.cpp
++++ b/kopete/kconf_update/kopete-account-kconf_update.cpp
+@@ -243,6 +243,3 @@ int main()
+ 
+ 	return 0;
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/kconf_update/kopete-nameTracking.cpp b/kopete/kconf_update/kopete-nameTracking.cpp
+index 038d13fb1a27d69ce771afb2fc22d5030444ae4b..4aa5cf6895b0ecdfdfaef03d8def7fd48e6bff87 100644
+--- a/kopete/kconf_update/kopete-nameTracking.cpp
++++ b/kopete/kconf_update/kopete-nameTracking.cpp
+@@ -131,6 +131,3 @@ int main()
+ 
+ 	return 0;
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/kconf_update/kopete-pluginloader2.cpp b/kopete/kconf_update/kopete-pluginloader2.cpp
+index 036c1a317c2176e165c7b7cd6bc4763df0fcf98f..368931d23f287a2afe60b954b2ffb269fe96cada 100644
+--- a/kopete/kconf_update/kopete-pluginloader2.cpp
++++ b/kopete/kconf_update/kopete-pluginloader2.cpp
+@@ -85,6 +85,3 @@ int main()
+ 
+ 	return 0;
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/kimiface.h b/kopete/kimiface.h
+index 9028472cab99c8df905c16b079c859a1bc812094..d13e9eeb8903ed934b3da358f3a2e54ce86cdfb8 100644
+--- a/kopete/kimiface.h
++++ b/kopete/kimiface.h
+@@ -183,15 +183,3 @@ k_dcop_signals:
+ };
+ 
+ #endif
+-
+-
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/kopeteapplication.cpp b/kopete/kopeteapplication.cpp
+index 601b33ae291e6e6de9a5a5312a5e54fb05868291..5ef0d9263b0e5c74b12239304f99d30455d3272e 100644
+--- a/kopete/kopeteapplication.cpp
++++ b/kopete/kopeteapplication.cpp
+@@ -394,4 +394,3 @@ void KopeteApplication::commitData( QSessionManager &sm )
+ }
+ 
+ #include "kopeteapplication.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/kopeteapplication.h b/kopete/kopeteapplication.h
+index 23d922d314e9da168ec06ba394d7192a34e4459a..427563cb1caad8b63a6f2eddad7cddd8f898af26 100644
+--- a/kopete/kopeteapplication.h
++++ b/kopete/kopeteapplication.h
+@@ -84,6 +84,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/kopeteidentitystatusbaricon.cpp b/kopete/kopeteidentitystatusbaricon.cpp
+index df8c888f6dce4995714b232fac3d9d81c9e508be..66f713d2eb877dd74b190f6205d837acb2e6ee9c 100644
+--- a/kopete/kopeteidentitystatusbaricon.cpp
++++ b/kopete/kopeteidentitystatusbaricon.cpp
+@@ -71,6 +71,3 @@ void KopeteIdentityStatusBarIcon::updateMessage( Kopete::StatusRootAction *statu
+ }
+ 
+ #include "kopeteidentitystatusbaricon.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/kopeteidentitystatusbaricon.h b/kopete/kopeteidentitystatusbaricon.h
+index 8c3f55475fb039309e14f7399a976a2802722b7b..4e0dbdb7e9e105b559ba9cfff8bf2d588de4802d 100644
+--- a/kopete/kopeteidentitystatusbaricon.h
++++ b/kopete/kopeteidentitystatusbaricon.h
+@@ -57,6 +57,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/kopetewindow.cpp b/kopete/kopetewindow.cpp
+index c6ca7ec4d2e4ca789f2df6f81b62c493c067df2a..875eca1b5772051b9420e5476bef01d1ca4896f4 100644
+--- a/kopete/kopetewindow.cpp
++++ b/kopete/kopetewindow.cpp
+@@ -1534,4 +1534,3 @@ void KopeteWindow::slotNewInfoEvent()
+ }
+ 
+ #include "kopetewindow.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/kopetewindow.h b/kopete/kopetewindow.h
+index 974b27572396d2afecae63388d85fdb4bfae39e3..e37e7335c4c37cdecfe63b39038c28980006759f 100644
+--- a/kopete/kopetewindow.h
++++ b/kopete/kopetewindow.h
+@@ -265,4 +265,3 @@ private slots:
+ };
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/main.cpp b/kopete/main.cpp
+index a2e0612233b98e137ebbee1d51066ae0e3a21699..c86c8e1a827607df4a11f34f79d43e168de76ff1 100644
+--- a/kopete/main.cpp
++++ b/kopete/main.cpp
+@@ -104,4 +104,3 @@ int main( int argc, char *argv[] )
+ 	KopeteApplication kopete;
+ 	return kopete.exec();
+ }
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/statusmenu/kopeteonlinestatusaction.cpp b/kopete/statusmenu/kopeteonlinestatusaction.cpp
+index d0377b78fccf5cd52cb18efbe1857bbc78696c6a..92af4a1d7f60ac51a200ef11d4d2a41cf3cd9897 100644
+--- a/kopete/statusmenu/kopeteonlinestatusaction.cpp
++++ b/kopete/statusmenu/kopeteonlinestatusaction.cpp
+@@ -56,6 +56,3 @@ void OnlineStatusAction::slotActivated()
+ } //END namespace Kopete
+ 
+ #include "kopeteonlinestatusaction.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/statusmenu/kopeteonlinestatusaction.h b/kopete/statusmenu/kopeteonlinestatusaction.h
+index bc9b07b2cbf6f22875a1a61afcefd2b1d578e4a2..330362b03593ee6c56792664144850558eae69e8 100644
+--- a/kopete/statusmenu/kopeteonlinestatusaction.h
++++ b/kopete/statusmenu/kopeteonlinestatusaction.h
+@@ -46,6 +46,3 @@ class OnlineStatusAction : public KAction
+ }  //END namespace Kopete
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/kopete/systemtray.cpp b/kopete/systemtray.cpp
+index 6bf88b018874c7f674feaeee6b5cd082a85f776e..399746b3149585193ad2448cbec889d83c21ba35 100644
+--- a/kopete/systemtray.cpp
++++ b/kopete/systemtray.cpp
+@@ -248,4 +248,3 @@ bool KopeteSystemTray::isBlinking() const
+ 
+ 
+ #include "systemtray.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/kopete/systemtray.h b/kopete/systemtray.h
+index 0919c916b5a9c51ee0cd4e7fc7e9deb36665158a..3795224c7083d81ecf9616d2be434f2a56bd5fa8 100644
+--- a/kopete/systemtray.h
++++ b/kopete/systemtray.h
+@@ -80,6 +80,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopeteaccountmanager.cpp b/libkopete/kopeteaccountmanager.cpp
+index 3e7e6db3eeeb9b3d8014d29da998a9485fa39484..a029370c6c222d0ce71fb54149c0a2d6990d84b3 100644
+--- a/libkopete/kopeteaccountmanager.cpp
++++ b/libkopete/kopeteaccountmanager.cpp
+@@ -544,5 +544,3 @@ void AccountManager::removeAccountInternal()
+ } //END namespace Kopete
+ 
+ #include "kopeteaccountmanager.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-mode csands;
+diff --git a/libkopete/kopetechatsession.cpp b/libkopete/kopetechatsession.cpp
+index 3bc0d9c38973c5243fd612026a90bf6da326bfcb..b48784559bab015b88b3b3c7ec5268a6bb92a795 100644
+--- a/libkopete/kopetechatsession.cpp
++++ b/libkopete/kopetechatsession.cpp
+@@ -738,8 +738,3 @@ void Kopete::ChatSession::slotDisplayNameChanged(const QString &oldName, const Q
+ }
+ 
+ #include "kopetechatsession.moc"
+-
+-
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetechatsession.h b/libkopete/kopetechatsession.h
+index fe594fe11bbf60927f95e42c2afcfbccb3443770..a60c1582a74cc2b28290d110d8797328465a41c9 100644
+--- a/libkopete/kopetechatsession.h
++++ b/libkopete/kopetechatsession.h
+@@ -498,6 +498,3 @@ private:
+ }
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetechatsessionmanager.cpp b/libkopete/kopetechatsessionmanager.cpp
+index 56e5f06f37e31ba50c37c0ec4fd81efcc67237dc..88538df233a9aa3a69b63a7bb8481d94f92051bb 100644
+--- a/libkopete/kopetechatsessionmanager.cpp
++++ b/libkopete/kopetechatsessionmanager.cpp
+@@ -192,6 +192,3 @@ KopeteView *ChatSessionManager::activeView()
+ } //END namespace Kopete
+ 
+ #include "kopetechatsessionmanager.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetechatsessionmanager.h b/libkopete/kopetechatsessionmanager.h
+index 952efdcc6c5e56a086f79e6397a2cce9455bde47..04b471bf5900ce1061d37963e841d7b620dcf028 100644
+--- a/libkopete/kopetechatsessionmanager.h
++++ b/libkopete/kopetechatsessionmanager.h
+@@ -185,5 +185,3 @@ private:
+ }
+ 
+ #endif // KOPETECHATSESSIONMANAGER_H
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetecommandhandler.cpp b/libkopete/kopetecommandhandler.cpp
+index 24a1eb4835fdb0b7794d6f13f963153826308342..6e8c6df0811d7d3b338d96404a8b4a2edee6dc19 100644
+--- a/libkopete/kopetecommandhandler.cpp
++++ b/libkopete/kopetecommandhandler.cpp
+@@ -544,6 +544,3 @@ void Kopete::CommandHandler::slotPluginDestroyed( QObject *plugin )
+ }
+ 
+ #include "kopetecommandhandler.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetecontactlist.cpp b/libkopete/kopetecontactlist.cpp
+index fade2ea2949d45ce54e6e5ac7d8876b88516e38b..d7f552b5de442d0201933cd041334715123f3127 100644
+--- a/libkopete/kopetecontactlist.cpp
++++ b/libkopete/kopetecontactlist.cpp
+@@ -447,6 +447,3 @@ void ContactList::slotKABCChanged()
+ } //END namespace Kopete
+ 
+ #include "kopetecontactlist.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetecontactlistelement.h b/libkopete/kopetecontactlistelement.h
+index d82f23b803b856135d4bc0c266987d3791260f85..238e5ccd561d76733158b7e963e18b0e09d79552 100644
+--- a/libkopete/kopetecontactlistelement.h
++++ b/libkopete/kopetecontactlistelement.h
+@@ -217,5 +217,3 @@ private:
+ } //END namespace Kopete
+ 
+ #endif // KOPETECONTACTLISTELEMENT_H
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopeteglobal.cpp b/libkopete/kopeteglobal.cpp
+index 39b988705324aa6f9fdb2d16c4500831e2bb2c31..b6794e84a6555a68dd2a2edca1ef1f100ec1c1aa 100644
+--- a/libkopete/kopeteglobal.cpp
++++ b/libkopete/kopeteglobal.cpp
+@@ -252,5 +252,3 @@ const PropertyTmpl::Map &Properties::templateMap() const
+ } // END namespace Global
+ 
+ } // END namespace Kopete
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopeteglobal.h b/libkopete/kopeteglobal.h
+index b801c3aec1c359f943f60e51be698ec50d8a88b9..bdaac3d7bf6cdc6c54762a6c1b18c5d1f3875c49 100644
+--- a/libkopete/kopeteglobal.h
++++ b/libkopete/kopeteglobal.h
+@@ -173,4 +173,3 @@ namespace Global
+ } // Kopete
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopeteidentity.cpp b/libkopete/kopeteidentity.cpp
+index dc58a3bf93f687c74594b63ae09b963903cbedfc..683f19e52a6010ee036e015c7182b2ff00a35841 100644
+--- a/libkopete/kopeteidentity.cpp
++++ b/libkopete/kopeteidentity.cpp
+@@ -288,6 +288,3 @@ void Identity::slotSaveProperty( Kopete::PropertyContainer *container, const QSt
+ } //END namespace Kopete
+ 
+ #include "kopeteidentity.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopeteidentitymanager.cpp b/libkopete/kopeteidentitymanager.cpp
+index 17a1055aa50f6e625cf340524125c1bcb180d714..11932db708dcc828f659063b78a1358bb9dd9104 100644
+--- a/libkopete/kopeteidentitymanager.cpp
++++ b/libkopete/kopeteidentitymanager.cpp
+@@ -255,5 +255,3 @@ void IdentityManager::slotIdentityOnlineStatusChanged(Identity *i)
+ } //END namespace Kopete
+ 
+ #include "kopeteidentitymanager.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-mode csands;
+diff --git a/libkopete/kopeteidletimer.cpp b/libkopete/kopeteidletimer.cpp
+index 9de0f32e5f5cfd4f14264418813246a8d5c77db4..daad8097e0951c0ee472a43e1745d2b7ac6efad6 100644
+--- a/libkopete/kopeteidletimer.cpp
++++ b/libkopete/kopeteidletimer.cpp
+@@ -1,3 +1,4 @@
++
+ /*
+     kopeteidletimer.cpp  -  Kopete Idle Timer
+ 
+@@ -152,4 +153,3 @@ void Kopete::IdleTimer::updateIdleTime()
+ }
+ 
+ #include "kopeteidletimer.moc"
+-// vim: set et ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetemessage.h b/libkopete/kopetemessage.h
+index edf329cba54872458b21debc14cc5d083f209bff..439d9343112f8c7b271d8ea88d854b185877c0da 100644
+--- a/libkopete/kopetemessage.h
++++ b/libkopete/kopetemessage.h
+@@ -580,6 +580,3 @@ private:
+ }
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetemessageevent.cpp b/libkopete/kopetemessageevent.cpp
+index 3f8819c9e77b698724ffdc86ef9e077b70d5939a..c90429b7297f61b927bc04c53d2dcb352ef54da1 100644
+--- a/libkopete/kopetemessageevent.cpp
++++ b/libkopete/kopetemessageevent.cpp
+@@ -100,6 +100,3 @@ void MessageEvent::discard()
+ }
+ 
+ #include "kopetemessageevent.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetemessageevent.h b/libkopete/kopetemessageevent.h
+index 7fcf67468b4df05fcefc72e80cd190ed8ed6de3e..f46b44d8942c7231d163b5ee22791e06ecde0765 100644
+--- a/libkopete/kopetemessageevent.h
++++ b/libkopete/kopetemessageevent.h
+@@ -123,6 +123,3 @@ private:
+ }
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetemessagehandler.cpp b/libkopete/kopetemessagehandler.cpp
+index 4cb759f270611cb586aac3ab3faa05fb3bae7321..3bdc4d744ab99c250ede76346131c1863597df0e 100644
+--- a/libkopete/kopetemessagehandler.cpp
++++ b/libkopete/kopetemessagehandler.cpp
+@@ -107,5 +107,3 @@ MessageHandlerFactory::FactoryList MessageHandlerFactory::messageHandlerFactorie
+ }
+ 
+ #include "kopetemessagehandler.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetemessagehandler.h b/libkopete/kopetemessagehandler.h
+index 5236a357f130406d1404ffc1939705e079f78b3d..93e4c66a328e903e9a5207bbfce1034f1c0152cb 100644
+--- a/libkopete/kopetemessagehandler.h
++++ b/libkopete/kopetemessagehandler.h
+@@ -220,5 +220,3 @@ private:
+ }
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetemessagehandlerchain.cpp b/libkopete/kopetemessagehandlerchain.cpp
+index baf07999bd05ab55f679bb46392f2ad489d85061..3bbe3ce968684bbc20976287063c9a17a3ebbb0f 100644
+--- a/libkopete/kopetemessagehandlerchain.cpp
++++ b/libkopete/kopetemessagehandlerchain.cpp
+@@ -190,5 +190,3 @@ MessageEvent *ProcessMessageTask::event()
+ }
+ 
+ #include "kopetemessagehandlerchain.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetemessagehandlerchain.h b/libkopete/kopetemessagehandlerchain.h
+index ee9b729a101f149ecbfaf12c11e5ec23f9211bed..3174b6021eb178cc5aff3fcc2deeb87bd16fc932 100644
+--- a/libkopete/kopetemessagehandlerchain.h
++++ b/libkopete/kopetemessagehandlerchain.h
+@@ -97,5 +97,3 @@ private:
+ }
+ 
+ #endif // KOPETEMESSAGEHANDLERCHAIN_H
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetemetacontact.cpp b/libkopete/kopetemetacontact.cpp
+index da9b92bf55582c1e1b820da0c3d2164f54209a5f..625c891026eeb9c3b406581e1a6190d5da2f2b47 100644
+--- a/libkopete/kopetemetacontact.cpp
++++ b/libkopete/kopetemetacontact.cpp
+@@ -1382,5 +1382,3 @@ void MetaContact::onlineStatusNotification( Kopete::Contact * c )
+ } //END namespace Kopete
+ 
+ #include "kopetemetacontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetemetacontact.h b/libkopete/kopetemetacontact.h
+index 55b202d5746583a444721fab46fc97d77bd56b24..8fc02cc4439fea306db0f31cf4cedb2be1e4a5ca 100644
+--- a/libkopete/kopetemetacontact.h
++++ b/libkopete/kopetemetacontact.h
+@@ -630,6 +630,3 @@ KOPETE_EXPORT QString nameFromKABC( const QString &id ) /*const*/;
+ 
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetemetacontact_p.h b/libkopete/kopetemetacontact_p.h
+index 183c24e259f68bf84fd3f0c45f2f1f4e9025b992..ba26467e7bd9637f735cc93222b4b59d04b2efae 100644
+--- a/libkopete/kopetemetacontact_p.h
++++ b/libkopete/kopetemetacontact_p.h
+@@ -76,5 +76,3 @@ class  MetaContact::Private
+ } //END namespace Kopete
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetemimetypehandler.cpp b/libkopete/kopetemimetypehandler.cpp
+index 9a32d546f90c2e48f8c2bfff31eb33226bc71207..3ad80ca9121bde5eb2fa236a7ca7d161acd6cc5e 100644
+--- a/libkopete/kopetemimetypehandler.cpp
++++ b/libkopete/kopetemimetypehandler.cpp
+@@ -210,5 +210,3 @@ void EmoticonMimeTypeHandler::handleURL( const KUrl &url ) const
+ 
+ 
+ } // END namespace Kopete
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetemimetypehandler.h b/libkopete/kopetemimetypehandler.h
+index c092022cbf7a96b3b9a23facdff9d95f4930f7d4..67fe9dec842ad933a1fc7f82d5123118217d048c 100644
+--- a/libkopete/kopetemimetypehandler.h
++++ b/libkopete/kopetemimetypehandler.h
+@@ -130,4 +130,3 @@ public:
+ } // Kopete
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopeteonlinestatus.cpp b/libkopete/kopeteonlinestatus.cpp
+index 494d8ba6126432dbfe58d7aa99b1cf4fb7a78b71..f65c96fd4441609e136700e8031d0781fbeac8f5 100644
+--- a/libkopete/kopeteonlinestatus.cpp
++++ b/libkopete/kopeteonlinestatus.cpp
+@@ -378,5 +378,3 @@ OnlineStatus::StatusType OnlineStatus::statusStringToType(const QString& string)
+ 
+ 	return OnlineStatus::Unknown;
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopeteonlinestatusmanager.cpp b/libkopete/kopeteonlinestatusmanager.cpp
+index 73018c0cf11eafb7479c73cfc22baf771857c9c5..815fcf612348074c05a3b9a7b55a3e626fb58518 100644
+--- a/libkopete/kopeteonlinestatusmanager.cpp
++++ b/libkopete/kopeteonlinestatusmanager.cpp
+@@ -433,6 +433,3 @@ KIcon OnlineStatusManager::pixmapForCategory( Categories category )
+ } //END namespace Kopete
+ 
+ #include "kopeteonlinestatusmanager.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopeteonlinestatusmanager.h b/libkopete/kopeteonlinestatusmanager.h
+index ccc83ae1b358e61380d53a9565db4ff95ccc6561..7ffdf38cc8a7c85634232310db7b046d5f518ea1 100644
+--- a/libkopete/kopeteonlinestatusmanager.h
++++ b/libkopete/kopeteonlinestatusmanager.h
+@@ -153,6 +153,3 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(OnlineStatusManager::Options)
+ }  //END namespace Kopete
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetepassword.cpp b/libkopete/kopetepassword.cpp
+index deb800e85ca45a9d92288008ed9f5b05936f4749..715b173a33bf737544cc31bef30c280de91dd2cf 100644
+--- a/libkopete/kopetepassword.cpp
++++ b/libkopete/kopetepassword.cpp
+@@ -457,5 +457,3 @@ bool Kopete::Password::remembered()
+ }
+ 
+ #include "kopetepassword.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetepassword.h b/libkopete/kopetepassword.h
+index 1e3aed5b031efd495905aec2de935983f34a8b24..e4d3c398a662c53ea8ec200b7f390738abd3eaa8 100644
+--- a/libkopete/kopetepassword.h
++++ b/libkopete/kopetepassword.h
+@@ -199,5 +199,3 @@ public slots:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetepasswordedaccount.cpp b/libkopete/kopetepasswordedaccount.cpp
+index 0992093e784b44d04e3cb4ae6f3fce83f2c3247b..c57ecd4864662bdca78e5c7119a8a5045f018546 100644
+--- a/libkopete/kopetepasswordedaccount.cpp
++++ b/libkopete/kopetepasswordedaccount.cpp
+@@ -99,5 +99,3 @@ void Kopete::PasswordedAccount::disconnected( Kopete::Account::DisconnectReason
+ 
+ 
+ #include "kopetepasswordedaccount.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetepasswordedaccount.h b/libkopete/kopetepasswordedaccount.h
+index df2b55d2239edefe33ed30c0c910e4cc553f8685..22d81bdd93198939e3a64f01dbf0771aa59a5533 100644
+--- a/libkopete/kopetepasswordedaccount.h
++++ b/libkopete/kopetepasswordedaccount.h
+@@ -115,5 +115,3 @@ private:
+ }
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetepluginmanager.h b/libkopete/kopetepluginmanager.h
+index 16d02b2fcd83a76729ccef170959e2720f4aa65d..685a1c07ea40af9e23785279dd0feeefa063138d 100644
+--- a/libkopete/kopetepluginmanager.h
++++ b/libkopete/kopetepluginmanager.h
+@@ -247,5 +247,3 @@ private:
+ }
+ 
+ #endif // KOPETEPLUGINMANAGER_H
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetesimplemessagehandler.cpp b/libkopete/kopetesimplemessagehandler.cpp
+index 7ed8ce7c1776fa9933cd07d61774c4e4c5b9c739..38629f6637d331f6df923f345c2d426e5730bdaf 100644
+--- a/libkopete/kopetesimplemessagehandler.cpp
++++ b/libkopete/kopetesimplemessagehandler.cpp
+@@ -97,5 +97,3 @@ void SimpleMessageHandler::handleMessage( MessageEvent *event )
+ }
+ 
+ #include "kopetesimplemessagehandler.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetesimplemessagehandler.h b/libkopete/kopetesimplemessagehandler.h
+index fac1d82eed89636130e44d6040139f9f2ef81b8e..7cd5da337b0b3a8ed54bf7263f2b32b77dc8e1e2 100644
+--- a/libkopete/kopetesimplemessagehandler.h
++++ b/libkopete/kopetesimplemessagehandler.h
+@@ -86,5 +86,3 @@ private:
+ }
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopetetransfermanager.h b/libkopete/kopetetransfermanager.h
+index 5acd5f7a3276850862209e2522ecdbe5908394ab..29e20ad5f013786275879ed9ef01fbd5e28bae6c 100644
+--- a/libkopete/kopetetransfermanager.h
++++ b/libkopete/kopetetransfermanager.h
+@@ -279,4 +279,3 @@ private slots:
+ }
+ 
+ #endif // KOPETETRANSFERMANAGER_H
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/kopeteuiglobal.cpp b/libkopete/kopeteuiglobal.cpp
+index dd450338c02b58c879c9e0c81aebfb93a5f72a69..de9510b6f3e6c2099c54c91d7f677718590ccfcb 100644
+--- a/libkopete/kopeteuiglobal.cpp
++++ b/libkopete/kopeteuiglobal.cpp
+@@ -39,6 +39,3 @@ QWidget *UI::Global::mainWidget()
+ 	return g_mainWidget;
+ }
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopeteuiglobal.h b/libkopete/kopeteuiglobal.h
+index 93caa9c8052ec94145b67fd5e2410db6c5ced271..5bc4ddce85541aa87cd485910c97e369b9122b5c 100644
+--- a/libkopete/kopeteuiglobal.h
++++ b/libkopete/kopeteuiglobal.h
+@@ -49,6 +49,3 @@ namespace Global
+ }
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetewalletmanager.cpp b/libkopete/kopetewalletmanager.cpp
+index 28c3102c6b6b09c26cb85c1816ed492fe7276067..b89cb841c5a4dc4c270f48846e0a7c6d5d776122 100644
+--- a/libkopete/kopetewalletmanager.cpp
++++ b/libkopete/kopetewalletmanager.cpp
+@@ -189,6 +189,3 @@ void Kopete::WalletManager::emitWalletOpened( KWallet::Wallet *wallet )
+ 
+ 
+ #include "kopetewalletmanager.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/kopetewalletmanager.h b/libkopete/kopetewalletmanager.h
+index bd5347d406bd776f8f686bd61dc2d9bcebe6aecd..110a287a40e6296570023aa710b1fd79acbaa019 100644
+--- a/libkopete/kopetewalletmanager.h
++++ b/libkopete/kopetewalletmanager.h
+@@ -111,6 +111,3 @@ signals:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/private/kopeteemoticons.cpp b/libkopete/private/kopeteemoticons.cpp
+index 6adbb6c9942c58e113820d21d334dcd3c8cb3e2e..9dcb1e2452c0cc0f206fbf45b499df554d649aee 100644
+--- a/libkopete/private/kopeteemoticons.cpp
++++ b/libkopete/private/kopeteemoticons.cpp
+@@ -64,5 +64,3 @@ QList<KEmoticonsTheme::Token> Emoticons::tokenize(const QString &message, KEmoti
+ }
+ 
+ } //END namesapce Kopete
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/private/kopeteemoticons.h b/libkopete/private/kopeteemoticons.h
+index e20e0708db3c0f1c286cc0dbea64ed4130d4dc35..c19394c3e64e66703e067090b134704a9b31da5a 100644
+--- a/libkopete/private/kopeteemoticons.h
++++ b/libkopete/private/kopeteemoticons.h
+@@ -43,4 +43,3 @@ public:
+ } //END namespace Kopete
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/private/kopeteviewmanager.cpp b/libkopete/private/kopeteviewmanager.cpp
+index b062cc8629bd2ee2caa050bf6b483aab64df071d..a4e62be7c2bdb965b0c6a3e721d61e06c68eb72f 100644
+--- a/libkopete/private/kopeteviewmanager.cpp
++++ b/libkopete/private/kopeteviewmanager.cpp
+@@ -587,6 +587,3 @@ QList<Kopete::MessageEvent*> KopeteViewManager::pendingMessages( Kopete::Contact
+ }
+ 
+ #include "kopeteviewmanager.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/tests/kopetemessage_test.cpp b/libkopete/tests/kopetemessage_test.cpp
+index 4c07dfbc2ff94e9e67f5c4729bb3c1e43763c09d..5cd37a1340345e208ffd29a111cb54af38e3bedc 100644
+--- a/libkopete/tests/kopetemessage_test.cpp
++++ b/libkopete/tests/kopetemessage_test.cpp
+@@ -287,5 +287,3 @@ void KopeteMessage_Test::testLinkParser()
+ 		}
+ 	}
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/tests/kopetepasswordtest_program.cpp b/libkopete/tests/kopetepasswordtest_program.cpp
+index 0721936438609a61d26b4c3a6819a9ea63bbc968..0d222019a6d17ed52e2645aad98e9ea15e9a17ff 100644
+--- a/libkopete/tests/kopetepasswordtest_program.cpp
++++ b/libkopete/tests/kopetepasswordtest_program.cpp
+@@ -125,5 +125,3 @@ int main( int argc, char *argv[] )
+ }
+ 
+ #include "kopetepasswordtest_program.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/tests/kopetewallettest_program.cpp b/libkopete/tests/kopetewallettest_program.cpp
+index 3dcbaac0ca41d5b5b72359299c103cea2b6a4a8b..bec6dd656e49c4f9070ead5272f36916e5850ed6 100644
+--- a/libkopete/tests/kopetewallettest_program.cpp
++++ b/libkopete/tests/kopetewallettest_program.cpp
+@@ -96,5 +96,3 @@ int main( int argc, char *argv[] )
+ }
+ 
+ #include "kopetewallettest_program.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/accountselector.cpp b/libkopete/ui/accountselector.cpp
+index e6d5ee5f788cbc7606be25d8a9e3aff9b4866468..8e7cf9194f4d6664014117e80f04356bca03f810 100644
+--- a/libkopete/ui/accountselector.cpp
++++ b/libkopete/ui/accountselector.cpp
+@@ -170,4 +170,3 @@ void AccountSelector::slotSelectionChanged(Q3ListViewItem *item)
+ }
+ 
+ #include "accountselector.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/accountselector.h b/libkopete/ui/accountselector.h
+index ff42a881f9151fe3b4db175577807fa191351467..80446c073c66c759d59552da5cdf3d31ded1e8e1 100644
+--- a/libkopete/ui/accountselector.h
++++ b/libkopete/ui/accountselector.h
+@@ -89,4 +89,3 @@ Q_OBJECT
+ };
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/addcontactpage.cpp b/libkopete/ui/addcontactpage.cpp
+index e49ab1af8374e97ffc9b5cf580603959cc8e12cf..5a0716a6176a21002285560f68125fbe171a924d 100644
+--- a/libkopete/ui/addcontactpage.cpp
++++ b/libkopete/ui/addcontactpage.cpp
+@@ -26,4 +26,3 @@ AddContactPage::~AddContactPage()
+ }
+ 
+ #include "addcontactpage.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/addcontactpage.h b/libkopete/ui/addcontactpage.h
+index 516309c83dff97374d6eff1deed64057004c8236..88d5b0d358cbf67e361ed27998bab64e9233d305 100644
+--- a/libkopete/ui/addcontactpage.h
++++ b/libkopete/ui/addcontactpage.h
+@@ -63,4 +63,3 @@ signals:
+ };
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/addressbookselectordialog.cpp b/libkopete/ui/addressbookselectordialog.cpp
+index afd2f3a6623fbd3f2612eb2f7bb3922a1185d405..a545c8b5f2614b17bfccaac9d108e08f5b3e19ef 100644
+--- a/libkopete/ui/addressbookselectordialog.cpp
++++ b/libkopete/ui/addressbookselectordialog.cpp
+@@ -90,6 +90,3 @@ void AddressBookSelectorDialog::reject()
+ } // namespace Kopete
+ 
+ #include "addressbookselectordialog.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/ui/addressbookselectordialog.h b/libkopete/ui/addressbookselectordialog.h
+index 0586a7a39d31688362199a626d19fed33d8e737d..7fb402ce8290906185e39ec30d8c8cad278d7b30 100644
+--- a/libkopete/ui/addressbookselectordialog.h
++++ b/libkopete/ui/addressbookselectordialog.h
+@@ -89,6 +89,3 @@ protected:
+ } // namespace Kopete
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/ui/addressbookselectorwidget.cpp b/libkopete/ui/addressbookselectorwidget.cpp
+index d1686ed855a94ee5a01db8a4ed0c04d573cd5be4..90558bf66dd797be608a7f135fada03668e14154 100644
+--- a/libkopete/ui/addressbookselectorwidget.cpp
++++ b/libkopete/ui/addressbookselectorwidget.cpp
+@@ -168,6 +168,3 @@ void AddressBookSelectorWidget::slotAddAddresseeClicked()
+ } // namespace Kopete
+ 
+ #include "addressbookselectorwidget.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/ui/addressbookselectorwidget.h b/libkopete/ui/addressbookselectorwidget.h
+index a565d5593b8478eb50f1e46a1603cc930a3b4fde..0f8aeffdb1b3c799c508094830d76d4df645b009 100644
+--- a/libkopete/ui/addressbookselectorwidget.h
++++ b/libkopete/ui/addressbookselectorwidget.h
+@@ -85,5 +85,3 @@ signals:
+ } // namespace Kopete
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/editaccountwidget.cpp b/libkopete/ui/editaccountwidget.cpp
+index 0c8b7b8ce65b9f30140de3473c69d7663501ab2d..0b11686a1fe10c8ea03ebfe8f76301baeb773360 100644
+--- a/libkopete/ui/editaccountwidget.cpp
++++ b/libkopete/ui/editaccountwidget.cpp
+@@ -44,6 +44,3 @@ void KopeteEditAccountWidget::setAccount( Kopete::Account *account )
+ {
+ 	d->account = account;
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/ui/editaccountwidget.h b/libkopete/ui/editaccountwidget.h
+index 2ac6fe31866caa3a09a3916b5d6e4e41f26133d0..cbe2a6749fd6c0b6bcccc53db38e6c38b303799f 100644
+--- a/libkopete/ui/editaccountwidget.h
++++ b/libkopete/ui/editaccountwidget.h
+@@ -98,7 +98,5 @@ private:
+ 	KopeteEditAccountWidgetPrivate *d;
+ };
+ 
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+ #endif
+ 
+diff --git a/libkopete/ui/kopetecontactaction.cpp b/libkopete/ui/kopetecontactaction.cpp
+index 34e919b6b7072f853ea2aa8b80ad10d86e3a3c68..f0508417d463b546c08835ccbe69789d3239324b 100644
+--- a/libkopete/ui/kopetecontactaction.cpp
++++ b/libkopete/ui/kopetecontactaction.cpp
+@@ -50,5 +50,3 @@ void ContactAction::slotTriggered( bool checked )
+ }
+ }
+ #include "kopetecontactaction.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/kopetecontactaction.h b/libkopete/ui/kopetecontactaction.h
+index 6cfb806690a0776625e12d3824bddb8477076394..5b2997343b793c4b4b1f3a7c6abe92d9866c684f 100644
+--- a/libkopete/ui/kopetecontactaction.h
++++ b/libkopete/ui/kopetecontactaction.h
+@@ -72,6 +72,3 @@ private:
+ 
+ }
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; auto-insert-doxygen on; indent-mode cstyle;
+-
+diff --git a/libkopete/ui/kopeteinfodialog.h b/libkopete/ui/kopeteinfodialog.h
+index aea4fdcc76f4c584fbc2573bcdb4f843bc15ab76..e03bde93d4d90fbdc1b4a11b04e41e6fa832b194 100644
+--- a/libkopete/ui/kopeteinfodialog.h
++++ b/libkopete/ui/kopeteinfodialog.h
+@@ -84,4 +84,3 @@ private:
+ } // namespace UI
+ } // namespace Kopete
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/kopetelistview.cpp b/libkopete/ui/kopetelistview.cpp
+index 420347c1b73bcf983ab5874ded9ff25c4755880b..224fb50564c1a0144d90224ebe6afaf17505abc6 100644
+--- a/libkopete/ui/kopetelistview.cpp
++++ b/libkopete/ui/kopetelistview.cpp
+@@ -721,5 +721,3 @@ void ListView::slotCurrentChanged( Q3ListViewItem *item )
+ } // END namespace Kopete
+ 
+ #include "kopetelistview.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/kopetelistview.h b/libkopete/ui/kopetelistview.h
+index 53817bdcfc3a19e359bda22577c7ad09e2be3cdd..1c7bd139e5dec83fe514f93a6fe52a693231404b 100644
+--- a/libkopete/ui/kopetelistview.h
++++ b/libkopete/ui/kopetelistview.h
+@@ -173,5 +173,3 @@ private:
+ } // END namespace Kopete
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/kopetelistviewitem.cpp b/libkopete/ui/kopetelistviewitem.cpp
+index 608fd9a6c1933ee7f6f51c56bc1e7a1d4c15ebfb..d39aeaf4a8a8a995cda0767990351999d3065c1c 100644
+--- a/libkopete/ui/kopetelistviewitem.cpp
++++ b/libkopete/ui/kopetelistviewitem.cpp
+@@ -1323,5 +1323,3 @@ void Item::mySetVisible ( bool b )
+ } // END namespace Kopete
+ 
+ #include "kopetelistviewitem.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/kopetelistviewitem.h b/libkopete/ui/kopetelistviewitem.h
+index fdcdbc181668ff8a4411d4a3ca722a2618a0d77b..dc7f907c5b650f03b4903296e3192dd239365890 100644
+--- a/libkopete/ui/kopetelistviewitem.h
++++ b/libkopete/ui/kopetelistviewitem.h
+@@ -463,5 +463,3 @@ private:
+ } // END namespace Kopete
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/kopetepasswordwidget.cpp b/libkopete/ui/kopetepasswordwidget.cpp
+index 42f7539e8f9aeb82f276e0aeac3a08fb589c15b0..f577b689829268d7641705ac47b6df423d09790f 100644
+--- a/libkopete/ui/kopetepasswordwidget.cpp
++++ b/libkopete/ui/kopetepasswordwidget.cpp
+@@ -167,5 +167,3 @@ void Kopete::UI::PasswordWidget::passwordTextChanged()
+ }
+ 
+ #include "kopetepasswordwidget.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/kopetepasswordwidget.h b/libkopete/ui/kopetepasswordwidget.h
+index 229fb22a7a8081b9eb68e511f7669cc40fa8c48d..484309cffdd03ba3ed3463c9fa6cf6bee8839c0c 100644
+--- a/libkopete/ui/kopetepasswordwidget.h
++++ b/libkopete/ui/kopetepasswordwidget.h
+@@ -116,6 +116,3 @@ private:
+ }
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/ui/kopetestdaction.cpp b/libkopete/ui/kopetestdaction.cpp
+index 596219b85e13d223148de4738840d4630dff38c5..a93692d918f728f7c973221d4579edce78640a54 100644
+--- a/libkopete/ui/kopetestdaction.cpp
++++ b/libkopete/ui/kopetestdaction.cpp
+@@ -142,6 +142,3 @@ KAction * KopeteStdAction::unblockContact( const QObject *recvr, const char *slo
+ }
+ 
+ #include "kopetestdaction.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/ui/kopetestdaction.h b/libkopete/ui/kopetestdaction.h
+index 4b24503f36fdb88aeeff8e93c0b3a9bc803170ab..bbe4614ebd584ce780da40b84144738aef95d076 100644
+--- a/libkopete/ui/kopetestdaction.h
++++ b/libkopete/ui/kopetestdaction.h
+@@ -117,4 +117,3 @@ class KOPETE_EXPORT KopetePreferencesAction : public KAction
+ };
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/libkopete/ui/metacontactselectorwidget.cpp b/libkopete/ui/metacontactselectorwidget.cpp
+index 6a45cf2ac9f6d904e7f7363d2fb7e7306f0c6c3a..c2d8521b9c76aee0854c9ea27124b6f8baa40409 100644
+--- a/libkopete/ui/metacontactselectorwidget.cpp
++++ b/libkopete/ui/metacontactselectorwidget.cpp
+@@ -302,6 +302,3 @@ void MetaContactSelectorWidget::setLabelMessage( const QString &msg )
+ } // namespace Kopete
+ 
+ #include "metacontactselectorwidget.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/libkopete/ui/metacontactselectorwidget.h b/libkopete/ui/metacontactselectorwidget.h
+index 6ca3b6e501e0d49531a3de5db438424db6f3fbc7..1086eaeb232605a5879709f2889ae0e1d746b3b0 100644
+--- a/libkopete/ui/metacontactselectorwidget.h
++++ b/libkopete/ui/metacontactselectorwidget.h
+@@ -99,6 +99,3 @@ private:
+ } // namespace Kopete
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/alias/aliaspreferences.h b/plugins/alias/aliaspreferences.h
+index 3e8839270acc97c5dfe1edfdf91f948985130bdb..c3179e53910dead14bc13c4064955b5c9ebfd0b6 100644
+--- a/plugins/alias/aliaspreferences.h
++++ b/plugins/alias/aliaspreferences.h
+@@ -58,6 +58,3 @@ class AliasPreferences : public KCModule
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/autoreplace/autoreplaceconfig.cpp b/plugins/autoreplace/autoreplaceconfig.cpp
+index 860230d8c7f69569a227f039ec83a8012931bdb1..b6cf0ca8fdaccd70e5723a03276fa4d2509063b9 100644
+--- a/plugins/autoreplace/autoreplaceconfig.cpp
++++ b/plugins/autoreplace/autoreplaceconfig.cpp
+@@ -154,6 +154,3 @@ void AutoReplaceConfig::save()
+ 
+ 	config.sync();
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/autoreplace/autoreplaceconfig.h b/plugins/autoreplace/autoreplaceconfig.h
+index 718e7dfbd92fce5c5a03813cf0719bf17f729fb5..57af65693f0903ffdd6fd28a264855e167dfd95c 100644
+--- a/plugins/autoreplace/autoreplaceconfig.h
++++ b/plugins/autoreplace/autoreplaceconfig.h
+@@ -58,6 +58,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/autoreplace/autoreplaceplugin.cpp b/plugins/autoreplace/autoreplaceplugin.cpp
+index 0dcd01ca5717ffc7ed51e1c9c01e09c7523725ef..0b4802c207e046c64acc2265ed6828e20f4e66cc 100644
+--- a/plugins/autoreplace/autoreplaceplugin.cpp
++++ b/plugins/autoreplace/autoreplaceplugin.cpp
+@@ -116,6 +116,3 @@ void AutoReplacePlugin::slotInterceptMessage( Kopete::Message &msg )
+ }
+ 
+ #include "autoreplaceplugin.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/autoreplace/autoreplaceplugin.h b/plugins/autoreplace/autoreplaceplugin.h
+index 46ca62a5f54c2319423507bb2842d9af20c0f40f..93e48ee7fb2e26264013e8bfbd1f6cca9b86d69d 100644
+--- a/plugins/autoreplace/autoreplaceplugin.h
++++ b/plugins/autoreplace/autoreplaceplugin.h
+@@ -59,6 +59,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/autoreplace/autoreplacepreferences.cpp b/plugins/autoreplace/autoreplacepreferences.cpp
+index dab6645f0552e6066ae8da09a35654d7dbaca8db..f899739b3b21e5194a21874fddfc38dd67dc03e0 100644
+--- a/plugins/autoreplace/autoreplacepreferences.cpp
++++ b/plugins/autoreplace/autoreplacepreferences.cpp
+@@ -223,6 +223,3 @@ void AutoReplacePreferences::defaults()
+ }
+ 
+ #include "autoreplacepreferences.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/autoreplace/autoreplacepreferences.h b/plugins/autoreplace/autoreplacepreferences.h
+index 89fc1d3c61badb7c1ab703c6e39890a549a8bea8..4c57db6c94e066a68d87a11e2178e72830354126 100644
+--- a/plugins/autoreplace/autoreplacepreferences.h
++++ b/plugins/autoreplace/autoreplacepreferences.h
+@@ -57,6 +57,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/cryptography/cryptographymessagehandler.cpp b/plugins/cryptography/cryptographymessagehandler.cpp
+index cbff0b00c599fa9b1d0e4eabf3189b60bb4d11f4..75bbe586e5b14aa718f981e1451317ce0f074ccd 100644
+--- a/plugins/cryptography/cryptographymessagehandler.cpp
++++ b/plugins/cryptography/cryptographymessagehandler.cpp
+@@ -86,5 +86,3 @@ void CryptographyMessageHandler::handleMessage( MessageEvent *e )
+ }
+ 
+ #include "cryptographymessagehandler.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/cryptography/cryptographymessagehandler.h b/plugins/cryptography/cryptographymessagehandler.h
+index c409de77eca17fed972be79e5cffeb4f767ca366..de9e0638d47341e6fb5fc6cd4c8fcf3593a82d26 100644
+--- a/plugins/cryptography/cryptographymessagehandler.h
++++ b/plugins/cryptography/cryptographymessagehandler.h
+@@ -55,5 +55,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/cryptography/cryptographyplugin.cpp b/plugins/cryptography/cryptographyplugin.cpp
+index 9c8790835e5dd040d01633ae47bd3d6de4a1ba4c..cd2d366d5e6d3d3026ee7ed45635ff2ed0bd9eb4 100644
+--- a/plugins/cryptography/cryptographyplugin.cpp
++++ b/plugins/cryptography/cryptographyplugin.cpp
+@@ -455,6 +455,3 @@ void CryptographyPlugin::slotExportSelectedMetaContactKeys()
+ }
+ 
+ #include "cryptographyplugin.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/cryptography/cryptographyplugin.h b/plugins/cryptography/cryptographyplugin.h
+index 1df2047086a9a72286eb339040bc6236035d4b53..8e1f941a87ddeb330640a26a98c942d8ef888518 100644
+--- a/plugins/cryptography/cryptographyplugin.h
++++ b/plugins/cryptography/cryptographyplugin.h
+@@ -128,13 +128,3 @@ class CryptographyPlugin : public Kopete::Plugin
+ };
+ 
+ #endif
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/cryptography/cryptographypreferences.cpp b/plugins/cryptography/cryptographypreferences.cpp
+index 31d47da5fa731ffdb368219f3235cc309bf92c6f..2857ea5cf9aa7b688a35eca49d468f049b22bd00 100644
+--- a/plugins/cryptography/cryptographypreferences.cpp
++++ b/plugins/cryptography/cryptographypreferences.cpp
+@@ -101,6 +101,3 @@ void CryptographyPreferences::defaults()
+ 	load();
+ 	changed();
+ }
+-
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/cryptography/cryptographypreferences.h b/plugins/cryptography/cryptographypreferences.h
+index 73653aa67e55f997620b3d7db674e8dcac568dcd..6ff77ac7421ad84d705da68ffac85982b4e59dc3 100644
+--- a/plugins/cryptography/cryptographypreferences.h
++++ b/plugins/cryptography/cryptographypreferences.h
+@@ -51,5 +51,3 @@ class CryptographyPreferences : public KCModule
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/highlight/highlightconfig.cpp b/plugins/highlight/highlightconfig.cpp
+index 7ea46051dc7920cef287b6ce6677f6c46cacf8d0..f517d11a0f7bdceaac920faf82a7a44011604547 100644
+--- a/plugins/highlight/highlightconfig.cpp
++++ b/plugins/highlight/highlightconfig.cpp
+@@ -192,5 +192,3 @@ void HighlightConfig::save()
+ 		stream << xml;
+ 	}
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/highlight/highlightconfig.h b/plugins/highlight/highlightconfig.h
+index b21d98e297e0fe41bf499e7ec49e2cb78b85add8..81e676014ccc2dc3cde1f8999cf6f224214bc091 100644
+--- a/plugins/highlight/highlightconfig.h
++++ b/plugins/highlight/highlightconfig.h
+@@ -41,5 +41,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/highlight/highlightplugin.cpp b/plugins/highlight/highlightplugin.cpp
+index 7d42e5156f3fb67356abd7036b819caf39734180..9fe170dfce69337a7567c43a3542ca51000c9f1a 100644
+--- a/plugins/highlight/highlightplugin.cpp
++++ b/plugins/highlight/highlightplugin.cpp
+@@ -90,6 +90,3 @@ void HighlightPlugin::slotSettingsChanged()
+ 
+ 
+ #include "highlightplugin.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/highlight/highlightpreferences.cpp b/plugins/highlight/highlightpreferences.cpp
+index 1cb176ff9b0d7b294f69328fbf2879956b7d684c..f4c7815669221019946804ebbe38040f893a7e3d 100644
+--- a/plugins/highlight/highlightpreferences.cpp
++++ b/plugins/highlight/highlightpreferences.cpp
+@@ -288,7 +288,3 @@ void HighlightPreferences::slotConfigureNotifications()
+ 
+ 
+ #include "highlightpreferences.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+-
+diff --git a/plugins/latex/latexguiclient.cpp b/plugins/latex/latexguiclient.cpp
+index 1d1ae32e9686f5eae713f735d664dcedfe6817c9..96220e9ab22b9fa6027c68b95262b9afe8e971bd 100644
+--- a/plugins/latex/latexguiclient.cpp
++++ b/plugins/latex/latexguiclient.cpp
+@@ -76,6 +76,3 @@ void LatexGUIClient::slotPreview()
+ 
+ 
+ #include "latexguiclient.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/latex/latexplugin.cpp b/plugins/latex/latexplugin.cpp
+index e52161dac5d0f70ce8e8d0fe271db5290045a314..7e809e0f328fd8df2f939a0c0a0fcf233bbe063b 100644
+--- a/plugins/latex/latexplugin.cpp
++++ b/plugins/latex/latexplugin.cpp
+@@ -258,6 +258,3 @@ bool LatexPlugin::securityCheck(const QString &latexFormula)
+ }
+ 
+ #include "latexplugin.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/latex/latexpreferences.cpp b/plugins/latex/latexpreferences.cpp
+index 739fec3623f10852feea674173f30fb858022851..df220161463b39be350fc22aac1b9de7f2dc9812 100644
+--- a/plugins/latex/latexpreferences.cpp
++++ b/plugins/latex/latexpreferences.cpp
+@@ -93,5 +93,3 @@ void LatexPreferences::defaults()
+ }
+ 
+ #include "latexpreferences.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nlkscd.cpp b/plugins/nowlistening/nlkscd.cpp
+index 5993208aa9ae2e4b24e16539f50415ea7ea4ed46..987bb1cfc441f8e550536f875ad217d7b6a1ee75 100644
+--- a/plugins/nowlistening/nlkscd.cpp
++++ b/plugins/nowlistening/nlkscd.cpp
+@@ -98,5 +98,3 @@ void NLKscd::update()
+ //	else
+ //		kDebug( 14307 ) << "NLKscd::update() - kscd not found";
+ }
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nlkscd.h b/plugins/nowlistening/nlkscd.h
+index 2ea56f97a626cf7521ea409f0bf9899bb64bb5b0..c0d75d4fd70c4cb04f2225dbc5d0f9a0995b1846 100644
+--- a/plugins/nowlistening/nlkscd.h
++++ b/plugins/nowlistening/nlkscd.h
+@@ -41,5 +41,3 @@ class NLKscd : public NLMediaPlayer
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nlmediaplayer.h b/plugins/nowlistening/nlmediaplayer.h
+index 85fe005a4b2f5bb269c4177d99ee762caa610510..8b7db004fed26742c01e50d628613e387254c6d2 100644
+--- a/plugins/nowlistening/nlmediaplayer.h
++++ b/plugins/nowlistening/nlmediaplayer.h
+@@ -57,4 +57,3 @@ class NLMediaPlayer
+ };
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nlquodlibet.cpp b/plugins/nowlistening/nlquodlibet.cpp
+index f26ae6c182592c1ca2543a8fd8e2371fc3cb9d4b..8ee372a9d1f5312fdd9a8196a8b0b8e962b9fb52 100644
+--- a/plugins/nowlistening/nlquodlibet.cpp
++++ b/plugins/nowlistening/nlquodlibet.cpp
+@@ -129,5 +129,3 @@ void NLQuodLibet::fileChanged( const QString & file )
+ }
+ 
+ #include "nlquodlibet.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nlquodlibet.h b/plugins/nowlistening/nlquodlibet.h
+index 9df0363372bbb0f45c90c5cc849bff3da6d9783c..cefb0eb5c7350bd7e2063b3e6ba5ad357a4bdc42 100644
+--- a/plugins/nowlistening/nlquodlibet.h
++++ b/plugins/nowlistening/nlquodlibet.h
+@@ -51,5 +51,3 @@ Q_OBJECT
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nlxmms.cpp b/plugins/nowlistening/nlxmms.cpp
+index cb6b2855a9fef796f574a974ce744ad11837221a..64526a1a1323eb03e0f1316b3a387c290f708425 100644
+--- a/plugins/nowlistening/nlxmms.cpp
++++ b/plugins/nowlistening/nlxmms.cpp
+@@ -68,5 +68,4 @@ void NLXmms::update()
+ 		kDebug( 14307 ) << " - xmms not found";
+ }
+ 
+-#endif 
+-// vim: set noet ts=4 sts=4 sw=4:
++#endif
+diff --git a/plugins/nowlistening/nlxmms.h b/plugins/nowlistening/nlxmms.h
+index e157afa5e7d70d3b1e282d2f960c295f1927a90d..a7ad79a5fb06369acbcf379db207c1b417e87c26 100644
+--- a/plugins/nowlistening/nlxmms.h
++++ b/plugins/nowlistening/nlxmms.h
+@@ -38,5 +38,3 @@ class NLXmms : public NLMediaPlayer
+ #endif
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nowlisteningguiclient.cpp b/plugins/nowlistening/nowlisteningguiclient.cpp
+index bceb0c5538999703401327e8e0aa96bbc9080a08..092ba353042c6de9e52d98c399d2e161b3cdc237 100644
+--- a/plugins/nowlistening/nowlisteningguiclient.cpp
++++ b/plugins/nowlistening/nowlisteningguiclient.cpp
+@@ -80,5 +80,3 @@ void NowListeningGUIClient::slotPluginUnloaded()
+ }
+ 
+ #include "nowlisteningguiclient.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nowlisteningguiclient.h b/plugins/nowlistening/nowlisteningguiclient.h
+index e44d26a500ce843a38eb83b7d6213e55717e718b..888e5f0bf5a84537e0bcc82cf98291506d6bb5af 100644
+--- a/plugins/nowlistening/nowlisteningguiclient.h
++++ b/plugins/nowlistening/nowlisteningguiclient.h
+@@ -49,5 +49,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nowlisteningplugin.cpp b/plugins/nowlistening/nowlisteningplugin.cpp
+index 4bb56b63628fb2729c745d7e48797c95dd098178..d06201200a446dfbe93bbc294763fab2a683c980 100644
+--- a/plugins/nowlistening/nowlisteningplugin.cpp
++++ b/plugins/nowlistening/nowlisteningplugin.cpp
+@@ -539,5 +539,3 @@ void NowListeningPlugin::slotSettingsChanged()
+ NowListeningPlugin* NowListeningPlugin::pluginStatic_ = 0L;
+ 
+ #include "nowlisteningplugin.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nowlisteningplugin.h b/plugins/nowlistening/nowlisteningplugin.h
+index a39f80a1110bc27e61764877be0e1554098454f5..bc059274ee6c48a2b4d57879bea9adffb42abad9 100644
+--- a/plugins/nowlistening/nowlisteningplugin.h
++++ b/plugins/nowlistening/nowlisteningplugin.h
+@@ -106,5 +106,3 @@ friend class NowListeningGUIClient;
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/nowlistening/nowlisteningpreferences.cpp b/plugins/nowlistening/nowlisteningpreferences.cpp
+index 7e7d44f7d5a4d65823a57580379a8faa02ce36ca..1efb92e88f7aef7f67bcf95ddc50e5970f209f59 100644
+--- a/plugins/nowlistening/nowlisteningpreferences.cpp
++++ b/plugins/nowlistening/nowlisteningpreferences.cpp
+@@ -90,13 +90,3 @@ void NowListeningPreferences::defaults()
+ 	preferencesDialog->m_conjunction->setText( i18n(", and "));
+ 	preferencesDialog->m_autoAdvertising->setChecked( false );*/
+ }
+-
+-/*
+-* Local variables:
+-* c-indentation-style: k&r
+-* c-basic-offset: 8
+-* indent-tabs-mode: t
+-* End:
+-*/
+-// vim: set noet ts=4 sts=4 sw=4:
+-//
+diff --git a/plugins/nowlistening/nowlisteningpreferences.h b/plugins/nowlistening/nowlisteningpreferences.h
+index e6fba5937be2a334769c120b2a2c5ce649cde28e..134070d1b1b9566684ef7620e4bbfc6f3eb10322 100644
+--- a/plugins/nowlistening/nowlisteningpreferences.h
++++ b/plugins/nowlistening/nowlisteningpreferences.h
+@@ -49,12 +49,3 @@ private:
+ };
+ 
+ #endif
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/otr/otrguiclient.cpp b/plugins/otr/otrguiclient.cpp
+index 605f388cdefadb22ca38145d8cd0911d3eefec8d..dccea8aee3f99f55149dbca24e2884270fb6bb6f 100644
+--- a/plugins/otr/otrguiclient.cpp
++++ b/plugins/otr/otrguiclient.cpp
+@@ -142,5 +142,3 @@ void OtrGUIClient::encryptionEnabled(Kopete::ChatSession *session, int state){
+ }
+ 
+ #include "otrguiclient.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/otr/otrplugin.cpp b/plugins/otr/otrplugin.cpp
+index 7fbc0a4b223c8d3dfc9af054cd8ff90473dc5470..a4d4ef36f5b4f9cc3de12c90bbfdc82338a4a0a0 100644
+--- a/plugins/otr/otrplugin.cpp
++++ b/plugins/otr/otrplugin.cpp
+@@ -341,6 +341,3 @@ void OTRPlugin::slotSecuritySate(Kopete::ChatSession *session, int state)
+ }
+ 
+ #include "otrplugin.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/otr/otrpreferences.cpp b/plugins/otr/otrpreferences.cpp
+index 08052d957e696e9223d6ae684d27196cc21b53f9..764d780cb41de7730c6ca0374e31526eadad71f9 100644
+--- a/plugins/otr/otrpreferences.cpp
++++ b/plugins/otr/otrpreferences.cpp
+@@ -199,5 +199,3 @@ void OTRPreferences::forgetFingerprint(){
+ 
+ 
+ #include "otrpreferences.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/privacy/privacymessagehandler.cpp b/plugins/privacy/privacymessagehandler.cpp
+index 1675e9ae9d3560d1dbd2e447472b99584e667251..1ac52d6468d5cbea5ef71f9fd661130ae9728120 100644
+--- a/plugins/privacy/privacymessagehandler.cpp
++++ b/plugins/privacy/privacymessagehandler.cpp
+@@ -84,5 +84,3 @@ void PrivacyMessageHandler::handleMessage( MessageEvent *e )
+ }
+ 
+ #include "privacymessagehandler.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/privacy/privacymessagehandler.h b/plugins/privacy/privacymessagehandler.h
+index 9d90792a7c19647308f20242f4c85eb0b7a317aa..b0098cbf9a6e36fd3844795b2788b5a1fda69162 100644
+--- a/plugins/privacy/privacymessagehandler.h
++++ b/plugins/privacy/privacymessagehandler.h
+@@ -53,5 +53,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/privacy/privacypreferences.h b/plugins/privacy/privacypreferences.h
+index 3bff62e2e11015fa88d79ea3d13f419064c702b3..95cf14aabfcb4b027e0d16702d601f0e5b7b9892 100644
+--- a/plugins/privacy/privacypreferences.h
++++ b/plugins/privacy/privacypreferences.h
+@@ -56,6 +56,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/texteffect/texteffectplugin.h b/plugins/texteffect/texteffectplugin.h
+index 65f68defc4a595ebb9082872835e932f8ae5ec23..aeaad968fb06f7725cb9c07d2e804dbc4a93cb21 100644
+--- a/plugins/texteffect/texteffectplugin.h
++++ b/plugins/texteffect/texteffectplugin.h
+@@ -60,13 +60,3 @@ private:
+ };
+ 
+ #endif
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/translator/translatordialog.h b/plugins/translator/translatordialog.h
+index 06d36ca22b6decd0004d090d89472985eda9ad70..861e15f9988581cf3f4151af798ec6832fd7ad38 100644
+--- a/plugins/translator/translatordialog.h
++++ b/plugins/translator/translatordialog.h
+@@ -46,6 +46,3 @@ private slots: // Public slots
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/translator/translatorguiclient.cpp b/plugins/translator/translatorguiclient.cpp
+index 42ea7db037996899ca53f53ea54e99e0e4210daa..4731bd36229e0454ac9d8ae3aa51d921e4cbb73f 100644
+--- a/plugins/translator/translatorguiclient.cpp
++++ b/plugins/translator/translatorguiclient.cpp
+@@ -101,6 +101,3 @@ void TranslatorGUIClient::messageTranslated( const QVariant &result )
+ }
+ 
+ #include "translatorguiclient.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/translator/translatorguiclient.h b/plugins/translator/translatorguiclient.h
+index ea0e84c2e0ff7450cbfa66bb7b0eecd2070d52d6..4c53e14dc6561374d40bc8f1a81588847f9169c9 100644
+--- a/plugins/translator/translatorguiclient.h
++++ b/plugins/translator/translatorguiclient.h
+@@ -51,13 +51,3 @@ private:
+ };
+ 
+ #endif
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/translator/translatorplugin.cpp b/plugins/translator/translatorplugin.cpp
+index 29ff80eeae62fdb263e119bdec8e884758dce341..2e31402912206f6b8fe0bf052a66c67acf3c4d8a 100644
+--- a/plugins/translator/translatorplugin.cpp
++++ b/plugins/translator/translatorplugin.cpp
+@@ -411,6 +411,3 @@ void TranslatorPlugin::slotSetLanguage()
+ }
+ 
+ #include "translatorplugin.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/plugins/translator/translatorplugin.h b/plugins/translator/translatorplugin.h
+index 1acf96b4e2b75491bc4fa2ecc06f76d996aa1225..734ef920bc8c4fd5e8953c80fad0c17e8639aad3 100644
+--- a/plugins/translator/translatorplugin.h
++++ b/plugins/translator/translatorplugin.h
+@@ -103,5 +103,3 @@ private:
+ };
+ 
+ #endif // TRANSLATORPLUGIN_H
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/webpresence/webpresence_html.xsl b/plugins/webpresence/webpresence_html.xsl
+index f768ccf50b225ecf2aba1688c5e5c2eb96dbee83..c2030ad2b8d99d0fb8f8a8cb2e80ed7b43b53de1 100644
+--- a/plugins/webpresence/webpresence_html.xsl
++++ b/plugins/webpresence/webpresence_html.xsl
+@@ -136,5 +136,3 @@
+ 	</xsl:template>
+ 
+ </xsl:stylesheet>
+-
+-<!-- vim: set ts=4 sts=4 sw=4: -->
+diff --git a/plugins/webpresence/webpresence_html_images.xsl b/plugins/webpresence/webpresence_html_images.xsl
+index 5b7070469b11f2da0caefb3b79a2936a2d3e27ef..04041efbd2dbfa317450f3b8f909d74ca1d81a6a 100644
+--- a/plugins/webpresence/webpresence_html_images.xsl
++++ b/plugins/webpresence/webpresence_html_images.xsl
+@@ -55,5 +55,3 @@
+ 	</xsl:template>
+ 
+ </xsl:stylesheet>
+-
+-<!-- vim: set ts=4 sts=4 sw=4: -->
+diff --git a/plugins/webpresence/webpresence_xhtml.xsl b/plugins/webpresence/webpresence_xhtml.xsl
+index 9d749c14a378a335ef02d2a76e84fa71483d96b4..cd2091453334ead443a960965df9ed1b36f1d8b7 100644
+--- a/plugins/webpresence/webpresence_xhtml.xsl
++++ b/plugins/webpresence/webpresence_xhtml.xsl
+@@ -135,5 +135,3 @@
+ 	</xsl:template>
+ 
+ </xsl:stylesheet>
+-
+-<!-- vim: set ts=4 sts=4 sw=4: -->
+diff --git a/plugins/webpresence/webpresence_xhtml_images.xsl b/plugins/webpresence/webpresence_xhtml_images.xsl
+index 8254a6746865f446c369d0935f98175fdeb17871..f97244570d333eb00aa2cd7937e50849743530a8 100644
+--- a/plugins/webpresence/webpresence_xhtml_images.xsl
++++ b/plugins/webpresence/webpresence_xhtml_images.xsl
+@@ -56,5 +56,3 @@
+ 	</xsl:template>
+ 
+ </xsl:stylesheet>
+-
+-<!-- vim: set ts=4 sts=4 sw=4: -->
+diff --git a/plugins/webpresence/webpresenceplugin.cpp b/plugins/webpresence/webpresenceplugin.cpp
+index 72efd6d2432647a04ecc139f6f7dbac5106c704c..ee4da80c4f9be6cfdcd6ed61e6373be815e8b338 100644
+--- a/plugins/webpresence/webpresenceplugin.cpp
++++ b/plugins/webpresence/webpresenceplugin.cpp
+@@ -460,5 +460,4 @@ void WebPresencePlugin::aboutToUnload()
+ 	emit readyForUnload();
+ }
+ 
+-// vim: set noet ts=4 sts=4 sw=4:
+ #include "webpresenceplugin.moc"
+diff --git a/plugins/webpresence/webpresenceplugin.h b/plugins/webpresence/webpresenceplugin.h
+index 66439c706af52d45ba3bcb50968b4ebd3395f20a..207711bace7ca542910c41547fbdf8236dace32b 100644
+--- a/plugins/webpresence/webpresenceplugin.h
++++ b/plugins/webpresence/webpresenceplugin.h
+@@ -115,5 +115,3 @@ protected:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/webpresence/webpresencepreferences.cpp b/plugins/webpresence/webpresencepreferences.cpp
+index 83f518e3a654299f3f34beb4f98a567d17431083..25c49eff978d1c3a144aa3c6cf2748ac1130db82 100644
+--- a/plugins/webpresence/webpresencepreferences.cpp
++++ b/plugins/webpresence/webpresencepreferences.cpp
+@@ -47,5 +47,3 @@ WebPresencePreferences::~WebPresencePreferences()
+ }
+ 
+ #include "webpresencepreferences.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/plugins/webpresence/webpresencepreferences.h b/plugins/webpresence/webpresencepreferences.h
+index 15aa1259e30befcae35ea15203bcca8089d93f66..4fe4f69525d283efdcf25d88416bff64d5472f64 100644
+--- a/plugins/webpresence/webpresencepreferences.h
++++ b/plugins/webpresence/webpresencepreferences.h
+@@ -39,5 +39,3 @@ private:
+ };
+ 
+ #endif // WEBPRESENCEPREFERENCES_H
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/bonjour/bonjourcontact.cpp b/protocols/bonjour/bonjourcontact.cpp
+index 9230c092adb2753f75a4bcc157baf637361c0ca8..cc7a8a6f0b1c022911cab7158b1c0033c26a1aa9 100644
+--- a/protocols/bonjour/bonjourcontact.cpp
++++ b/protocols/bonjour/bonjourcontact.cpp
+@@ -212,6 +212,3 @@ void BonjourContact::connectionDisconnected(BonjourContactConnection *c)
+ }
+ 
+ #include "bonjourcontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/gadu/gaduaccount.cpp b/protocols/gadu/gaduaccount.cpp
+index 57781803a38f56886da95a88a932c4cc741ba395..84df82c0921cea0ca1bfcc9d1d3869d9eca0c4ee 100644
+--- a/protocols/gadu/gaduaccount.cpp
++++ b/protocols/gadu/gaduaccount.cpp
+@@ -1,6 +1,3 @@
+-// vim: set noet ts=4 sts=4 sw=4 :
+-// -*- Mode: c++; c-basic-offset: 2; indent-tabs-mode: t; tab-width: 2; -*-
+-//
+ // Copyright (C) 2003-2004 Grzegorz Jaskiewicz 	<gj at pointblue.com.pl>
+ // Copyright (C) 2003 Zack Rusin 		<zack@kde.org>
+ //
+diff --git a/protocols/gadu/gadusession.cpp b/protocols/gadu/gadusession.cpp
+index 53e47476bb02eff41066f4471bed508141d8cf2e..7c45098944dbc408e13ae471f416a9f7566500ad 100644
+--- a/protocols/gadu/gadusession.cpp
++++ b/protocols/gadu/gadusession.cpp
+@@ -1,6 +1,3 @@
+-// vim: set noet ts=4 sts=4 sw=4 :
+-// -*- Mode: c++-mode; c-basic-offset: 2; indent-tabs-mode: t; tab-width: 2; -*-
+-//
+ // Copyright (C) 2003-2004	 Grzegorz Jaskiewicz <gj at pointblue.com.pl>
+ // Copyright (C) 2002	 	Zack Rusin <zack@kde.org>
+ //
+diff --git a/protocols/gadu/gadusession.h b/protocols/gadu/gadusession.h
+index 401a8eb16acf8e3263d20a36cd14b7eeb393783e..02a0242b3e41ced78f7c20af434a76ba0486af63 100644
+--- a/protocols/gadu/gadusession.h
++++ b/protocols/gadu/gadusession.h
+@@ -1,6 +1,3 @@
+-// vim: set noet ts=4 sts=4 sw=4 :
+-// -*- Mode: c++-mode; c-basic-offset: 2; indent-tabs-mode: t; tab-width: 2; -*-
+-//
+ // Copyright (C) 2003-2004	 Grzegorz Jaskiewicz <gj at pointblue.com.pl>
+ // Copyright (C) 2002	 	Zack Rusin <zack@kde.org>
+ //
+diff --git a/protocols/groupwise/gwcontact.cpp b/protocols/groupwise/gwcontact.cpp
+index b1704534233e4262ed30b571714c891b1af1d12f..24134e29a9e6c2bd25003776eeedc2b7bf681a7d 100644
+--- a/protocols/groupwise/gwcontact.cpp
++++ b/protocols/groupwise/gwcontact.cpp
+@@ -308,6 +308,3 @@ bool GroupWiseContact::messageReceivedOffline() const
+ }
+ 
+ #include "gwcontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/irc/irccontact_server.h b/protocols/irc/irccontact_server.h
+index 0f5a040bd6c693b9df3dfb345cc17dba11d7f66b..1409c215bab6fef250781a88f159e0573dcaa8b0 100644
+--- a/protocols/irc/irccontact_server.h
++++ b/protocols/irc/irccontact_server.h
+@@ -71,5 +71,3 @@ class IRCServerContact
+ };
+ 
+ #endif // IRCCONTACT_SERVER_H
+-
+-// vim: set noet ts=4 sts=4 tw=4:
+diff --git a/protocols/irc/irccontact_user.h b/protocols/irc/irccontact_user.h
+index aeff767dd26d2ced61e9bf23ded35fe029dfb083..53f32e5331010f47edd806e240efa7fccf5fc46e 100644
+--- a/protocols/irc/irccontact_user.h
++++ b/protocols/irc/irccontact_user.h
+@@ -133,5 +133,3 @@ private:
+ };
+ 
+ #endif // IRCCONTACT_USER_H
+-
+-// vim: set noet ts=4 sts=4 tw=4:
+diff --git a/protocols/irc/libkirc/plugins/ctcp/kirctransferhandler.cpp b/protocols/irc/libkirc/plugins/ctcp/kirctransferhandler.cpp
+index 697145b35f3dcc0ae0007a9c4fca6e25241c338b..2855add5c46a12ad0c8fb0a779273087fe6a4436 100644
+--- a/protocols/irc/libkirc/plugins/ctcp/kirctransferhandler.cpp
++++ b/protocols/irc/libkirc/plugins/ctcp/kirctransferhandler.cpp
+@@ -91,5 +91,3 @@ File *DCCHandler::openFile( QString file, int mode = QIODevice::ReadWrite )
+ 	return file;
+ }
+ */
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/jabber/jabberaccount.cpp b/protocols/jabber/jabberaccount.cpp
+index 6b05c65a56cd3966fa2977313822e7e3de473653..6927050cf7e5bd3e2eb4e945e890335dbbcebd91 100644
+--- a/protocols/jabber/jabberaccount.cpp
++++ b/protocols/jabber/jabberaccount.cpp
+@@ -1926,5 +1926,3 @@ void JabberMoodAction::triggered()
+ }*/
+ 
+ #include "jabberaccount.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/jabber/jabberbasecontact.cpp b/protocols/jabber/jabberbasecontact.cpp
+index 4de3ebaf71d2fce33ca03daa8aaf31d4a2a964a9..8344b7dc0d12795e71e8642dccdd62234a55250d 100644
+--- a/protocols/jabber/jabberbasecontact.cpp
++++ b/protocols/jabber/jabberbasecontact.cpp
+@@ -718,5 +718,3 @@ void JabberBaseContact::setPropertiesFromVCard ( const XMPP::VCard &vCard )
+ 
+ 
+ #include "jabberbasecontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/jabber/jabberbasecontact.h b/protocols/jabber/jabberbasecontact.h
+index 5feda3ba1cb92691dd38048688cc0b93e9d547f9..0cac36a3cc1c0f0980410abd8808f886672b7614 100644
+--- a/protocols/jabber/jabberbasecontact.h
++++ b/protocols/jabber/jabberbasecontact.h
+@@ -199,5 +199,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/jabber/jabberchatsession.cpp b/protocols/jabber/jabberchatsession.cpp
+index cc2ef50ef7c13be3b10b9730b2e720ab6420ad41..6775636146c7a87db9f9d86a18e454420f00b297 100644
+--- a/protocols/jabber/jabberchatsession.cpp
++++ b/protocols/jabber/jabberchatsession.cpp
+@@ -550,6 +550,3 @@ void JabberChatSession::slotJingleSession()
+ #endif
+ 
+ #include "jabberchatsession.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; replace-tabs off; space-indent off;
+diff --git a/protocols/jabber/jabberchatsession.h b/protocols/jabber/jabberchatsession.h
+index e84868b5f6154eeafebc5a54f6b28807950859ce..856c447058d5ef026714fc86e442543a4fc05b8a 100644
+--- a/protocols/jabber/jabberchatsession.h
++++ b/protocols/jabber/jabberchatsession.h
+@@ -110,6 +110,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 tw=4:
+-
+diff --git a/protocols/jabber/jabberfiletransfer.h b/protocols/jabber/jabberfiletransfer.h
+index 16c5119df7d814bb7597080555f681638358d240..e3d14e02c0a82e8e1ea967abd55e03c43fa56b40 100644
+--- a/protocols/jabber/jabberfiletransfer.h
++++ b/protocols/jabber/jabberfiletransfer.h
+@@ -75,5 +75,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 tw=4:
+diff --git a/protocols/jabber/jabbergroupchatmanager.cpp b/protocols/jabber/jabbergroupchatmanager.cpp
+index c5e967d614b1fdccd3726efa550c930863e2c2d7..f4bdfcbb2419cfd10f20a3b963cb93cd13d32b42 100644
+--- a/protocols/jabber/jabbergroupchatmanager.cpp
++++ b/protocols/jabber/jabbergroupchatmanager.cpp
+@@ -212,6 +212,3 @@ void JabberGroupChatManager::hideInviteMenu() {
+ 
+ 
+ #include "jabbergroupchatmanager.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/jabber/jabbergroupchatmanager.h b/protocols/jabber/jabbergroupchatmanager.h
+index 03111fca24ed9e8efc682a5818127fd1e72aa949..2852d44b96dd75e18b95eb638788a070cc5ff752 100644
+--- a/protocols/jabber/jabbergroupchatmanager.h
++++ b/protocols/jabber/jabbergroupchatmanager.h
+@@ -82,6 +82,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 tw=4:
+-
+diff --git a/protocols/jabber/jabberresource.h b/protocols/jabber/jabberresource.h
+index e1e1b0e9a4007ddd59704b80afa258879d076d2a..9b0446e652e22a3e0d97c55c9eedc69933092251 100644
+--- a/protocols/jabber/jabberresource.h
++++ b/protocols/jabber/jabberresource.h
+@@ -86,5 +86,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 tw=4:
+diff --git a/protocols/jabber/jabbertransport.cpp b/protocols/jabber/jabbertransport.cpp
+index aef79483f3498b754e995e4c7a624ba570317772..e71de5214cc9600be72719d32d88b9400a0a3fc0 100644
+--- a/protocols/jabber/jabbertransport.cpp
++++ b/protocols/jabber/jabbertransport.cpp
+@@ -367,5 +367,3 @@ void JabberTransport::eatContacts( )
+ 
+ 
+ #include "jabbertransport.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/jabber/ui/dlgjabbervcard.cpp b/protocols/jabber/ui/dlgjabbervcard.cpp
+index 3ec01b2df93f3dbb95082fb7ba58b93142158043..ca15c687619eb508ab40b49e10c5948532cfe9e1 100644
+--- a/protocols/jabber/ui/dlgjabbervcard.cpp
++++ b/protocols/jabber/ui/dlgjabbervcard.cpp
+@@ -515,12 +515,3 @@ void dlgJabberVCard::slotOpenURL(const QString &url)
+ }
+ 
+ #include "dlgjabbervcard.moc"
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/jabber/ui/jabberaddcontactpage.cpp b/protocols/jabber/ui/jabberaddcontactpage.cpp
+index e7b64bb165a5f659d121db7220a6a24a6d85ca7e..ad9542183093eb48590847b4457cd784eaf4d95f 100644
+--- a/protocols/jabber/ui/jabberaddcontactpage.cpp
++++ b/protocols/jabber/ui/jabberaddcontactpage.cpp
+@@ -237,12 +237,3 @@ void JabberAddContactPage_there_is_no_possibility_to_add_assync_WORKAROUND::slot
+ 
+ 
+ #include "jabberaddcontactpage.moc"
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/jabber/ui/jabberaddcontactpage.h b/protocols/jabber/ui/jabberaddcontactpage.h
+index 140c28aad3edb57600789fac31e79cfbf51210a5..e14fc01908d74fea352b35cd621b9d583a16cd14 100644
+--- a/protocols/jabber/ui/jabberaddcontactpage.h
++++ b/protocols/jabber/ui/jabberaddcontactpage.h
+@@ -64,13 +64,3 @@ class  JabberAddContactPage_there_is_no_possibility_to_add_assync_WORKAROUND : p
+ 
+ 
+ #endif
+-
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/jabber/ui/jabbereditaccountwidget.cpp b/protocols/jabber/ui/jabbereditaccountwidget.cpp
+index 51b9e445dd3d8beaee936dc6ef7290e27593dc5b..b6b0e969d0858b2c68c507d181e6175ad32a47b8 100644
+--- a/protocols/jabber/ui/jabbereditaccountwidget.cpp
++++ b/protocols/jabber/ui/jabbereditaccountwidget.cpp
+@@ -445,5 +445,3 @@ void JabberEditAccountWidget::slotPrivacyListsClicked()
+ }
+ 
+ #include "jabbereditaccountwidget.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/meanwhile/meanwhilecontact.cpp b/protocols/meanwhile/meanwhilecontact.cpp
+index 0b94958475dc28db65a1150c59f3c1b45dfbbfb7..1a88c4c6133c795a69d686a996586cafa8487a00 100644
+--- a/protocols/meanwhile/meanwhilecontact.cpp
++++ b/protocols/meanwhile/meanwhilecontact.cpp
+@@ -128,6 +128,3 @@ void MeanwhileContact::slotChatSessionDestroyed()
+ }
+ 
+ #include "meanwhilecontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/oscar/aim/aimprotocol.cpp b/protocols/oscar/aim/aimprotocol.cpp
+index 300c570ca96db5b3be4647ea9ec345c2eed06a5c..9747d29d5ba64c54c477813edef4e9c93948d49f 100644
+--- a/protocols/oscar/aim/aimprotocol.cpp
++++ b/protocols/oscar/aim/aimprotocol.cpp
+@@ -273,4 +273,3 @@ OscarStatusManager *AIMProtocol::statusManager() const
+ }
+ 
+ #include "aimprotocol.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/oscar/aim/ui/aimeditaccountwidget.cpp b/protocols/oscar/aim/ui/aimeditaccountwidget.cpp
+index 8eed38bcdf2b20ed842ed2b9ea256785add187de..69f49cb7a18f0e32ecc1a3074799ec00c435b5e2 100644
+--- a/protocols/oscar/aim/ui/aimeditaccountwidget.cpp
++++ b/protocols/oscar/aim/ui/aimeditaccountwidget.cpp
+@@ -229,4 +229,3 @@ void AIMEditAccountWidget::slotOpenRegister()
+ }
+ 
+ #include "aimeditaccountwidget.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/oscar/icq/icqprotocol.cpp b/protocols/oscar/icq/icqprotocol.cpp
+index a028e5305589bc793179d1c40eb0b773d6ae1b40..6785da1f6031e87d613c3a4b6651efaba8660bcf 100644
+--- a/protocols/oscar/icq/icqprotocol.cpp
++++ b/protocols/oscar/icq/icqprotocol.cpp
+@@ -855,5 +855,3 @@ OscarStatusManager *ICQProtocol::statusManager() const
+ //END class ICQProtocol
+ 
+ #include "icqprotocol.moc"
+-// kate: indent-mode csands;
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/oscar/icq/icqprotocol.h b/protocols/oscar/icq/icqprotocol.h
+index cda38aa07418ee23f3c6fdb9eda293554b4ccc81..2be409b977902e989133352b38799e4fb339011b 100644
+--- a/protocols/oscar/icq/icqprotocol.h
++++ b/protocols/oscar/icq/icqprotocol.h
+@@ -119,4 +119,3 @@ private:
+ 
+ 
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/oscar/icq/icqreadaway.cpp b/protocols/oscar/icq/icqreadaway.cpp
+index 9908f5842932f559c5547448ffde360d6116ae9e..b0d33e2fedf2a1255dfbce40168524eb4da121a0 100644
+--- a/protocols/oscar/icq/icqreadaway.cpp
++++ b/protocols/oscar/icq/icqreadaway.cpp
+@@ -102,4 +102,3 @@ void ICQReadAway::slotMailClicked(const QString&, const QString &address)
+ }
+ 
+ #include "icqreadaway.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/oscar/icq/icqreadaway.h b/protocols/oscar/icq/icqreadaway.h
+index 0ae0b8af3e18093dc9fb011a15065929ced77de3..d4be2856f45e15992047db22794d2da51712dc09 100644
+--- a/protocols/oscar/icq/icqreadaway.h
++++ b/protocols/oscar/icq/icqreadaway.h
+@@ -51,4 +51,3 @@ class ICQReadAway : public KDialog
+ 		KTextBrowser *awayMessageBrowser;
+ };
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/oscar/icq/ui/icqaddcontactpage.cpp b/protocols/oscar/icq/ui/icqaddcontactpage.cpp
+index 349632163e37644d265f44e71b0eedb03f152374..9d65f25cf288e19f1dd556b5fc819ad125c1320d 100644
+--- a/protocols/oscar/icq/ui/icqaddcontactpage.cpp
++++ b/protocols/oscar/icq/ui/icqaddcontactpage.cpp
+@@ -131,5 +131,3 @@ void ICQAddContactPage::searchDialogDestroyed()
+ 
+ 
+ #include "icqaddcontactpage.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: indent-mode csands; space-indent off; replace-tabs off;
+diff --git a/protocols/oscar/icq/ui/icqeditaccountwidget.cpp b/protocols/oscar/icq/ui/icqeditaccountwidget.cpp
+index db97a09d608abbf12867310fa6f524d6c1fa320b..31b33b4ac3197b06fa6659d5a7b4a9d4fa1894d9 100644
+--- a/protocols/oscar/icq/ui/icqeditaccountwidget.cpp
++++ b/protocols/oscar/icq/ui/icqeditaccountwidget.cpp
+@@ -351,5 +351,3 @@ void ICQEditAccountWidget::slotChangePassword()
+ }
+ 
+ #include "icqeditaccountwidget.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: indent-mode csands; space-indent off; replace-tabs off;
+diff --git a/protocols/oscar/icq/ui/icqeditaccountwidget.h b/protocols/oscar/icq/ui/icqeditaccountwidget.h
+index ec5ce4a38ea30965e11df481e764874cf047608b..6cd6f0c4e48eebe6f08cd29ab944b1bd6c024fee 100644
+--- a/protocols/oscar/icq/ui/icqeditaccountwidget.h
++++ b/protocols/oscar/icq/ui/icqeditaccountwidget.h
+@@ -58,5 +58,3 @@ private:
+ 	OscarPrivacyEngine* m_ignoreEngine;
+ };
+ #endif
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: indent-mode csands; space-indent off; replace-tabs off;
+diff --git a/protocols/oscar/liboscar/buffer.h b/protocols/oscar/liboscar/buffer.h
+index 77f6c4347cdcd042edd32698e73fff863e7127ce..cf805f5450ebc3aad431bed3cb78d90b1d4a4909 100644
+--- a/protocols/oscar/liboscar/buffer.h
++++ b/protocols/oscar/liboscar/buffer.h
+@@ -335,5 +335,3 @@ class LIBOSCAR_EXPORT Buffer
+ };
+ 
+ #endif
+-// kate: tab-width 4; indent-mode csands;
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/oscar/oscarprotocol.cpp b/protocols/oscar/oscarprotocol.cpp
+index 222f11acc1256e43403a17700afb74e35799e6f9..28c23cf10eec425bfda4d31fe89684477cb0fa4f 100644
+--- a/protocols/oscar/oscarprotocol.cpp
++++ b/protocols/oscar/oscarprotocol.cpp
+@@ -115,4 +115,3 @@ Kopete::Contact *OscarProtocol::deserializeContact(Kopete::MetaContact *metaCont
+ }
+ 
+ #include "oscarprotocol.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/qq/qqcontact.cpp b/protocols/qq/qqcontact.cpp
+index e7ea98523cc520d3eee6e8154eae7f9522674ead..0e38d216fc02665014cbe896cf01f52e60ed2cba 100644
+--- a/protocols/qq/qqcontact.cpp
++++ b/protocols/qq/qqcontact.cpp
+@@ -485,6 +485,3 @@ void QQContact::setObject(const QString &obj)
+ 
+ 
+ #include "qqcontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/qq/qqcontact.h b/protocols/qq/qqcontact.h
+index 8aaefc1b43ad7e93f0c8203a7393bba983834913..ca46a5fc86ed7332d4bf2223899f540ee1106b17 100644
+--- a/protocols/qq/qqcontact.h
++++ b/protocols/qq/qqcontact.h
+@@ -197,6 +197,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/qq/qqnotifysocket.cpp b/protocols/qq/qqnotifysocket.cpp
+index ea478bd7a159e35b504b2fe84e56f197584f0e96..26ec3f32cd5b31af28f192887669e7996c5885ee 100644
+--- a/protocols/qq/qqnotifysocket.cpp
++++ b/protocols/qq/qqnotifysocket.cpp
+@@ -468,4 +468,3 @@ void QQNotifySocket::doGetContactStatuses( const Eva::ByteArray& text )
+ }
+ 
+ #include "qqnotifysocket.moc"
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/qq/qqnotifysocket.h b/protocols/qq/qqnotifysocket.h
+index 6f956c7e912f3cadc3c0e39492318788ed19a2a4..2d9b61ff0b0bd9bc6d7334b2b5372a069d7ff275 100644
+--- a/protocols/qq/qqnotifysocket.h
++++ b/protocols/qq/qqnotifysocket.h
+@@ -154,6 +154,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/qq/qqsocket.cpp b/protocols/qq/qqsocket.cpp
+index cfd06bc0934049625bb0eb270456fc7aa0036e6f..dbbc79b70346a0af2724270e5bcef9350070e105 100644
+--- a/protocols/qq/qqsocket.cpp
++++ b/protocols/qq/qqsocket.cpp
+@@ -308,6 +308,3 @@ QString QQSocket::getLocalIP()
+ }
+ 
+ #include "qqsocket.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/qq/ui/dlgqqvcard.cpp b/protocols/qq/ui/dlgqqvcard.cpp
+index 2209a01adc0ed7a881a036b2d12f8f3e90f014a2..ad4181b0ec915f4f25403f6099165212efb05adc 100644
+--- a/protocols/qq/ui/dlgqqvcard.cpp
++++ b/protocols/qq/ui/dlgqqvcard.cpp
+@@ -369,12 +369,3 @@ void dlgQQVCard::slotOpenURL(const QString &url)
+ }
+ 
+ #include "dlgqqvcard.moc"
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/qq/ui/qqeditaccountwidget.cpp b/protocols/qq/ui/qqeditaccountwidget.cpp
+index 940911fd82061154abd1de5a9fdecb7183bce9e6..fd115d3a2210637cf7616b3c2e34a05497b1cfa2 100644
+--- a/protocols/qq/ui/qqeditaccountwidget.cpp
++++ b/protocols/qq/ui/qqeditaccountwidget.cpp
+@@ -179,6 +179,3 @@ void QQEditAccountWidget::slotOpenRegister()
+ }
+ 
+ #include "qqeditaccountwidget.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/serviceloader.cpp b/protocols/sms/serviceloader.cpp
+index f42163432e59195ddaf4bad09353684d59dbc146..03b45e902dc302019fa7d6e6d98aad4217248b6f 100644
+--- a/protocols/sms/serviceloader.cpp
++++ b/protocols/sms/serviceloader.cpp
+@@ -60,14 +60,3 @@ QStringList ServiceLoader::services()
+ #endif
+ 	return toReturn;
+ }
+-
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/serviceloader.h b/protocols/sms/serviceloader.h
+index 543c77c0d167786a9bb46d1a9aadd29424a3b8b7..1db3032ebe660af8f8fcb93dd2f371f98b2a550d 100644
+--- a/protocols/sms/serviceloader.h
++++ b/protocols/sms/serviceloader.h
+@@ -30,12 +30,3 @@ public:
+ } ;
+ 
+ #endif //SERVICELOADER_H
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/services/gsmlib.cpp b/protocols/sms/services/gsmlib.cpp
+index 6451093fef398fbdbb816260c72d44a59b8ded6a..08b6736538183402c696187b815b6b7dd8819322 100644
+--- a/protocols/sms/services/gsmlib.cpp
++++ b/protocols/sms/services/gsmlib.cpp
+@@ -450,12 +450,3 @@ const QString& GSMLib::description()
+ #include "gsmlib.moc"
+ 
+ #endif
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/services/smsclient.cpp b/protocols/sms/services/smsclient.cpp
+index 8b6f35badef789dc4739d5f26604fee72ae625cc..0a619c24f3f517828006e44b0464016c08acfff1 100644
+--- a/protocols/sms/services/smsclient.cpp
++++ b/protocols/sms/services/smsclient.cpp
+@@ -183,12 +183,3 @@ const QString& SMSClient::description()
+ }
+ 
+ #include "smsclient.moc"
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/services/smssend.cpp b/protocols/sms/services/smssend.cpp
+index 569ae1362c8b8d4af18ae77d38b03a8fec34d5f1..4744beb1134e139f8c6efb5986621af820b422cc 100644
+--- a/protocols/sms/services/smssend.cpp
++++ b/protocols/sms/services/smssend.cpp
+@@ -246,12 +246,3 @@ const QString& SMSSend::description()
+ 
+ 
+ #include "smssend.moc"
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/services/smssendprovider.cpp b/protocols/sms/services/smssendprovider.cpp
+index d39f827468485a8c0c31dc527f3dfbabb2c0e78b..509fb99da0d67e483f320a33ba451f08bd916c55 100644
+--- a/protocols/sms/services/smssendprovider.cpp
++++ b/protocols/sms/services/smssendprovider.cpp
+@@ -278,12 +278,3 @@ int SMSSendProvider::maxSize()
+ }
+ 
+ #include "smssendprovider.moc"
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smsaddcontactpage.cpp b/protocols/sms/smsaddcontactpage.cpp
+index 86a2a8e5500b0b80e81e9bb5b005136daf4b429d..9156c8bdafd07d51b73d81dcf6150e512205af34 100644
+--- a/protocols/sms/smsaddcontactpage.cpp
++++ b/protocols/sms/smsaddcontactpage.cpp
+@@ -56,12 +56,3 @@ bool SMSAddContactPage::validateData()
+ }
+ 
+ #include "smsaddcontactpage.moc"
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smsaddcontactpage.h b/protocols/sms/smsaddcontactpage.h
+index a1aefe517c14c8e7a442fc4f59fbbf25e25512ad..5b731192670f05c84b42c649894849923432091d 100644
+--- a/protocols/sms/smsaddcontactpage.h
++++ b/protocols/sms/smsaddcontactpage.h
+@@ -35,15 +35,3 @@ public:
+ 
+ 
+ #endif
+-
+-
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smscontact.cpp b/protocols/sms/smscontact.cpp
+index c76320228feb0b91cfc7a8faae29fee9463da7e1..9b3c41385c361bf087f82d1550f64b8f289d92be 100644
+--- a/protocols/sms/smscontact.cpp
++++ b/protocols/sms/smscontact.cpp
+@@ -151,6 +151,3 @@ void SMSContact::userPrefs()
+ }
+ 
+ #include "smscontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smscontact.h b/protocols/sms/smscontact.h
+index 16bc352cf30d072b702e6fe35344d69d680a28ab..5584bc12d323947d5ad112ca1cc3097a15b90db4 100644
+--- a/protocols/sms/smscontact.h
++++ b/protocols/sms/smscontact.h
+@@ -69,6 +69,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smseditaccountwidget.cpp b/protocols/sms/smseditaccountwidget.cpp
+index 4e545458478ec37a49244d6d39ba61cf50315f57..286a8f21693f8f231dd46d9365a5800466915194 100644
+--- a/protocols/sms/smseditaccountwidget.cpp
++++ b/protocols/sms/smseditaccountwidget.cpp
+@@ -139,13 +139,3 @@ void SMSEditAccountWidget::showDescription()
+ }
+ 
+ #include "smseditaccountwidget.moc"
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smseditaccountwidget.h b/protocols/sms/smseditaccountwidget.h
+index 73aa8e0862cd79a28b1d12dcc1fad3204cb061de..fcd7847cdaac6099bb43fb20e126bcb14097c41d 100644
+--- a/protocols/sms/smseditaccountwidget.h
++++ b/protocols/sms/smseditaccountwidget.h
+@@ -50,15 +50,3 @@ signals:
+ };
+ 
+ #endif
+-
+-
+-
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smsprotocol.cpp b/protocols/sms/smsprotocol.cpp
+index e223df25f1ff977b20aa6ea708fe7e24b5978cd0..d7b2c4ded0fec2b190c4fe6295c29016bb4df452 100644
+--- a/protocols/sms/smsprotocol.cpp
++++ b/protocols/sms/smsprotocol.cpp
+@@ -107,6 +107,3 @@ Kopete::Account* SMSProtocol::createNewAccount(const QString &accountId)
+ }
+ 
+ #include "smsprotocol.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smsprotocol.h b/protocols/sms/smsprotocol.h
+index fecf828426620cecb7b7de07575e84ed93df3f74..90ac06886df348d6ba0cb81cc71692562790112a 100644
+--- a/protocols/sms/smsprotocol.h
++++ b/protocols/sms/smsprotocol.h
+@@ -63,6 +63,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smsservice.cpp b/protocols/sms/smsservice.cpp
+index 4996413faab2801b138cffd4deabee6f9aa69804..7b723406990c99b6bbb09d89de4b1969c9024690 100644
+--- a/protocols/sms/smsservice.cpp
++++ b/protocols/sms/smsservice.cpp
+@@ -48,14 +48,4 @@ void SMSService::disconnect()
+ 	emit disconnected();
+ }
+ 
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+-
+ #include "smsservice.moc"
+diff --git a/protocols/sms/smsservice.h b/protocols/sms/smsservice.h
+index df069712f19b0493895e73cd3930f9d74b6bf590..670d0aadd63678f8c4f25454e872510d71897dc6 100644
+--- a/protocols/sms/smsservice.h
++++ b/protocols/sms/smsservice.h
+@@ -70,12 +70,3 @@ protected:
+ };
+ 
+ #endif //SMSSERVICE_H
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/sms/smsuserpreferences.cpp b/protocols/sms/smsuserpreferences.cpp
+index e84989c3a88870e412e2486dcaa549d7fac08f39..4398bf54ac8488f881ac802e8c10dd957feaffd5 100644
+--- a/protocols/sms/smsuserpreferences.cpp
++++ b/protocols/sms/smsuserpreferences.cpp
+@@ -61,12 +61,3 @@ void SMSUserPreferences::slotCancel()
+ }
+ 
+ #include "smsuserpreferences.moc"
+-/*
+- * Local variables:
+- * c-indentation-style: k&r
+- * c-basic-offset: 8
+- * indent-tabs-mode: t
+- * End:
+- */
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/testbed/testbedcontact.cpp b/protocols/testbed/testbedcontact.cpp
+index d7aa5aa25fcc7fe2b5226566173c114c6bb0b4bb..90d212c7f7428e8fb5b87e5ee32bc4e6306424d4 100644
+--- a/protocols/testbed/testbedcontact.cpp
++++ b/protocols/testbed/testbedcontact.cpp
+@@ -149,6 +149,3 @@ void TestbedContact::slotChatSessionDestroyed()
+ }
+ 
+ #include "testbedcontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/winpopup/libwinpopup/libwinpopup.cpp b/protocols/winpopup/libwinpopup/libwinpopup.cpp
+index 8d2fe0715e461026997d693db264cfa9c77d32a1..fc06fcdff277950d6bbafbb7f3945fe9edec5212 100644
+--- a/protocols/winpopup/libwinpopup/libwinpopup.cpp
++++ b/protocols/winpopup/libwinpopup/libwinpopup.cpp
+@@ -417,6 +417,3 @@ void WinPopupLib::settingsChanged(const QString &smbClient, int groupFreq)
+ }
+ 
+ #include "libwinpopup.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/libwinpopup/libwinpopup.h b/protocols/winpopup/libwinpopup/libwinpopup.h
+index ec2f0b6b6928b81315ebd25ec42896b7b44dfe6e..e519fa43a4fba6a67c8d14f1147ceb7a31e26f0c 100644
+--- a/protocols/winpopup/libwinpopup/libwinpopup.h
++++ b/protocols/winpopup/libwinpopup/libwinpopup.h
+@@ -87,6 +87,3 @@ signals:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpaccount.cpp b/protocols/winpopup/wpaccount.cpp
+index 81e636ecb8095ace525eead14188642d04a25870..31745052a7aed36baf187921cb756cf46f9027b4 100644
+--- a/protocols/winpopup/wpaccount.cpp
++++ b/protocols/winpopup/wpaccount.cpp
+@@ -225,6 +225,3 @@ void WPAccount::setStatusMessage(const Kopete::StatusMessage &statusMessage)
+ 		setAway( true, statusMessage.message() );
+ }
+ #include "wpaccount.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpaccount.h b/protocols/winpopup/wpaccount.h
+index 375abaa52ed8682ab2fd8e7d4ea354d4347edf58..81981278901d11b7182fdb9d4c5dd7f0c61d1da2 100644
+--- a/protocols/winpopup/wpaccount.h
++++ b/protocols/winpopup/wpaccount.h
+@@ -107,6 +107,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpaddcontact.cpp b/protocols/winpopup/wpaddcontact.cpp
+index ad06507481dd3573d1155ff19f08ca7901b93dc9..c5e6bdf3bddb7ec0f1f2c4364162c5447c7ce22c 100644
+--- a/protocols/winpopup/wpaddcontact.cpp
++++ b/protocols/winpopup/wpaddcontact.cpp
+@@ -119,6 +119,3 @@ bool WPAddContact::apply(Kopete::Account *theAccount, Kopete::MetaContact *theMe
+ }
+ 
+ #include "wpaddcontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpaddcontact.h b/protocols/winpopup/wpaddcontact.h
+index e72915e5a24d0297a3e67d0ffbb3d7c9aaadc5b0..73342baf7c6bb2df6983d8c7738ab6cf1d9b8f42 100644
+--- a/protocols/winpopup/wpaddcontact.h
++++ b/protocols/winpopup/wpaddcontact.h
+@@ -53,6 +53,3 @@ public slots:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpcontact.cpp b/protocols/winpopup/wpcontact.cpp
+index 3f001e999c48a5012efce4946787026e993ef43d..1b2dc4f33c83015e035d1247f6b95ca2bc53ef00 100644
+--- a/protocols/winpopup/wpcontact.cpp
++++ b/protocols/winpopup/wpcontact.cpp
+@@ -191,6 +191,3 @@ void WPContact::slotSendMessage( Kopete::Message& message )
+ }
+ 
+ #include "wpcontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpcontact.h b/protocols/winpopup/wpcontact.h
+index 0cdf4c19549103e893d08cca63ed706ac344916b..eab7585c5fe5d1f086764a8527e16dce9a192563 100644
+--- a/protocols/winpopup/wpcontact.h
++++ b/protocols/winpopup/wpcontact.h
+@@ -79,6 +79,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpeditaccount.cpp b/protocols/winpopup/wpeditaccount.cpp
+index fb27df3ad6354beb7afedc08c2862f19f0595a36..ab6e8b178ebe666dd6ffc7aa8aadfdfe1fefbe49 100644
+--- a/protocols/winpopup/wpeditaccount.cpp
++++ b/protocols/winpopup/wpeditaccount.cpp
+@@ -137,6 +137,3 @@ Kopete::Account *WPEditAccount::apply()
+ }
+ 
+ #include "wpeditaccount.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpeditaccount.h b/protocols/winpopup/wpeditaccount.h
+index c12267c1e16560130cfacfb835c927b9e62417fa..24c925f3d2c08942db2b038293c94a4478b3a102 100644
+--- a/protocols/winpopup/wpeditaccount.h
++++ b/protocols/winpopup/wpeditaccount.h
+@@ -52,6 +52,3 @@ public slots:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpprotocol.cpp b/protocols/winpopup/wpprotocol.cpp
+index dadade37985ab4d35e54f87a6b960d2101957e8c..f721dbb3f387831af57eddc8c98c37cc846d050e 100644
+--- a/protocols/winpopup/wpprotocol.cpp
++++ b/protocols/winpopup/wpprotocol.cpp
+@@ -189,6 +189,3 @@ void WPProtocol::sendMessage(const QString &Body, const QString &Destination)
+ }
+ 
+ #include "wpprotocol.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpprotocol.h b/protocols/winpopup/wpprotocol.h
+index 509454972dff44ee181964d1e9009c7364659292..4ae5bbf55052633188087c22ab9fddfffbe4c538 100644
+--- a/protocols/winpopup/wpprotocol.h
++++ b/protocols/winpopup/wpprotocol.h
+@@ -83,6 +83,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpuserinfo.cpp b/protocols/winpopup/wpuserinfo.cpp
+index f0e227fb35bad336d385dbd5f0c9cbc145a727a6..5385db45c5671c21e92165234812ba33ee151531 100644
+--- a/protocols/winpopup/wpuserinfo.cpp
++++ b/protocols/winpopup/wpuserinfo.cpp
+@@ -162,6 +162,3 @@ void WPUserInfo::slotCloseClicked()
+ }
+ 
+ #include "wpuserinfo.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/winpopup/wpuserinfo.h b/protocols/winpopup/wpuserinfo.h
+index a15493bb29b0e1d668bfb5b5ccc878762bab8039..edf582ce58d266da304e8c6e13c7ddfc4eff95cc 100644
+--- a/protocols/winpopup/wpuserinfo.h
++++ b/protocols/winpopup/wpuserinfo.h
+@@ -56,6 +56,3 @@ class WPUserInfo : public KDialog
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-// kate: tab-width 4; indent-width 4; replace-trailing-space-save on;
+diff --git a/protocols/wlm/wlmchatsession.h b/protocols/wlm/wlmchatsession.h
+index 3480c656a2cb0959cb27ef6607afd8c37af587e1..14b55a0247ba209baf25410514d73f3899ae7fbc 100644
+--- a/protocols/wlm/wlmchatsession.h
++++ b/protocols/wlm/wlmchatsession.h
+@@ -143,5 +143,3 @@ class WlmChatSession: public Kopete::ChatSession
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 tw=4:
+diff --git a/protocols/wlm/wlmcontact.cpp b/protocols/wlm/wlmcontact.cpp
+index 3443df3fa5b49ebde26c03eba49ffab7e980a2d3..8c585d53c0402f0850b83d02fbb624b95167485e 100644
+--- a/protocols/wlm/wlmcontact.cpp
++++ b/protocols/wlm/wlmcontact.cpp
+@@ -491,5 +491,3 @@ WlmContact::setOnlineStatus(const Kopete::OnlineStatus& status)
+ }
+ 
+ #include "wlmcontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/yahoo/yahooaccount.cpp b/protocols/yahoo/yahooaccount.cpp
+index 67b65240ae54d24a9bce4fa5d1dd442b941ed43f..d71afd110ee4b805d73711f72df2fbeef804ac90 100644
+--- a/protocols/yahoo/yahooaccount.cpp
++++ b/protocols/yahoo/yahooaccount.cpp
+@@ -2069,6 +2069,3 @@ void YahooAccount::sendChatMessage( const Kopete::Message &msg, const QString &h
+ 
+ 
+ #include "yahooaccount.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-//kate: indent-mode csands; tab-width 4;
+diff --git a/protocols/yahoo/yahooaddcontact.cpp b/protocols/yahoo/yahooaddcontact.cpp
+index 0bd8a7d2a00e539b9ed97b72b40ae81db24c729d..8dae9d9307f7f3236f0514ef7a1de0c45b764dda 100644
+--- a/protocols/yahoo/yahooaddcontact.cpp
++++ b/protocols/yahoo/yahooaddcontact.cpp
+@@ -73,6 +73,3 @@ bool YahooAddContact::apply(Kopete::Account *theAccount, Kopete::MetaContact *th
+ }
+ 
+ #include "yahooaddcontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/yahoo/yahooaddcontact.h b/protocols/yahoo/yahooaddcontact.h
+index 1bc857c567c28f320f65ef3fa34353cdf216745a..20dfdddc7e6e3d959e0f3a7bc8b9bcc4da746085 100644
+--- a/protocols/yahoo/yahooaddcontact.h
++++ b/protocols/yahoo/yahooaddcontact.h
+@@ -50,6 +50,3 @@ public slots:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/yahoo/yahoochatchatsession.cpp b/protocols/yahoo/yahoochatchatsession.cpp
+index dd6093205d9f988c9d70c184ed7d58d27939bcb4..0a7c7dbc2b6cb9d04bc8df6ac264eb5ba6c4f37d 100644
+--- a/protocols/yahoo/yahoochatchatsession.cpp
++++ b/protocols/yahoo/yahoochatchatsession.cpp
+@@ -92,6 +92,3 @@ void YahooChatChatSession::slotMessageSent( Kopete::Message & message, Kopete::C
+ }
+ 
+ #include "yahoochatchatsession.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/yahoo/yahoochatchatsession.h b/protocols/yahoo/yahoochatchatsession.h
+index a5b48253c45a02b99c2d25fa05b0a91fb0ffd5b3..b4fc7e33bab9a64f0fb27c7d048011bd92a3741e 100644
+--- a/protocols/yahoo/yahoochatchatsession.h
++++ b/protocols/yahoo/yahoochatchatsession.h
+@@ -53,6 +53,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 tw=4:
+-
+diff --git a/protocols/yahoo/yahooconferencemessagemanager.cpp b/protocols/yahoo/yahooconferencemessagemanager.cpp
+index 4f00292ee200acc96a99e3e764cde1531602ecd5..f2630affc577c5198c4a2a97c9ef8ca9849cfe86 100644
+--- a/protocols/yahoo/yahooconferencemessagemanager.cpp
++++ b/protocols/yahoo/yahooconferencemessagemanager.cpp
+@@ -115,6 +115,3 @@ void YahooConferenceChatSession::slotInviteOthers()
+ }
+ 
+ #include "yahooconferencemessagemanager.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/yahoo/yahooconferencemessagemanager.h b/protocols/yahoo/yahooconferencemessagemanager.h
+index 36b56f805ca28ed843787d77977798723fbbc93a..4804148d94840f8059370c22948e2a3ebb7a7d0c 100644
+--- a/protocols/yahoo/yahooconferencemessagemanager.h
++++ b/protocols/yahoo/yahooconferencemessagemanager.h
+@@ -52,6 +52,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 tw=4:
+-
+diff --git a/protocols/yahoo/yahoocontact.cpp b/protocols/yahoo/yahoocontact.cpp
+index c2ebf42d004fcb6563abf098a593baea303e394b..de2721f594af691f6bcf8ee056f8777ea8f77a3d 100644
+--- a/protocols/yahoo/yahoocontact.cpp
++++ b/protocols/yahoo/yahoocontact.cpp
+@@ -848,7 +848,3 @@ void YahooContact::readYABEntry()
+ }
+ 
+ #include "yahoocontact.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-//kate: space-indent off; replace-tabs off; indent-mode csands;
+-
+diff --git a/protocols/yahoo/yahoocontact.h b/protocols/yahoo/yahoocontact.h
+index 77d8ea56ddc9199cd045ca454c99bbc46c1671e7..826987fed7cf22570a8f5936cc1075aa8677da4e 100644
+--- a/protocols/yahoo/yahoocontact.h
++++ b/protocols/yahoo/yahoocontact.h
+@@ -133,6 +133,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/yahoo/yahooeditaccount.cpp b/protocols/yahoo/yahooeditaccount.cpp
+index d41c4f4410edc18ff39b1d2c874bb92dc610e69c..97f381d5a406aa848aae2d3bab83caba218078e5 100644
+--- a/protocols/yahoo/yahooeditaccount.cpp
++++ b/protocols/yahoo/yahooeditaccount.cpp
+@@ -176,6 +176,3 @@ void YahooEditAccount::slotSelectPicture()
+ }
+ 
+ #include "yahooeditaccount.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/yahoo/yahooeditaccount.h b/protocols/yahoo/yahooeditaccount.h
+index db6d5078d8e6e27e5c972e636ca6915b02740cfe..8e00dac6c8dc8b4aca07bfec2a192f3c1619d1a9 100644
+--- a/protocols/yahoo/yahooeditaccount.h
++++ b/protocols/yahoo/yahooeditaccount.h
+@@ -55,5 +55,3 @@ private slots:
+ };
+ 
+ #endif // YAHOOEDITACCOUNT_H
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+diff --git a/protocols/yahoo/yahooprotocol.cpp b/protocols/yahoo/yahooprotocol.cpp
+index fa3f27d7a53d7f8686e8902caf9c9b663eafc142..93d1326a11d0fde35d6caab0fc0b82b7dc6a34c8 100644
+--- a/protocols/yahoo/yahooprotocol.cpp
++++ b/protocols/yahoo/yahooprotocol.cpp
+@@ -216,6 +216,3 @@ Kopete::Account *YahooProtocol::createNewAccount(const QString &accountId)
+ }
+ 
+ #include "yahooprotocol.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/yahoo/yahooprotocol.h b/protocols/yahoo/yahooprotocol.h
+index 7b6d733e5b7785fa04f6cfca267bb9c8fac2a814..1e2bdd8dca14c594a806e109dffec6dc24bf4326 100644
+--- a/protocols/yahoo/yahooprotocol.h
++++ b/protocols/yahoo/yahooprotocol.h
+@@ -138,6 +138,3 @@ private:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/yahoo/yahooverifyaccount.cpp b/protocols/yahoo/yahooverifyaccount.cpp
+index 915ed3b049a18ec8121060817ab78156186ea69d..12d8ee19a12be4987232a509b8604e66d26d047c 100644
+--- a/protocols/yahoo/yahooverifyaccount.cpp
++++ b/protocols/yahoo/yahooverifyaccount.cpp
+@@ -112,6 +112,3 @@ void YahooVerifyAccount::slotApply()
+ }
+ 
+ #include "yahooverifyaccount.moc"
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-
+diff --git a/protocols/yahoo/yahooverifyaccount.h b/protocols/yahoo/yahooverifyaccount.h
+index 86eee0697d0409c460c1c28ca3257c85fb04e058..b56afaa1292d8a38d50527b67b857db741f40148 100644
+--- a/protocols/yahoo/yahooverifyaccount.h
++++ b/protocols/yahoo/yahooverifyaccount.h
+@@ -53,6 +53,3 @@ public slots:
+ };
+ 
+ #endif
+-
+-// vim: set noet ts=4 sts=4 sw=4:
+-

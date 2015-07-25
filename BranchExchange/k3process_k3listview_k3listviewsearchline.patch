@@ -1,0 +1,43 @@
+commit 1b02e5fc24753385538cdbffbaae7168906f7486
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Sun Jun 14 00:58:37 2015 +0530
+
+    Port k3process, k3listview and k3listviewsearchline
+    
+    some k3 classes in libkopete/ui still remain
+
+diff --git a/libkopete/kopetecontact.cpp b/libkopete/kopetecontact.cpp
+index 670fba008f6b0aa134de1a97644cd42190a8e336..2117331269aba6fae979038912d8e8e0329c73eb 100644
+--- a/libkopete/kopetecontact.cpp
++++ b/libkopete/kopetecontact.cpp
+@@ -34,7 +34,7 @@
+ #include <kicon.h>
+ #include <kmenu.h>
+ #include <kmessagebox.h>
+-#include <k3listviewsearchline.h>
++#include <ktreewidgetsearchline.h>
+ 
+ #include "kopetecontactlist.h"
+ #include "kopeteglobal.h"
+@@ -58,7 +58,7 @@
+ #include <qimage.h>
+ #include <qmime.h>
+ #include <kvbox.h>
+-#include <k3listview.h>
++#include <QTreeWidget>
+ #include <qcheckbox.h>
+ 
+ 
+diff --git a/libkopete/tests/kopetemessage_test.cpp b/libkopete/tests/kopetemessage_test.cpp
+index 5cd37a1340345e208ffd29a111cb54af38e3bedc..af831e5cff98fe5a70c60a86ba8a3c81b4eeedfa 100644
+--- a/libkopete/tests/kopetemessage_test.cpp
++++ b/libkopete/tests/kopetemessage_test.cpp
+@@ -30,7 +30,7 @@
+ 
+ #include <kstandarddirs.h>
+ #include <kcomponentdata.h>
+-#include <k3process.h>
++#include <kprocess.h>
+ #include <kdebug.h>
+ 
+ #include "kopetemessage_test.moc"

@@ -1,0 +1,92 @@
+commit 1b3909d2d81042804a217bfe9f81b8caa38bdb86
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Mon Apr 27 23:28:17 2015 +0530
+
+    Remove needless k3listview includes
+    
+    REVIEW: 123489
+
+diff --git a/kopete/addaccountwizard/addaccountwizard.cpp b/kopete/addaccountwizard/addaccountwizard.cpp
+index cc9fc8a5a4960e6a1eb00100bca1aab4952e8ed2..fd0506fa8b4c09510137d114a68eb57ac9782667 100644
+--- a/kopete/addaccountwizard/addaccountwizard.cpp
++++ b/kopete/addaccountwizard/addaccountwizard.cpp
+@@ -24,7 +24,6 @@
+ #include <kcolorbutton.h>
+ #include <kdebug.h>
+ #include <kiconloader.h>
+-#include <k3listview.h>
+ #include <klocale.h>
+ #include <kmessagebox.h>
+ #include <kplugininfo.h>
+diff --git a/kopete/contactlist/kopetestatusgroupviewitem.h b/kopete/contactlist/kopetestatusgroupviewitem.h
+index e691e66c03cdd631c739875914f80403c5edebc7..fb4a20648e1b12d464e98c51b8638f7d618ef53f 100644
+--- a/kopete/contactlist/kopetestatusgroupviewitem.h
++++ b/kopete/contactlist/kopetestatusgroupviewitem.h
+@@ -20,7 +20,6 @@
+ #ifndef KOPETESTATUSGROUPVIEWITEM_H
+ #define KOPETESTATUSGROUPVIEWITEM_H
+ 
+-#include <k3listview.h>
+ #include "kopetemetacontact.h"
+ 
+ /**
+diff --git a/plugins/alias/aliaspreferences.cpp b/plugins/alias/aliaspreferences.cpp
+index 19e54202e8978e27e354cc2014ffde1d39714dc1..2c69306a7674208a44a2d5173c19d740599503d8 100644
+--- a/plugins/alias/aliaspreferences.cpp
++++ b/plugins/alias/aliaspreferences.cpp
+@@ -18,7 +18,6 @@
+ #include "aliaspreferences.h"
+ 
+ #include <kpushbutton.h>
+-#include <k3listview.h>
+ #include <klocale.h>
+ #include <klineedit.h>
+ #include <kglobal.h>
+diff --git a/plugins/alias/editaliasdialog.cpp b/plugins/alias/editaliasdialog.cpp
+index fed313c237de3fc18c8e4de298c74a641011675f..2b76353aaf3b1ec7452e5546cc63d0e1ff821471 100644
+--- a/plugins/alias/editaliasdialog.cpp
++++ b/plugins/alias/editaliasdialog.cpp
+@@ -21,7 +21,6 @@
+ #include <qwidget.h>
+ #include <qstring.h>
+ #include <klineedit.h>
+-#include <k3listview.h>
+ 
+ 
+ EditAliasDialog::EditAliasDialog( QWidget* parent )
+diff --git a/plugins/highlight/highlightpreferences.cpp b/plugins/highlight/highlightpreferences.cpp
+index 891dc22f90c0253e36cbdae6b36f4b62a33f5ff8..1cb176ff9b0d7b294f69328fbf2879956b7d684c 100644
+--- a/plugins/highlight/highlightpreferences.cpp
++++ b/plugins/highlight/highlightpreferences.cpp
+@@ -27,7 +27,6 @@
+ #include <klineedit.h>
+ #include <kparts/componentfactory.h>
+ #include <klocale.h>
+-#include <k3listview.h>
+ #include <kgenericfactory.h>
+ #include <kcolorbutton.h>
+ #include <kinputdialog.h>
+diff --git a/protocols/gadu/gadupubdir.cpp b/protocols/gadu/gadupubdir.cpp
+index 32d5a3dc425ac4d64aa124c62fa172910b3f2a98..c264519c44aa273039f0acb664e1a5df90b1640f 100644
+--- a/protocols/gadu/gadupubdir.cpp
++++ b/protocols/gadu/gadupubdir.cpp
+@@ -37,7 +37,6 @@
+ #include <kcombobox.h>
+ #include <krestrictedline.h>
+ #include <klineedit.h>
+-#include <k3listview.h>
+ #include <klocale.h>
+ 
+ GaduPublicDir::GaduPublicDir( GaduAccount* account, QWidget* parent )
+diff --git a/protocols/groupwise/ui/gwcontactproperties.cpp b/protocols/groupwise/ui/gwcontactproperties.cpp
+index c383585d1744053ffd09ee04a0629661839526ea..d9978575ea0a6dbd5e318de9b0ac40984c53eba8 100644
+--- a/protocols/groupwise/ui/gwcontactproperties.cpp
++++ b/protocols/groupwise/ui/gwcontactproperties.cpp
+@@ -22,7 +22,6 @@
+ #include <q3header.h>
+ #include <qlabel.h>
+ #include <qlineedit.h>
+-#include <k3listview.h>
+ #include <qmap.h>
+ #include <QMenu>
+ #include <QHeaderView>

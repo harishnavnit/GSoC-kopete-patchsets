@@ -1,0 +1,195 @@
+commit 23de21eec47a7344b6d5f32421d85fae54251642
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Fri Jul 10 12:02:16 2015 +0530
+
+    Remove Q3ListViews in autoreplace
+    
+    REVIEW: 124227
+
+diff --git a/plugins/autoreplace/autoreplacepreferences.cpp b/plugins/autoreplace/autoreplacepreferences.cpp
+index dab6645f0552e6066ae8da09a35654d7dbaca8db..146a4b85ab43712cb8621d08a7ce8b3d4754c34c 100644
+--- a/plugins/autoreplace/autoreplacepreferences.cpp
++++ b/plugins/autoreplace/autoreplacepreferences.cpp
+@@ -21,8 +21,7 @@
+ 
+ #include <qlayout.h>
+ #include <qpushbutton.h>
+-#include <q3header.h>
+-#include <q3listview.h>
++#include <QTreeWidget>
+ 
+ #include <klocale.h>
+ #include <klineedit.h>
+@@ -47,9 +46,12 @@ AutoReplacePreferences::AutoReplacePreferences( QWidget *parent, const QVariantL
+ 	l->addWidget( w );
+ 
+ 	// creates table columns (avoids new columns every time)
+-	preferencesDialog->m_list->addColumn( i18n("Text" ) );
+-	preferencesDialog->m_list->addColumn( i18n("Replacement" ) );
+-	preferencesDialog->m_list->header()->setStretchEnabled( true , 1 );
++	preferencesDialog->m_list->setColumnCount(2);
++	preferencesDialog->m_list->setHeaderLabel(i18n("Text"));
++	preferencesDialog->m_list->setHeaderLabel(i18n("Replacement"));
++	preferencesDialog->m_list->header()->setResizeMode(QHeaderView::Stretch);
++	preferencesDialog->m_list->setSelectionMode(QAbstractItemView::SingleSelection);
++	preferencesDialog->m_list->header()->setSortIndicatorShown(true);
+ 	
+ 	// connect SIGNALS/SLOTS
+ 	connect( preferencesDialog->m_add, SIGNAL(pressed()),
+@@ -86,6 +88,7 @@ AutoReplacePreferences::~AutoReplacePreferences()
+ // reload configuration reading it from kopeterc
+ void AutoReplacePreferences::load()
+ {
++	QStringList args;
+ 	m_config->load();
+ 
+ 	// Removes and deletes all the items in this list view and triggers an update
+@@ -96,8 +99,9 @@ void AutoReplacePreferences::load()
+ 	AutoReplaceConfig::WordsToReplace map = m_config->map();
+ 	for ( it = map.begin(); it != map.end(); ++it )
+ 	{
++		args = (QStringList() << it.key() << it.value());
+ 		// notice: insertItem is called automatically by the constructor
+-		new Q3ListViewItem( preferencesDialog->m_list, it.key(), it.value() );
++		new QTreeWidgetItem( preferencesDialog->m_list, args );
+ 	}
+ 
+ 	preferencesDialog->AutoReplaceIncoming->setChecked(m_config->autoReplaceIncoming());
+@@ -111,9 +115,10 @@ void AutoReplacePreferences::save()
+ {
+ 	// make a list reading all values from gui
+ 	AutoReplaceConfig::WordsToReplace newWords;
+-	for ( Q3ListViewItem * i = preferencesDialog->m_list->firstChild(); i != 0; i = i->nextSibling() )
+-		newWords[ i->text( 0 ) ] = i->text( 1 );
+-
++	for (int i = 0; i < preferencesDialog->m_list->topLevelItemCount(); ++i) {
++		QTreeWidgetItem *item = preferencesDialog->m_list->topLevelItem(i);
++		newWords[item->text(0)] = item->text(1);
++	}
+ 	// save the words list
+ 	m_config->setMap( newWords );
+ 
+@@ -130,19 +135,21 @@ void AutoReplacePreferences::slotAddCouple()
+ {
+ 	QString k = preferencesDialog->m_key->text();
+ 	QString v = preferencesDialog->m_value->text();
++	QStringList args = (QStringList() << k << v);
+ 	if ( !k.isEmpty() && !k.isNull() && !v.isEmpty() && !v.isNull() )
+ 	{
+-		Q3ListViewItem * lvi;
+-		Q3ListViewItem * oldLvi = 0;
++		QTreeWidgetItem * lvi;
++		QTreeWidgetItem * oldLvi = 0;
+ 		// see if we are replacing an existing entry
+-		oldLvi = preferencesDialog->m_list->findItem( k, 0 );
++		QList<QTreeWidgetItem *> oldLvi_List = preferencesDialog->m_list->findItems( k, Qt::MatchExactly, 0 );
++		oldLvi = oldLvi_List.first();		//SelectionMode::SingleSelection
+                 delete oldLvi;
+-		lvi = new Q3ListViewItem( preferencesDialog->m_list, k, v );
++		lvi = new QTreeWidgetItem( preferencesDialog->m_list, args );
+ 		// Triggers a size, geometry and content update
+ 		// during the next iteration of the event loop
+-		preferencesDialog->m_list->triggerUpdate();
++		preferencesDialog->m_list->update();
+ 		// select last added
+-		preferencesDialog->m_list->setSelected( lvi, true );
++		lvi->setSelected(true);
+ 	}
+ 
+ 	slotWidgetModified();
+@@ -153,12 +160,12 @@ void AutoReplacePreferences::slotEditCouple()
+ {
+ 	const QString k = preferencesDialog->m_key->text();
+ 	const QString v = preferencesDialog->m_value->text();
+-	Q3ListViewItem * lvi;
+-	if ( ( lvi = preferencesDialog->m_list->selectedItem() ) && !k.isEmpty() && !k.isNull() && !v.isEmpty() && !v.isNull() )
++	QTreeWidgetItem * lvi;
++	if ( ( lvi = preferencesDialog->m_list->currentItem() ) && !k.isEmpty() && !k.isNull() && !v.isEmpty() && !v.isNull() )
+ 	{
+ 		lvi->setText( 0, k );
+ 		lvi->setText( 1, v );
+-		preferencesDialog->m_list->triggerUpdate();
++		preferencesDialog->m_list->update();
+ 		slotWidgetModified();
+ 	}
+ }
+@@ -167,7 +174,7 @@ void AutoReplacePreferences::slotEditCouple()
+ // Single selection mode and an item is selected
+ void AutoReplacePreferences::slotRemoveCouple()
+ {
+-	delete preferencesDialog->m_list->selectedItem();
++	delete preferencesDialog->m_list->currentItem();
+ 
+ 	slotWidgetModified();
+ }
+@@ -175,13 +182,13 @@ void AutoReplacePreferences::slotRemoveCouple()
+ void AutoReplacePreferences::slotEnableAddEdit( const QString & keyText )
+ {
+ 	preferencesDialog->m_add->setEnabled( !keyText.isEmpty() );
+-	preferencesDialog->m_edit->setEnabled( !keyText.isEmpty() && preferencesDialog->m_list->selectedItem() );
++	preferencesDialog->m_edit->setEnabled( !keyText.isEmpty() && preferencesDialog->m_list->currentItem() );
+ }
+ 
+ void AutoReplacePreferences::slotSelectionChanged()
+ {
+-	Q3ListViewItem *selection = 0;
+-	if ( ( selection = preferencesDialog->m_list->selectedItem() ) )
++	QTreeWidgetItem *selection = 0;
++	if ( ( selection = preferencesDialog->m_list->currentItem() ) )
+ 	{
+ 		// enable the remove button
+ 		preferencesDialog->m_remove->setEnabled( true );
+@@ -204,14 +211,16 @@ void AutoReplacePreferences::slotWidgetModified()
+ 
+ void AutoReplacePreferences::defaults()
+ {
++    QStringList args;
+     preferencesDialog->m_list->clear();
+     m_config->loadDefaultAutoReplaceList();
+     AutoReplaceConfig::WordsToReplace::Iterator it;
+     AutoReplaceConfig::WordsToReplace map = m_config->map();
+     for ( it = map.begin(); it != map.end(); ++it )
+     {
++		args = (QStringList() << it.key() << it.value());
+         // notice: insertItem is called automatically by the constructor
+-        new Q3ListViewItem( preferencesDialog->m_list, it.key(), it.value() );
++		new QTreeWidgetItem( preferencesDialog->m_list, args );
+     }
+ 
+ 	preferencesDialog->AutoReplaceIncoming->setChecked(false);
+diff --git a/plugins/autoreplace/autoreplaceprefs.ui b/plugins/autoreplace/autoreplaceprefs.ui
+index 034013d41f90dd3d2e4c1e2dc94a0fbded8a7782..9b15a39d410d0036750e2eab00a3111eccfa2225 100644
+--- a/plugins/autoreplace/autoreplaceprefs.ui
++++ b/plugins/autoreplace/autoreplaceprefs.ui
+@@ -89,16 +89,10 @@
+        <number>6</number>
+       </property>
+       <item row="1" column="0" >
+-       <widget class="Q3ListView" name="m_list" >
+-        <property name="selectionMode" >
+-         <enum>Q3ListView::Single</enum>
+-        </property>
++       <widget class="QTreeWidget" name="m_list" >
+         <property name="allColumnsShowFocus" >
+          <bool>true</bool>
+         </property>
+-        <property name="showSortIndicator" >
+-         <bool>true</bool>
+-        </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+@@ -257,13 +251,6 @@
+    </item>
+   </layout>
+  </widget>
+-  <customwidgets>
+-  <customwidget>
+-   <class>Q3ListView</class>
+-   <extends>Q3Frame</extends>
+-   <header>q3listview.h</header>
+-  </customwidget>
+- </customwidgets>
+  <tabstops>
+   <tabstop>DotEndSentence</tabstop>
+   <tabstop>CapitalizeBeginningSentence</tabstop>

@@ -1,0 +1,76 @@
+diff --git a/protocols/groupwise/libgroupwise/chatroommanager.cpp b/protocols/groupwise/libgroupwise/chatroommanager.cpp
+index ebeda2cb81699daef94d883b49c4f0f25640766c..34c840a52b0a97d5a20255b2e385fce35e9e21a3 100644
+--- a/protocols/groupwise/libgroupwise/chatroommanager.cpp
++++ b/protocols/groupwise/libgroupwise/chatroommanager.cpp
+@@ -19,7 +19,6 @@
+ #include "chatroommanager.h"
+ 
+ #include <qmap.h>
+-#include <q3valuelist.h>
+ 
+ #include <kdebug.h>
+ 
+diff --git a/protocols/groupwise/libgroupwise/coreprotocol.cpp b/protocols/groupwise/libgroupwise/coreprotocol.cpp
+index 3cea3e5fd301658b1f2c009c5e2ac5eff52529ad..bf59142eedd581b934978514403cae5d290a9470 100644
+--- a/protocols/groupwise/libgroupwise/coreprotocol.cpp
++++ b/protocols/groupwise/libgroupwise/coreprotocol.cpp
+@@ -28,7 +28,6 @@
+ 
+ #include <qdatastream.h>
+ #include <qdatetime.h>
+-#include <q3textstream.h>
+ #include <QByteArray>
+ 
+
+diff --git a/protocols/groupwise/libgroupwise/coreprotocol.h b/protocols/groupwise/libgroupwise/coreprotocol.h
+index 23326708d5637b2d4667ee0fee6774064603295c..0be3230be19584ab54e56480d8d93210107a7835 100644
+--- a/protocols/groupwise/libgroupwise/coreprotocol.h
++++ b/protocols/groupwise/libgroupwise/coreprotocol.h
+@@ -22,7 +22,6 @@
+ #define GW_CORE_PROTOCOL_H
+ 
+ #include <QLatin1Char>
+-#include <q3cstring.h>
+ #include <qobject.h>
+ 
+ #include "gwfield.h"
+
+diff --git a/protocols/groupwise/libgroupwise/gwfield.cpp b/protocols/groupwise/libgroupwise/gwfield.cpp
+index 8608cd0a391cb640670c01ede23edd49f3061a58..67c1e31cbdc594cad38e220c90c4efb7626cb22c 100644
+--- a/protocols/groupwise/libgroupwise/gwfield.cpp
++++ b/protocols/groupwise/libgroupwise/gwfield.cpp
+@@ -19,8 +19,6 @@
+ 
+ #include "gwfield.h"
+ 
+-#include <q3cstring.h>
+-
+ #include "gwerror.h"
+ 
+ #ifdef LIBGW_USE_KDEBUG
+
+diff --git a/protocols/groupwise/libgroupwise/tasks/eventtask.h b/protocols/groupwise/libgroupwise/tasks/eventtask.h
+index 0a9eb68ff341d70ce253453a67756b9985c5713d..9b3268e100d5abfc9f787aa5a0dc8038a098f5e1 100644
+--- a/protocols/groupwise/libgroupwise/tasks/eventtask.h
++++ b/protocols/groupwise/libgroupwise/tasks/eventtask.h
+@@ -21,8 +21,6 @@
+ #ifndef GW_EVENTTASK_H
+ #define GW_EVENTTASK_H
+ 
+-#include <q3valuelist.h>
+-
+ #include "eventtransfer.h"
+ #include "task.h"
+ 
+diff --git a/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h b/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h
+index 3120a2f894ee1aeb30a8fd34b05b4edf18b8f617..ca7332c42e4fb35b914d4969c8777813310ca5aa 100644
+--- a/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h
++++ b/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h
+@@ -21,7 +21,6 @@
+ #ifndef POLLSEARCHRESULTSTASK_H
+ #define POLLSEARCHRESULTSTASK_H
+ 
+-#include <q3valuelist.h>
+ 
+ #include "gwerror.h"
+ 

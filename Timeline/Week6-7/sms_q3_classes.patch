@@ -1,0 +1,53 @@
+commit 24e3f569626a15fbb09c15fb0bae021423af18e3
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Thu Jul 2 00:42:44 2015 +0530
+
+    Do away with q3 classes from sms
+
+diff --git a/protocols/sms/services/gsmlib.cpp b/protocols/sms/services/gsmlib.cpp
+index 08b6736538183402c696187b815b6b7dd8819322..6931d9add5317c9af2f105987248c0c72c1f4b99 100644
+--- a/protocols/sms/services/gsmlib.cpp
++++ b/protocols/sms/services/gsmlib.cpp
+@@ -24,7 +24,7 @@
+ #include <qthread.h>
+ #include <qcheckbox.h>
+ #include <QCustomEvent>
+-#include <Q3GridLayout>
++#include <QGridLayout>
+ 
+ #include <klocale.h>
+ #include <kurlrequester.h>
+@@ -351,7 +351,7 @@ void GSMLib::disconnect()
+ 
+ }
+ 
+-void GSMLib::setWidgetContainer(QWidget* parent, Q3GridLayout* layout)
++void GSMLib::setWidgetContainer(QWidget* parent, QGridLayout* layout)
+ {
+ 	m_parent = parent;
+ 	m_layout = layout;
+diff --git a/protocols/sms/services/gsmlib.h b/protocols/sms/services/gsmlib.h
+index 7a150e98d3e54b040110b45914a3b96131ef6c5f..085e9f2fe1e23c8feb2c83a1473a905b8d84d8d4 100644
+--- a/protocols/sms/services/gsmlib.h
++++ b/protocols/sms/services/gsmlib.h
+@@ -16,7 +16,7 @@
+ #ifndef GSMLIB_H_039562406
+ #define GSMLIB_H_039562406
+ 
+-#include <Q3GridLayout>
++#include <QGridLayout>
+ #include <QCustomEvent>
+ #ifdef INCLUDE_SMSGSM
+ 
+diff --git a/protocols/sms/smsprotocol.h b/protocols/sms/smsprotocol.h
+index 90ac06886df348d6ba0cb81cc71692562790112a..c08bdc4cc42448c2abece55f81306230ea529dc9 100644
+--- a/protocols/sms/smsprotocol.h
++++ b/protocols/sms/smsprotocol.h
+@@ -20,7 +20,6 @@
+ #include <qmap.h>
+ #include <qmovie.h>
+ #include <qpixmap.h>
+-#include <q3ptrdict.h>
+ #include <qstringlist.h>
+ 
+ #include "kopeteprotocol.h"

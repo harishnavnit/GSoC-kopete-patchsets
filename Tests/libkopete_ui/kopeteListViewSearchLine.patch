@@ -1,0 +1,139 @@
+diff --git a/libkopete/ui/kopetelistviewsearchline.cpp b/libkopete/ui/kopetelistviewsearchline.cpp
+index 43bc4025e767c432b8d4b538903e19ce282de943..aa8971092e4ab89c83fbeab37dd9879da41db9d9 100644
+--- a/libkopete/ui/kopetelistviewsearchline.cpp
++++ b/libkopete/ui/kopetelistviewsearchline.cpp
+@@ -25,7 +25,7 @@ namespace UI {
+ namespace ListView {
+ 
+ SearchLine::SearchLine( QWidget *parent, ListView *listView )
+-	: K3ListViewSearchLine( parent, listView ), searchEmpty(true)
++	: KTreeWidgetSearchLine( parent, listView ), searchEmpty(true)
+ {
+ }
+ 
+@@ -39,40 +39,40 @@ void SearchLine::updateSearch( const QString &s )
+ 	// we copy a huge chunk of code here simply in order to override
+ 	// the way items are shown/hidden. KSearchLine rudely
+ 	// calls setVisible() on items with no way to customize this behaviour.
+-	
++
+ 	//BEGIN code from KSearchLine::updateSearch
+-		if( !listView() )
++		if( !TreeWidget() )
+ 		return;
+-	
++
+ 	search = s.isNull() ? text() : s;
+ 	searchEmpty = search.isEmpty();
+ 
+ 	// If there's a selected item that is visible, make sure that it's visible
+ 	// when the search changes too (assuming that it still matches).
+-	
+-	Q3ListViewItem *currentItem = 0;
+-	
++
++	QTreeWidgetItem *currentItem = 0;
++
+ 	switch( listView()->selectionMode() )
+ 	{
+-	case K3ListView::NoSelection:
++	case QAbstractItemView::NoSelection:
+ 		break;
+-	case K3ListView::Single:
+-		currentItem = listView()->selectedItem();
++	case QAbstractItemView::SingleSelection:
++		currentItem = listView()->currentItem();
+ 		break;
+ 	default:
+-		for( Q3ListViewItemIterator it(listView(), Q3ListViewItemIterator::Selected | Q3ListViewItemIterator::Visible);
++		for( QTreeWidgetItemIterator it(listView(), QTreeWidgetItemIterator::Selected | QTreeWidgetItemIterator::Visible);
+ 		     it.current() && !currentItem; ++it )
+ 		{
+ 			if( listView()->itemRect( it.current() ).isValid() )
+ 				currentItem = it.current();
+ 		}
+ 	}
+-	
++
+ 	if( keepParentsVisible() )
+ 		checkItemParentsVisible( listView()->firstChild() );
+ 	else
+ 		checkItemParentsNotVisible();
+-	
++
+ 	if( currentItem )
+ 		listView()->ensureItemVisible( currentItem );
+ 	//END code from KSearchLine::updateSearch
+@@ -81,10 +81,10 @@ void SearchLine::updateSearch( const QString &s )
+ void SearchLine::checkItemParentsNotVisible()
+ {
+ 	//BEGIN code from KSearchLine::checkItemParentsNotVisible
+-	Q3ListViewItemIterator it( listView() );
++	QTreeWidgetItemIterator it( listView() );
+ 	for( ; it.current(); ++it )
+ 	{
+-		Q3ListViewItem *item = it.current();
++		QTreeWidgetItem *item = it.current();
+ 		if( itemMatches( item, search ) )
+ 			setItemVisible( item, true );
+ 		else
+@@ -93,7 +93,7 @@ void SearchLine::checkItemParentsNotVisible()
+ 	//END code from KSearchLine::checkItemParentsNotVisible
+ }
+ 
+-bool SearchLine::checkItemParentsVisible( Q3ListViewItem *item )
++bool SearchLine::checkItemParentsVisible( QTreeWidgetItem *item )
+ {
+ 	//BEGIN code from KSearchLine::checkItemParentsVisible
+ 	bool visible = false;
+@@ -119,7 +119,7 @@ bool SearchLine::checkItemParentsVisible( Q3ListViewItem *item )
+ 	//END code from KSearchLine::checkItemParentsVisible
+ }
+ 
+-void SearchLine::setItemVisible( Q3ListViewItem *it, bool b )
++void SearchLine::setItemVisible( QTreeWidgetItem *it, bool b )
+ {
+ 	if( Item *item = dynamic_cast<Item*>( it ) )
+ 		item->setSearchMatch( b, !searchEmpty );
+diff --git a/libkopete/ui/kopetelistviewsearchline.h b/libkopete/ui/kopetelistviewsearchline.h
+index 13a7e9d785ba1a14fd21ec0cc3a790fb3be16858..8ece4204577ac75abaaeb96a943c32077512a578 100644
+--- a/libkopete/ui/kopetelistviewsearchline.h
++++ b/libkopete/ui/kopetelistviewsearchline.h
+@@ -18,7 +18,7 @@
+ #ifndef KOPETELISTVIEWSEARCHLINE_H
+ #define KOPETELISTVIEWSEARCHLINE_H
+ 
+-#include <k3listviewsearchline.h>
++#include <ktreewidgetsearchline.h>
+ #include <kopete_export.h>
+ 
+ namespace Kopete {
+@@ -27,7 +27,7 @@ namespace ListView {
+ 
+ class ListView;
+ 
+-class KOPETE_EXPORT SearchLine : public K3ListViewSearchLine
++class KOPETE_EXPORT SearchLine : public KTreeWidgetSearchLine
+ {
+ 	Q_OBJECT
+ public:
+@@ -43,14 +43,14 @@ public:
+ 	 * Destroys the SearchLine.
+ 	 */
+ 	~SearchLine();
+-	
++
+ 	void updateSearch( const QString &s );
+-	
++
+ protected:
+ 	virtual void checkItemParentsNotVisible();
+-	virtual bool checkItemParentsVisible( Q3ListViewItem *it );
+-	virtual void setItemVisible( Q3ListViewItem *it, bool visible );
+-	
++	virtual bool checkItemParentsVisible( QTreeWidgetItem *it );
++	virtual void setItemVisible( QTreeWidgetItem *it, bool visible );
++
+ private:
+ 	QString search;
+ 	bool searchEmpty;

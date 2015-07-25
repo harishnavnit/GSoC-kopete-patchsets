@@ -1,0 +1,1089 @@
+diff --git a/libkopete/ui/accountselector.cpp b/libkopete/ui/accountselector.cpp
+index 8e7cf9194f4d6664014117e80f04356bca03f810..0e9ebfbed258a4b97bc216620493deef47a6e9ca 100644
+--- a/libkopete/ui/accountselector.cpp
++++ b/libkopete/ui/accountselector.cpp
+@@ -19,22 +19,22 @@
+ #include "kopeteaccount.h"
+ #include "kopeteaccountmanager.h"
+ 
+-#include <q3header.h>
++#include <QHeaderView>
++#include <QTreeWidget>
+ #include <qlayout.h>
+ #include <qpixmap.h>
+ #include <QVBoxLayout>
+ 
+ #include <kdebug.h>
+-#include <k3listview.h>
+ 
+-class AccountListViewItem : public K3ListViewItem
++class AccountListViewItem : public QTreeWidgetItem
+ {
+ 	private:
+ 		Kopete::Account *mAccount;
+ 
+ 	public:
+-		AccountListViewItem(Q3ListView *parent, Kopete::Account *acc)
+-			: K3ListViewItem(parent)
++		AccountListViewItem(QTreeWidget *parent, Kopete::Account *acc)
++			: QTreeWidgetItem(parent)
+ 		{
+ 			if (acc==0)
+ 				return;
+@@ -43,7 +43,7 @@ class AccountListViewItem : public K3ListViewItem
+ 				"account name = " << acc->accountId() << endl;*/
+ 			mAccount = acc;
+ 			setText(0, mAccount->accountId());
+-			setPixmap(0, mAccount->accountIcon());
++			//setPixmap(0, mAccount->accountIcon());
+ 		}
+ 
+ 		Kopete::Account *account()
+@@ -58,7 +58,7 @@ class AccountListViewItem : public K3ListViewItem
+ class AccountSelectorPrivate
+ {
+ 	public:
+-		K3ListView *lv;
++		QTreeWidget *lv;
+ 		Kopete::Protocol *proto;
+ };
+ 
+@@ -93,10 +93,10 @@ void AccountSelector::initUI()
+ {
+ 	kDebug(14010) ;
+ 	QVBoxLayout *layout = new QVBoxLayout(this);
+-	d->lv = new K3ListView(this);
+-	d->lv->setFullWidth(true);
+-	d->lv->addColumn(QString::fromLatin1(""));
+-	d->lv->header()->hide();
++	d->lv = new QTreeWidget(this);
++	d->lv->header()->setResizeMode( QHeaderView::ResizeToContents );
++	d->lv->headerItem()->setText(0, QString::fromLatin1(""));
++	d->lv->headerItem()->setHidden(true);
+ 	layout->addWidget(d->lv);
+ 	setLayout(layout);
+ 	kDebug(14010) << "creating list of all accounts";
+@@ -106,8 +106,8 @@ void AccountSelector::initUI()
+ 			new AccountListViewItem(d->lv, account);
+ 	}
+ 
+-	connect(d->lv, SIGNAL(selectionChanged(Q3ListViewItem*)),
+-		this, SLOT(slotSelectionChanged(Q3ListViewItem*)));
++	connect(d->lv, SIGNAL(selectionChanged(QTreeWidgetItem*)),
++		this, SLOT(slotSelectionChanged(QTreeWidgetItem*)));
+ }
+ 
+ 
+@@ -116,12 +116,12 @@ void AccountSelector::setSelected(Kopete::Account *account)
+ 	if (account==0)
+ 		return;
+ 
+-	Q3ListViewItemIterator it(d->lv);
+-	while (it.current())
++	QTreeWidgetItemIterator it(d->lv);
++	while ( (*it) )
+ 	{
+-		if(static_cast<AccountListViewItem *>(it.current())->account() == account)
++		if(static_cast<AccountListViewItem *>( (*it) )->account() == account)
+ 		{
+-			it.current()->setSelected(true);
++			(*it)->setSelected(true);
+ 			return;
+ 		}
+ 	}
+@@ -133,10 +133,10 @@ bool AccountSelector::isSelected(Kopete::Account *account)
+ 	if (account==0)
+ 		return false;
+ 
+-	Q3ListViewItemIterator it(d->lv);
+-	while (it.current())
++	QTreeWidgetItemIterator it(d->lv);
++	while ( (*it) )
+ 	{
+-		if(static_cast<AccountListViewItem *>(it.current())->account() == account)
++		if(static_cast<AccountListViewItem *>( (*it) )->account() == account)
+ 			return true;
+ 	}
+ 	return false;
+@@ -147,13 +147,13 @@ Kopete::Account *AccountSelector::selectedItem()
+ {
+ 	//kDebug(14010) ;
+ 
+-	if (d->lv->selectedItem() != 0)
+-		return static_cast<AccountListViewItem *>(d->lv->selectedItem())->account();
++	if (d->lv->currentItem())
++		return static_cast<AccountListViewItem *>(d->lv->currentItem())->account();
+ 	return 0;
+ }
+ 
+ 
+-void AccountSelector::slotSelectionChanged(Q3ListViewItem *item)
++void AccountSelector::slotSelectionChanged(QTreeWidgetItem *item)
+ {
+ 	//kDebug(14010) ;
+ 	if (item != 0)
+diff --git a/libkopete/ui/accountselector.h b/libkopete/ui/accountselector.h
+index 80446c073c66c759d59552da5cdf3d31ded1e8e1..601ca883db45eb6bdec03ca3ea334ee7c5320921 100644
+--- a/libkopete/ui/accountselector.h
++++ b/libkopete/ui/accountselector.h
+@@ -23,9 +23,9 @@
+ #include "kopete_export.h"
+ 
+ class AccountSelectorPrivate;
+-class Q3ListViewItem;
++class QTreeWidgetItem;
+ /**
+- * \brief widget to select an account, based on K3ListView
++ * \brief widget to select an account, based on QTreeWidget
+  * @author Stefan Gehn <metz AT gehn.net>
+  */
+ class KOPETE_EXPORT AccountSelector : public QWidget
+@@ -37,7 +37,7 @@ Q_OBJECT
+ 		 * Constructor.
+ 		 *
+ 		 * The parameter @p parent is handled by
+-		 * K3ListView.
++		 * QTreeWidget.
+ 		 */
+ 		AccountSelector(QWidget *parent=0);
+ 
+@@ -45,7 +45,7 @@ Q_OBJECT
+ 		 * Constructor for a list of accounts for one protocol only
+ 		 *
+ 		 * The parameters @p parent is handled by
+-		 * K3ListView. @p proto defines the protocol whose accounts are
++		 * QTreeWidget. @p proto defines the protocol whose accounts are
+ 		 * shown in the list
+ 		 */
+ 		explicit AccountSelector(Kopete::Protocol *proto, QWidget *parent=0);
+@@ -79,7 +79,7 @@ Q_OBJECT
+ 		void selectionChanged(Kopete::Account *acc);
+ 
+ 	private slots:
+-		void slotSelectionChanged(Q3ListViewItem *item);
++		void slotSelectionChanged(QTreeWidgetItem *item);
+ 
+ 	private:
+ 		void initUI();
+diff --git a/libkopete/ui/addressbookselectordialog.cpp b/libkopete/ui/addressbookselectordialog.cpp
+index a545c8b5f2614b17bfccaac9d108e08f5b3e19ef..29ed601a23e2406829b258bd7725027133bb33a5 100644
+--- a/libkopete/ui/addressbookselectordialog.cpp
++++ b/libkopete/ui/addressbookselectordialog.cpp
+@@ -18,18 +18,22 @@
+ 
+ #include "addressbookselectordialog.h"
+ #include "addressbookselectorwidget.h"
++
+ #include <qdialog.h>
+-#include <q3listview.h>
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
++
+ #include <kvbox.h>
+ #include <klocale.h>
+ #include <kdialog.h>
++#include <ktreewidgetsearchline.h>
+ 
+ namespace Kopete
+ {
+ namespace UI
+ {
+ 
+-AddressBookSelectorDialog::AddressBookSelectorDialog(const QString &title, const QString &message, const QString &preSelectUid, QWidget *parent ) 
++AddressBookSelectorDialog::AddressBookSelectorDialog(const QString &title, const QString &message, const QString &preSelectUid, QWidget *parent )
+  : KDialog( parent )
+ {
+ 	setCaption( title );
+@@ -46,7 +50,7 @@ AddressBookSelectorDialog::AddressBookSelectorDialog(const QString &title, const
+ 	enableButtonOk(false);
+ 	//setHelp("linkaddressbook");
+ 	setHelp(QString(), "kopete");
+-	connect(m_addressBookSelectorWidget, SIGNAL(addresseeListClicked(Q3ListViewItem*)), SLOT(slotWidgetAddresseeListClicked(Q3ListViewItem*)));
++	connect(m_addressBookSelectorWidget, SIGNAL(addresseeListClicked(QTreeWidgetItem*)), SLOT(slotWidgetAddresseeListClicked(QTreeWidgetItem*)));
+ 
+ 	if ( !preSelectUid.isEmpty() )
+ 		m_addressBookSelectorWidget->selectAddressee(preSelectUid);
+@@ -70,7 +74,7 @@ KABC::Addressee AddressBookSelectorDialog::getAddressee( const QString &title, c
+ 	return adr;
+ }
+ 
+-void AddressBookSelectorDialog::slotWidgetAddresseeListClicked( Q3ListViewItem *addressee )
++void AddressBookSelectorDialog::slotWidgetAddresseeListClicked( QTreeWidgetItem *addressee )
+ {
+ 	// enable ok if a valid addressee is selected
+ 	enableButtonOk( addressee ? addressee->isSelected() : false);
+diff --git a/libkopete/ui/addressbookselectordialog.h b/libkopete/ui/addressbookselectordialog.h
+index 7fb402ce8290906185e39ec30d8c8cad278d7b30..d1b98006ea0fa78ca81c3c9a93755b02674f14be 100644
+--- a/libkopete/ui/addressbookselectordialog.h
++++ b/libkopete/ui/addressbookselectordialog.h
+@@ -22,8 +22,10 @@
+ #include <kdemacros.h>
+ #include "kopete_export.h"
+ #include <kdialog.h>
++#include <ktreewidgetsearchline.h>
+ 
+-#include <Qt3Support/Q3ListView>
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
+ 
+ namespace KABC
+ {
+@@ -80,7 +82,7 @@ public:
+ protected slots:
+ 	virtual void accept();
+ 	virtual void reject();
+-	void slotWidgetAddresseeListClicked( Q3ListViewItem *addressee );
++	void slotWidgetAddresseeListClicked( QTreeWidgetItem *addressee );
+ protected:
+ 	 AddressBookSelectorWidget *m_addressBookSelectorWidget;
+ };
+diff --git a/libkopete/ui/addressbookselectorwidget.cpp b/libkopete/ui/addressbookselectorwidget.cpp
+index 2a82b52190d2a4ceab92070d1913889e057db5cf..d557269f8ff67737c799df44b20c854b50837eb5 100644
+--- a/libkopete/ui/addressbookselectorwidget.cpp
++++ b/libkopete/ui/addressbookselectorwidget.cpp
+@@ -36,9 +36,12 @@
+ 
+ #include <kpushbutton.h>
+ #include <kdebug.h>
+-#include <k3listview.h>
+-#include <k3listviewsearchline.h>
++#include <QTreeWidget>
++#include <ktreewidgetsearchline.h>
+ #include <QLabel>
++#include <QList>
++#include <QHeaderView>
++#include <QAbstractItemView>
+ 
+ 
+ #include <addresseeitem.h>
+@@ -63,23 +66,24 @@ AddressBookSelectorWidget::AddressBookSelectorWidget( QWidget *parent, const cha
+ 	connect( addAddresseeButton, SIGNAL(clicked()), SLOT(slotAddAddresseeClicked()) );
+ 	connect( addAddresseeButton, SIGNAL(clicked()), SIGNAL(addAddresseeClicked()) );
+ 
+-	connect( addresseeListView, SIGNAL(clicked(Q3ListViewItem*)),
+-			SIGNAL(addresseeListClicked(Q3ListViewItem*)) );
+-	connect( addresseeListView, SIGNAL(selectionChanged(Q3ListViewItem*)),
+-			SIGNAL(addresseeListClicked(Q3ListViewItem*)) );
+-	connect( addresseeListView, SIGNAL(spacePressed(Q3ListViewItem*)),
+-			SIGNAL(addresseeListClicked(Q3ListViewItem*)) );
++	connect( addresseeListView, SIGNAL(clicked(QTreeWidgetItem*)),
++			SIGNAL(addresseeListClicked(QTreeWidgetItem*)) );
++	connect( addresseeListView, SIGNAL(selectionChanged(QTreeWidgetItem*)),
++			SIGNAL(addresseeListClicked(QTreeWidgetItem*)) );
++	connect( addresseeListView, SIGNAL(spacePressed(QTreeWidgetItem*)),
++			SIGNAL(addresseeListClicked(QTreeWidgetItem*)) );
+ 
+ 	connect( m_addressBook, SIGNAL(addressBookChanged(AddressBook*)), this, SLOT(slotLoadAddressees()) );
+ 
+ 	//We should add a clear KAction here.  But we can't really do that with a designer file :\  this sucks
+ 
+-	addresseeListView->setColumnText(2, KIcon(QLatin1String("internet-mail")), i18n("Email"));
++	addresseeListView->currentItem()->setIcon(2, QIcon(QLatin1String("internet-mail")));
++	addresseeListView->currentItem()->setText(2, i18n("Email"));
+ 
+-	kListViewSearchLine->setListView(addresseeListView);
++	kListViewSearchLine->setTreeWidget(addresseeListView);
+ 	slotLoadAddressees();
+ 
+-	addresseeListView->setColumnWidthMode(0, Q3ListView::Manual);
++	addresseeListView->header()->setResizeMode(QHeaderView::ResizeToContents);
+ 	addresseeListView->setColumnWidth(0, 63); //Photo is 60, and it's nice to have a small gap, imho
+ }
+ 
+@@ -93,7 +97,7 @@ AddressBookSelectorWidget::~AddressBookSelectorWidget()
+ KABC::Addressee AddressBookSelectorWidget::addressee()
+ {
+ 	AddresseeItem *item = 0L;
+-	item = static_cast<AddresseeItem *>( addresseeListView->selectedItem() );
++	item = static_cast<AddresseeItem *>( addresseeListView->currentItem() );
+ 
+ 	if ( item )
+ 		m_addressee = item->addressee();
+@@ -104,15 +108,15 @@ KABC::Addressee AddressBookSelectorWidget::addressee()
+ void AddressBookSelectorWidget::selectAddressee( const QString &uid )
+ {
+ 	// iterate trough list view
+-	Q3ListViewItemIterator it( addresseeListView );
+-	while( it.current() )
++	QTreeWidgetItemIterator it( addresseeListView );
++	while( (*it) )
+ 	{
+-		AddresseeItem *addrItem = (AddresseeItem *) it.current();
++		AddresseeItem *addrItem = (AddresseeItem *) ( (*it) );
+ 		if ( addrItem->addressee().uid() == uid )
+ 		{
+ 			// select the contact item
+-			addresseeListView->setSelected( addrItem, true );
+-			addresseeListView->ensureItemVisible( addrItem );
++			addrItem->setSelected( true );
++			addresseeListView->scrollToItem( addrItem, QAbstractItemView::EnsureVisible );
+ 		}
+ 		++it;
+ 	}
+@@ -120,7 +124,7 @@ void AddressBookSelectorWidget::selectAddressee( const QString &uid )
+ 
+ bool AddressBookSelectorWidget::addresseeSelected()
+ {
+-	return addresseeListView->selectedItem() ? true : false;
++	return addresseeListView->currentItem() ? true : false;
+ }
+ 
+ /**  Read in contacts from addressbook, and select the contact that is for our nick. */
+@@ -153,13 +157,16 @@ void AddressBookSelectorWidget::slotAddAddresseeClicked()
+ 		Kopete::KABCPersistence::self()->writeAddressBook( 0 );
+ 		slotLoadAddressees();
+ 		// select the addressee we just added
+-		Q3ListViewItem * added = addresseeListView->findItem( addresseeName, 1 );
++		QList<QTreeWidgetItem *> added = addresseeListView->findItems( addresseeName, 0, 1 );
++		foreach(QTreeWidgetItem *wi, added) {
++			wi->setSelected( true );
++			addresseeListView->scrollToItem(wi, QAbstractItemView::EnsureVisible);
++		}
+ 		kListViewSearchLine->clear();
+ 		kListViewSearchLine->updateSearch();
+ 		kListViewSearchLine->clear();
+ 		kListViewSearchLine->updateSearch();
+-		addresseeListView->setSelected( added, true );
+-		addresseeListView->ensureItemVisible( added );
++		//addresseeListView->scrollToItem( added, 0 );
+ 	}
+ }
+ 
+diff --git a/libkopete/ui/addressbookselectorwidget.h b/libkopete/ui/addressbookselectorwidget.h
+index 0f8aeffdb1b3c799c508094830d76d4df645b009..9ad8e9fc88c42252c02b71bcfc88c5e58542eccf 100644
+--- a/libkopete/ui/addressbookselectorwidget.h
++++ b/libkopete/ui/addressbookselectorwidget.h
+@@ -77,7 +77,7 @@ protected slots:
+ 	 */
+ 	void slotLoadAddressees();
+ signals:
+-	void addresseeListClicked( Q3ListViewItem *addressee );
++	void addresseeListClicked( QTreeWidgetItem *addressee );
+ 	void addAddresseeClicked();
+ };
+ 
+diff --git a/libkopete/ui/addressbookselectorwidget_base.ui b/libkopete/ui/addressbookselectorwidget_base.ui
+index f7e560c426cb6d24f301b4648008240318e9b44d..97deecdff13120cd0ebc4802afc5aa84709820e2 100644
+--- a/libkopete/ui/addressbookselectorwidget_base.ui
++++ b/libkopete/ui/addressbookselectorwidget_base.ui
+@@ -74,7 +74,7 @@
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2" >
+-    <widget class="K3ListView" name="addresseeListView" >
++    <widget class="QTreeWidget" name="addresseeListView" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <horstretch>0</horstretch>
+@@ -87,9 +87,6 @@
+      <property name="allColumnsShowFocus" >
+       <bool>true</bool>
+      </property>
+-     <property name="resizeMode" >
+-      <enum>Q3ListView::LastColumn</enum>
+-     </property>
+      <column>
+       <property name="text" >
+        <string>Photo</string>
+@@ -141,7 +138,7 @@
+       </widget>
+      </item>
+      <item>
+-      <widget class="K3ListViewSearchLine" native="1" name="kListViewSearchLine" />
++      <widget class="KTreeWidgetSearchLine" native="1" name="kListViewSearchLine" />
+      </item>
+     </layout>
+    </item>
+@@ -149,9 +146,9 @@
+  </widget>
+   <customwidgets>
+   <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
++   <class>QTreeWidget</class>
++   <extends>QTreeWidget</extends>
++   <header>QTreeWidget</header>
+   </customwidget>
+   <customwidget>
+    <class>QLabel</class>
+@@ -159,9 +156,9 @@
+    <header>QLabel</header>
+   </customwidget>
+   <customwidget>
+-   <class>K3ListViewSearchLine</class>
++   <class>KTreeWidgetSearchLine</class>
+    <extends></extends>
+-   <header>k3listviewsearchline.h</header>
++   <header>ktreewidgetsearchline.h</header>
+   </customwidget>
+  </customwidgets>
+  <tabstops>
+@@ -169,7 +166,7 @@
+   <tabstop>addAddresseeButton</tabstop>
+  </tabstops>
+  <includes>
+-  <include location="global" >k3listviewsearchline.h</include>
++  <include location="global" >ktreewidgetsearchline.h</include>
+  </includes>
+  <resources/>
+  <connections/>
+diff --git a/libkopete/ui/addresseeitem.cpp b/libkopete/ui/addresseeitem.cpp
+index e47f36c8c79e62ca593e282dc66b7874a12d789f..0d74e19a57f135772550bb2f91fbafeb43d5b660 100644
+--- a/libkopete/ui/addresseeitem.cpp
++++ b/libkopete/ui/addresseeitem.cpp
+@@ -21,15 +21,14 @@
+ 
+ #include <qlayout.h>
+ #include <qpushbutton.h>
+-#include <q3groupbox.h>
+ #include <qregexp.h>
+ #include <QPixmap>
+ 
+ #include <klocale.h>
+ #include <kdebug.h>
+ 
+-AddresseeItem::AddresseeItem( Q3ListView *parent, const KABC::Addressee &addressee) :
+-  K3ListViewItem( parent ),
++AddresseeItem::AddresseeItem( QTreeWidget *parent, const KABC::Addressee &addressee) :
++  QTreeWidgetItem( parent ),
+   mAddressee( addressee )
+ {
+   //We can't save showphoto because we don't have a d pointer
+@@ -39,7 +38,7 @@ AddresseeItem::AddresseeItem( Q3ListView *parent, const KABC::Addressee &address
+   if(pic.isIntern())
+   {
+     QPixmap qpixmap = QPixmap::fromImage( pic.data().scaledToWidth(60) ); //60 pixels seems okay.. kmail uses 60 btw
+-    setPixmap( Photo,qpixmap );
++    //setPixmap( Photo,qpixmap );
+   }
+ 
+   setText( Name, addressee.realName() );
+diff --git a/libkopete/ui/addresseeitem.h b/libkopete/ui/addresseeitem.h
+index 080f770a1d3c316b8fbf4e4a7fc9d1c130f756fc..be47e4e80345844f823443a053c7c6470128ebf9 100644
+--- a/libkopete/ui/addresseeitem.h
++++ b/libkopete/ui/addresseeitem.h
+@@ -22,14 +22,14 @@
+ #define ADDRESSEEITEM_H
+ 
+ #include <klineedit.h>
+-#include <k3listview.h>
++#include <QTreeWidget>
+ 
+ #include <kabc/addressbook.h>
+ 
+ /**
+   @short Special ListViewItem
+ */
+-class AddresseeItem : public K3ListViewItem
++class AddresseeItem : public QTreeWidgetItem
+ {
+   public:
+ 
+@@ -46,7 +46,7 @@ class AddresseeItem : public K3ListViewItem
+       @param parent    The parent listview.
+       @param addressee The associated addressee.
+     */
+-    AddresseeItem( Q3ListView *parent, const KABC::Addressee &addressee );
++    AddresseeItem( QTreeWidget *parent, const KABC::Addressee &addressee );
+    
+     /**
+       Returns the addressee.
+diff --git a/libkopete/ui/kopetelistview.cpp b/libkopete/ui/kopetelistview.cpp
+index 224fb50564c1a0144d90224ebe6afaf17505abc6..516956728afc8cc9dba580fdceb5ada319c9b9eb 100644
+--- a/libkopete/ui/kopetelistview.cpp
++++ b/libkopete/ui/kopetelistview.cpp
+@@ -78,7 +78,7 @@ public:
+ 	//! Auto scroll offset, the list will automatically start scrolling when the mouse gets this much pixel closer
+ 	//! to the upper or bottom edges of the listview.
+ 	int smoothAutoScrollOffset;
+-	//! The last pressed control of one of the scrollbars 
++	//! The last pressed control of one of the scrollbars
+ 	//! (next page, previous line)
+ 	QStyle::SubControl pressedControl;
+ 	//! Counter we'll use when waiting.This amount of timeouts is required before beginning to emulate continuous
+@@ -143,17 +143,17 @@ public:
+ };
+ 
+ ListView::ListView( QWidget *parent )
+- : K3ListView( parent ), d( new Private )
++ : QTreeWidget( parent ), d( new Private )
+ {
+ 	connect( &d->sortTimer, SIGNAL(timeout()), this, SLOT(slotSort()) );
+ 
+ 	// We have our own tooltips, don't use the default QListView ones
+ 	setShowToolTips( false );
+ 
+-	connect( this, SIGNAL(contextMenu(K3ListView*,Q3ListViewItem*,QPoint)),
+-	         SLOT(slotContextMenu(K3ListView*,Q3ListViewItem*,QPoint)) );
+-	connect( this, SIGNAL(doubleClicked(Q3ListViewItem*)),
+-	         SLOT(slotDoubleClicked(Q3ListViewItem*)) );
++	connect( this, SIGNAL(contextMenu(QTreeWidget*,QTreeWidgetItem*,QPoint)),
++	         SLOT(slotContextMenu(QTreeWidget*,QTreeWidgetItem*,QPoint)) );
++	connect( this, SIGNAL(doubleClicked(QTreeWidgetItem*)),
++	         SLOT(slotDoubleClicked(QTreeWidgetItem*)) );
+ 
+ 	// set up flags for nicer painting
+ 	setAttribute( Qt::WA_StaticContents, false );
+@@ -181,7 +181,7 @@ ListView::~ListView()
+ 	delete d;
+ }
+ 
+-void ListView::slotDoubleClicked( Q3ListViewItem *item )
++void ListView::slotDoubleClicked( QTreeWidgetItem *item )
+ {
+ 	kDebug( 14000 ) ;
+ 
+@@ -189,8 +189,8 @@ void ListView::slotDoubleClicked( Q3ListViewItem *item )
+ 		setOpen( item, !isOpen( item ) );
+ }
+ 
+-void ListView::slotContextMenu( K3ListView * /*listview*/,
+-	Q3ListViewItem *item, const QPoint &/*point*/ )
++void ListView::slotContextMenu( QTreeWidget * /*listview*/,
++	QTreeWidgetItem *item, const QPoint &/*point*/ )
+ {
+ 	if ( item && !item->isSelected() )
+ 	{
+@@ -229,7 +229,7 @@ void ListView::setShowTreeLines( bool bShowAsTree )
+  */
+ void ListView::keyPressEvent( QKeyEvent *e )
+ {
+-	Q3ListViewItem *item = currentItem();
++	QTreeWidgetItem *item = currentItem();
+ 	if ( (e->key() == Qt::Key_F2) && item && item->isVisible() )
+ 		rename( item, 0 );
+ 	else if ( (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return) && item && item->isVisible() )
+@@ -239,7 +239,7 @@ void ListView::keyPressEvent( QKeyEvent *e )
+ 		emitExecute( currentItem(), p, 0 );
+ 	}
+ 	else
+-		K3ListView::keyPressEvent(e);
++		QTreeWidget::keyPressEvent(e);
+ }
+ 
+ void ListView::delayedSort()
+@@ -279,7 +279,7 @@ void ListView::setSmoothScrolling( bool b )
+ 		// Install the timer
+ 		d->smoothScrollingTimer = startTimer( (int)d->smoothScrollingTimerInterval );
+ 		// If we want to enable smooth scrolling when item has changed with keypresses etc, we need this
+-		connect( this, SIGNAL(currentChanged(Q3ListViewItem*)), this, SLOT(slotCurrentChanged(Q3ListViewItem*)) );
++		connect( this, SIGNAL(currentChanged(QTreeWidgetItem *)), this, SLOT(slotCurrentChanged(QTreeWidgetItem *)) );
+ 		// Disable autoscroll, we will do it the smooth way.
+ 		d->smoothScrollDragAutoScroll = dragAutoScroll();
+ 		setDragAutoScroll( false );
+@@ -298,7 +298,7 @@ void ListView::setSmoothScrolling( bool b )
+ 		killTimer( (int)d->smoothScrollingTimer );
+ 		d->smoothScrollingTimer = 0;
+ 		// We don't need to list currentChanged anymore
+-		disconnect( this, SIGNAL(currentChanged(Q3ListViewItem*)), this, SLOT(slotCurrentChanged(Q3ListViewItem*)) );
++		disconnect( this, SIGNAL(currentChanged(QTreeWidgetItem *)), this, SLOT(slotCurrentChanged(QTreeWidgetItem *)) );
+ 		// Restore the autoscroll
+ 		setDragAutoScroll( d->smoothScrollDragAutoScroll );
+ 		// Kill the continuous press timers
+@@ -389,6 +389,14 @@ bool ListView::mouseNavigation() const
+ 	return d->mouseNavigation;
+ }
+ 
++void ListView::slotSort()
++{
++	int column_count = d->columnCount();
++	for (int i = 0; i < column_count; i++) {
++		d->sortItems(i, Qt::AscendingOrder);
++	}
++}
++
+ void ListView::timerEvent( QTimerEvent *e )
+ {
+ 	if( e->timerId() == d->smoothScrollingTimer )
+@@ -528,7 +536,7 @@ bool ListView::eventFilter( QObject *o, QEvent *e )
+ 
+ 			// OK, now we can understand which partion of the scroll bar is clicked, and do the requested thing
+ 			// animated. Then set the step sizes to zero, and pass the event to the slider, so that user can
+-			// feel like he/she really pressed the buttons (on click color change).		
++			// feel like he/she really pressed the buttons (on click color change).
+ 
+ 			switch( d->pressedControl )
+ 			{
+@@ -688,23 +696,23 @@ bool ListView::eventFilter( QObject *o, QEvent *e )
+ 					return false;
+ 
+ 				toolTip.second.translate( xAdjust, yAdjust );
+-	
++
+ 				QToolTip::showText( helpEvent->globalPos(), toolTip.first );
+ 			}
+ 		}
+ 
+-		return K3ListView::eventFilter( o, e ); // Pass the event to K3ListView
++		return QTreeWidget::eventFilter( o, e ); // Pass the event to QTreeWidget
+ 	}
+ 	else
+ 	{
+ // 		kDebug( 14000 ) << "Unhandled event: [" << o << "][" << o->name() << "][" << o->metaObject()->className() << "][" << e->type() << "]";
+-		return K3ListView::eventFilter( o, e ); // Pass the event to K3ListView
++		return QTreeWidget::eventFilter( o, e ); // Pass the event to QTreeWidget
+ 	}
+ 
+ 	return false;
+ }
+ 
+-void ListView::slotCurrentChanged( Q3ListViewItem *item )
++void ListView::slotCurrentChanged( QTreeWidgetItem *item )
+ {
+ 	if( !item ) return;
+ 	// If the current item changed due to mouse click then don't center it in the listview. Do this just for key presses.
+diff --git a/libkopete/ui/kopetelistview.h b/libkopete/ui/kopetelistview.h
+index 1c7bd139e5dec83fe514f93a6fe52a693231404b..5d1e8b40f2a2d12051da8607ddf73cc3ecb7e0f7 100644
+--- a/libkopete/ui/kopetelistview.h
++++ b/libkopete/ui/kopetelistview.h
+@@ -19,9 +19,12 @@
+ #ifndef KOPETE_LISTVIEW_H
+ #define KOPETE_LISTVIEW_H
+ 
+-#include <k3listview.h>
+ #include <kopete_export.h>
+ 
++#include <QObject>
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
++
+ class QKeyEvent;
+ class QTimerEvent;
+ class QEvent;
+@@ -34,7 +37,7 @@ namespace ListView {
+  * @author Engin AYDOGAN <engin@bzzzt.biz>
+  * @author Richard Smith <kde@metafoo.co.uk>
+  */
+-class KOPETE_EXPORT ListView : public K3ListView
++class KOPETE_EXPORT ListView : public QTreeWidget
+ {
+ 	Q_OBJECT
+ 
+@@ -132,7 +135,7 @@ public slots:
+ 	/**
+ 	 * Calls QListView::sort()
+ 	 */
+-	void slotSort() { sort(); }
++	void slotSort();
+ 
+ protected:
+ 	virtual void keyPressEvent( QKeyEvent *e );
+@@ -152,8 +155,8 @@ signals:
+ 	void visibleSizeChanged ();
+ 
+ private slots:
+-	void slotContextMenu(K3ListView*,Q3ListViewItem *item, const QPoint &point );
+-	void slotDoubleClicked( Q3ListViewItem *item );
++	void slotContextMenu(QTreeWidget*,QTreeWidgetItem *item, const QPoint &point );
++	void slotDoubleClicked( QTreeWidgetItem *item );
+ 	/**
+ 	 * To enable smooth scroll to focus on highlighted items when they are highlighted
+ 	 * by a key press we use this slot. slotCurrentChanged is connected to the currentChanged
+@@ -161,7 +164,7 @@ private slots:
+ 	 * by the mouse, then we don't do anything, since the item is on the viewable area already.
+ 	 * Otherwise, we focus (bring it to the center of the list) smoothly.
+ 	 */
+-	void slotCurrentChanged( Q3ListViewItem *item );
++	void slotCurrentChanged( QTreeWidgetItem *item );
+ 
+ private:
+ 	class Private;
+diff --git a/libkopete/ui/kopetelistviewitem.cpp b/libkopete/ui/kopetelistviewitem.cpp
+index d39aeaf4a8a8a995cda0767990351999d3065c1c..0dcd44fbb42ef3098573cd6c8702a556ebc22341 100644
+--- a/libkopete/ui/kopetelistviewitem.cpp
++++ b/libkopete/ui/kopetelistviewitem.cpp
+@@ -30,10 +30,10 @@
+ #include <qpainter.h>
+ #include <qrect.h>
+ #include <qtimer.h>
+-#include <q3header.h>
+ #include <qstyle.h>
+ #include <qstyleoption.h>
+ #include <QList>
++#include <QHeaderView>
+ 
+ #include <limits.h>
+ 
+@@ -955,14 +955,14 @@ bool Item::Private::animateChanges = true;
+ bool Item::Private::fadeVisibility = true;
+ bool Item::Private::foldVisibility = true;
+ 
+-Item::Item( Q3ListViewItem *parent, QObject *owner )
+- : QObject( owner ), K3ListViewItem( parent ), d( new Private(this) )
++Item::Item( QTreeWidgetItem *parent, QObject *owner )
++ : QObject( owner ), QTreeWidgetItem( parent ), d( new Private(this) )
+ {
+-	initLVI(parent->listView());
++	initLVI(parent->TreeWidget());
+ }
+ 
+-Item::Item( Q3ListView *parent, QObject *owner )
+- : QObject( owner ), K3ListViewItem( parent ), d( new Private(this) )
++Item::Item( QTreeWidget *parent, QObject *owner )
++ : QObject( owner ), QTreeWidgetItem( parent ), d( new Private(this) )
+ {
+ 	initLVI(parent);
+ }
+@@ -1149,7 +1149,7 @@ void Item::relayout()
+ 
+ void Item::setup()
+ {
+-	K3ListViewItem::setup();
++	QTreeWidgetItem::setup();
+ 	slotLayoutItems();
+ }
+ 
+@@ -1166,10 +1166,10 @@ void Item::setHeight( int )
+ 		    vis = Private::visibilityFoldSteps;
+ 		minHeight = (minHeight * vis) / Private::visibilityFoldSteps;
+ 	}
+-	K3ListViewItem::setHeight( minHeight );
++	QTreeWidgetItem::setHeight( minHeight );
+ }
+ 
+-int Item::width( const QFontMetrics &, const Q3ListView *lv, int c ) const
++int Item::width( const QFontMetrics &, const QTreeWidget *lv, int c ) const
+ {
+ 	// Qt computes the itemRect from this. we want the whole item to be
+ 	// clickable, so we return the widest we could possibly be.
+@@ -1181,7 +1181,7 @@ void Item::paintCell( QPainter *p, const QColorGroup &cg, int column, int width,
+ 	Q_UNUSED(align);
+ 	QPixmap back( width, height() );
+ 	QPainter paint( &back );
+-	//K3ListViewItem::paintCell( &paint, cg, column, width, align );
++	//QTreeWidgetItem::paintCell( &paint, cg, column, width, align );
+ 	// PASTED FROM KLISTVIEWITEM:
+ 	// set the alternate cell background colour if necessary
+ 	QColorGroup _cg = cg;
+@@ -1191,7 +1191,7 @@ void Item::paintCell( QPainter *p, const QColorGroup &cg, int column, int width,
+ 	{
+ 		QPainter *p = &paint;
+ 
+-		Q3ListView *lv = listView();
++		QTreeWidget *lv = listView();
+ 		if ( !lv )
+ 			return;
+ 		QFontMetrics fm( p->fontMetrics() );
+@@ -1227,9 +1227,9 @@ void Item::paintCell( QPainter *p, const QColorGroup &cg, int column, int width,
+ 			if ( lv->isEnabled() )
+ 				how |= QStyle::State_Enabled;
+ 
+-			lv->style()->drawComplexControl( QStyle::CC_Q3ListView,
++			lv->style()->drawComplexControl( QStyle::CC_QTreeWidget,
+ 						p, lv, QRect( 0, 0, width, height() ), lv->colorGroup(),
+-						how, QStyle::SC_Q3ListView, QStyle::SC_None,
++						how, QStyle::SC_QTreeWidget, QStyle::SC_None,
+ 						opt );
+ 		}
+ 
+@@ -1252,10 +1252,10 @@ void Item::paintCell( QPainter *p, const QColorGroup &cg, int column, int width,
+ 				textheight++;
+ 			if ( textheight < height() ) {
+ 				int w = lv->treeStepSize() / 2;
+-				lv->style()->drawComplexControl( QStyle::CC_Q3ListView, p, lv,
++				lv->style()->drawComplexControl( QStyle::CC_QTreeWidget, p, lv,
+ 								QRect( 0, textheight, w + 1, height() - textheight + 1 ), _cg,
+ 								lv->isEnabled() ? QStyle::State_Enabled : QStyle::State_Default,
+-								QStyle::SC_Q3ListViewExpand,
++								QStyle::SC_QTreeWidgetExpand,
+ 								(uint)QStyle::SC_All, QStyleOption( this ) );
+ 			}
+         }
+diff --git a/libkopete/ui/kopetelistviewitem.h b/libkopete/ui/kopetelistviewitem.h
+index dc7f907c5b650f03b4903296e3192dd239365890..0f8c93e1783fb61b3e5c365164933d4dee9b0c0c 100644
+--- a/libkopete/ui/kopetelistviewitem.h
++++ b/libkopete/ui/kopetelistviewitem.h
+@@ -19,12 +19,12 @@
+ #ifndef KOPETE_LISTVIEWITEM_H
+ #define KOPETE_LISTVIEWITEM_H
+ 
+-#include <k3listview.h>
+ #include <kopetecontact.h>
+ #include <kopete_export.h>
+ 
+ #include <utility>
+ 
++#include <QTreeWidget>
+ #include <QtGui/QPixmap>
+ 
+ namespace Kopete {
+@@ -393,12 +393,12 @@ public:
+  *
+  * @author Richard Smith <kde@metafoo.co.uk>
+  */
+-class KOPETE_EXPORT Item : public QObject, public K3ListViewItem, public ComponentBase
++class KOPETE_EXPORT Item : public QObject, public QTreeWidgetItem, public ComponentBase
+ {
+ 	Q_OBJECT
+ public:
+-	explicit Item( Q3ListView *parent, QObject *owner = 0 );
+-	explicit Item( Q3ListViewItem *parent, QObject *owner = 0 );
++	explicit Item( QTreeWidget *parent, QObject *owner = 0 );
++	explicit Item( QTreeWidgetItem *parent, QObject *owner = 0 );
+ 	~Item();
+ 
+ 	void repaint();
+@@ -422,7 +422,7 @@ public:
+ 	 */
+ 	static void setEffects( bool animation, bool fading, bool folding );
+ 
+-	int width( const QFontMetrics & fm, const Q3ListView * lv, int c ) const;
++	int width( const QFontMetrics & fm, const QTreeWidget * lv, int c ) const;
+ 
+ 	/**
+ 	 * Show or hide this item in a clean way depending on whether it matches
+@@ -437,7 +437,7 @@ protected:
+ 	void componentResized( Component *component );
+ 
+ 	void setHeight( int );
+-	
++
+ signals:
+ 	void visibilityChanged (bool visibility);
+ 
+diff --git a/libkopete/ui/kopetelistviewsearchline.cpp b/libkopete/ui/kopetelistviewsearchline.cpp
+index 43bc4025e767c432b8d4b538903e19ce282de943..aa8971092e4ab89c83fbeab37dd9879da41db9d9 100644
+--- a/libkopete/ui/kopetelistviewsearchline.cpp
++++ b/libkopete/ui/kopetelistviewsearchline.cpp
+@@ -25,7 +25,7 @@ namespace UI {
+ namespace ListView {
+ 
+ SearchLine::SearchLine( QWidget *parent, ListView *listView )
+-	: K3ListViewSearchLine( parent, listView ), searchEmpty(true)
++	: KTreeWidgetSearchLine( parent, listView ), searchEmpty(true)
+ {
+ }
+ 
+@@ -39,40 +39,40 @@ void SearchLine::updateSearch( const QString &s )
+ 	// we copy a huge chunk of code here simply in order to override
+ 	// the way items are shown/hidden. KSearchLine rudely
+ 	// calls setVisible() on items with no way to customize this behaviour.
+-	
++
+ 	//BEGIN code from KSearchLine::updateSearch
+-		if( !listView() )
++		if( !TreeWidget() )
+ 		return;
+-	
++
+ 	search = s.isNull() ? text() : s;
+ 	searchEmpty = search.isEmpty();
+ 
+ 	// If there's a selected item that is visible, make sure that it's visible
+ 	// when the search changes too (assuming that it still matches).
+-	
+-	Q3ListViewItem *currentItem = 0;
+-	
++
++	QTreeWidgetItem *currentItem = 0;
++
+ 	switch( listView()->selectionMode() )
+ 	{
+-	case K3ListView::NoSelection:
++	case QAbstractItemView::NoSelection:
+ 		break;
+-	case K3ListView::Single:
+-		currentItem = listView()->selectedItem();
++	case QAbstractItemView::SingleSelection:
++		currentItem = listView()->currentItem();
+ 		break;
+ 	default:
+-		for( Q3ListViewItemIterator it(listView(), Q3ListViewItemIterator::Selected | Q3ListViewItemIterator::Visible);
++		for( QTreeWidgetItemIterator it(listView(), QTreeWidgetItemIterator::Selected | QTreeWidgetItemIterator::Visible);
+ 		     it.current() && !currentItem; ++it )
+ 		{
+ 			if( listView()->itemRect( it.current() ).isValid() )
+ 				currentItem = it.current();
+ 		}
+ 	}
+-	
++
+ 	if( keepParentsVisible() )
+ 		checkItemParentsVisible( listView()->firstChild() );
+ 	else
+ 		checkItemParentsNotVisible();
+-	
++
+ 	if( currentItem )
+ 		listView()->ensureItemVisible( currentItem );
+ 	//END code from KSearchLine::updateSearch
+@@ -81,10 +81,10 @@ void SearchLine::updateSearch( const QString &s )
+ void SearchLine::checkItemParentsNotVisible()
+ {
+ 	//BEGIN code from KSearchLine::checkItemParentsNotVisible
+-	Q3ListViewItemIterator it( listView() );
++	QTreeWidgetItemIterator it( listView() );
+ 	for( ; it.current(); ++it )
+ 	{
+-		Q3ListViewItem *item = it.current();
++		QTreeWidgetItem *item = it.current();
+ 		if( itemMatches( item, search ) )
+ 			setItemVisible( item, true );
+ 		else
+@@ -93,7 +93,7 @@ void SearchLine::checkItemParentsNotVisible()
+ 	//END code from KSearchLine::checkItemParentsNotVisible
+ }
+ 
+-bool SearchLine::checkItemParentsVisible( Q3ListViewItem *item )
++bool SearchLine::checkItemParentsVisible( QTreeWidgetItem *item )
+ {
+ 	//BEGIN code from KSearchLine::checkItemParentsVisible
+ 	bool visible = false;
+@@ -119,7 +119,7 @@ bool SearchLine::checkItemParentsVisible( Q3ListViewItem *item )
+ 	//END code from KSearchLine::checkItemParentsVisible
+ }
+ 
+-void SearchLine::setItemVisible( Q3ListViewItem *it, bool b )
++void SearchLine::setItemVisible( QTreeWidgetItem *it, bool b )
+ {
+ 	if( Item *item = dynamic_cast<Item*>( it ) )
+ 		item->setSearchMatch( b, !searchEmpty );
+diff --git a/libkopete/ui/kopetelistviewsearchline.h b/libkopete/ui/kopetelistviewsearchline.h
+index 13a7e9d785ba1a14fd21ec0cc3a790fb3be16858..8ece4204577ac75abaaeb96a943c32077512a578 100644
+--- a/libkopete/ui/kopetelistviewsearchline.h
++++ b/libkopete/ui/kopetelistviewsearchline.h
+@@ -18,7 +18,7 @@
+ #ifndef KOPETELISTVIEWSEARCHLINE_H
+ #define KOPETELISTVIEWSEARCHLINE_H
+ 
+-#include <k3listviewsearchline.h>
++#include <ktreewidgetsearchline.h>
+ #include <kopete_export.h>
+ 
+ namespace Kopete {
+@@ -27,7 +27,7 @@ namespace ListView {
+ 
+ class ListView;
+ 
+-class KOPETE_EXPORT SearchLine : public K3ListViewSearchLine
++class KOPETE_EXPORT SearchLine : public KTreeWidgetSearchLine
+ {
+ 	Q_OBJECT
+ public:
+@@ -43,14 +43,14 @@ public:
+ 	 * Destroys the SearchLine.
+ 	 */
+ 	~SearchLine();
+-	
++
+ 	void updateSearch( const QString &s );
+-	
++
+ protected:
+ 	virtual void checkItemParentsNotVisible();
+-	virtual bool checkItemParentsVisible( Q3ListViewItem *it );
+-	virtual void setItemVisible( Q3ListViewItem *it, bool visible );
+-	
++	virtual bool checkItemParentsVisible( QTreeWidgetItem *it );
++	virtual void setItemVisible( QTreeWidgetItem *it, bool visible );
++
+ private:
+ 	QString search;
+ 	bool searchEmpty;
+diff --git a/libkopete/ui/metacontactselectorwidget.cpp b/libkopete/ui/metacontactselectorwidget.cpp
+index 96f9eb17b850db0a5925d94e9da531a6190da61b..80a588402fb0afa2a2c6db8e8e29729f8b2c5084 100644
+--- a/libkopete/ui/metacontactselectorwidget.cpp
++++ b/libkopete/ui/metacontactselectorwidget.cpp
+@@ -35,8 +35,8 @@
+ #include <kinputdialog.h>
+ #include <kpushbutton.h>
+ #include <kdebug.h>
+-#include <k3listview.h>
+-#include <k3listviewsearchline.h>
++#include <QTreeWidget>
++#include <ktreewidgetsearchline.h>
+ 
+ #include "kopetelistview.h"
+ #include "kopetelistviewsearchline.h"
+@@ -68,7 +68,7 @@ public:
+ };
+ 
+ 
+-MetaContactSelectorWidgetLVI::MetaContactSelectorWidgetLVI(Kopete::MetaContact *mc, Q3ListView *parent, QObject *owner) : Kopete::UI::ListView::Item(parent, owner) , d( new Private() )
++MetaContactSelectorWidgetLVI::MetaContactSelectorWidgetLVI(Kopete::MetaContact *mc, QTreeWidget *parent, QObject *owner) : Kopete::UI::ListView::Item(parent, owner) , d( new Private() )
+ {
+ 	d->metaContact = mc;
+ 	d->photoSize = 60;
+@@ -200,21 +200,21 @@ MetaContactSelectorWidget::MetaContactSelectorWidget( QWidget *parent, const cha
+ 	d->widget->setupUi(w);
+ 	l->addWidget(w);
+ 
+-	connect( d->widget->metaContactListView, SIGNAL(clicked(Q3ListViewItem*)),
+-			SIGNAL(metaContactListClicked(Q3ListViewItem*)) );
+-	connect( d->widget->metaContactListView, SIGNAL(selectionChanged(Q3ListViewItem*)),
+-			SIGNAL(metaContactListClicked(Q3ListViewItem*)) );
+-	connect( d->widget->metaContactListView, SIGNAL(spacePressed(Q3ListViewItem*)),
+-			SIGNAL(metaContactListClicked(Q3ListViewItem*)) );
++	connect( d->widget->metaContactListView, SIGNAL(clicked(QTreeWidgetItem*)),
++			SIGNAL(metaContactListClicked(QTreeWidgetItem*)) );
++	connect( d->widget->metaContactListView, SIGNAL(selectionChanged(QTreeWidgetItem*)),
++			SIGNAL(metaContactListClicked(QTreeWidgetItem*)) );
++	connect( d->widget->metaContactListView, SIGNAL(spacePressed(QTreeWidgetItem*)),
++			SIGNAL(metaContactListClicked(QTreeWidgetItem*)) );
+ 
+ 	connect( Kopete::ContactList::self(), SIGNAL(metaContactAdded(Kopete::MetaContact*)), this, SLOT(slotLoadMetaContacts()) );
+ 
+ 	d->widget->kListViewSearchLine->setListView(d->widget->metaContactListView);
+ 	d->widget->kListViewSearchLine->setFocus();
+ 	d->widget->metaContactListView->setFullWidth( true );
+-	d->widget->metaContactListView->addColumn( i18n( "Contacts" ), 0 );
++	d->widget->metaContactListView->headerItem()->setText(0, i18n( "Contacts" ), 0 );
+ 	d->widget->metaContactListView->header()->hide();
+-	d->widget->metaContactListView->setColumnWidthMode(0, Q3ListView::Maximum);
++	d->widget->metaContactListView->setColumnWidthMode(0, QTreeWidget::Maximum);
+ 	slotLoadMetaContacts();
+ }
+ 
+@@ -241,7 +241,7 @@ Kopete::MetaContact* MetaContactSelectorWidget::metaContact()
+ void MetaContactSelectorWidget::selectMetaContact( Kopete::MetaContact *mc )
+ {
+ 	// iterate trough list view
+-	Q3ListViewItemIterator it( d->widget->metaContactListView );
++	QTreeWidgetItemIterator it( d->widget->metaContactListView );
+ 	while( it.current() )
+ 	{
+ 		MetaContactSelectorWidgetLVI *item = (MetaContactSelectorWidgetLVI *) it.current();
+@@ -289,7 +289,7 @@ void MetaContactSelectorWidget::slotLoadMetaContacts()
+ 		}
+ 	}
+ 
+-	d->widget->metaContactListView->sort();
++	d->widget->metaContactListView->slotSort();
+ }
+ 
+ void MetaContactSelectorWidget::setLabelMessage( const QString &msg )
+diff --git a/libkopete/ui/metacontactselectorwidget.h b/libkopete/ui/metacontactselectorwidget.h
+index 1086eaeb232605a5879709f2889ae0e1d746b3b0..38b115487d0003bc588fb1469ea3643014f4c2bf 100644
+--- a/libkopete/ui/metacontactselectorwidget.h
++++ b/libkopete/ui/metacontactselectorwidget.h
+@@ -67,7 +67,7 @@ protected slots:
+ 	 */
+ 	void slotLoadMetaContacts();
+ signals:
+-	void metaContactListClicked( Q3ListViewItem *mc );
++	void metaContactListClicked( QTreeWidgetItem *mc );
+ private:
+ 	class Private;
+ 	Private * const d;
+@@ -81,7 +81,7 @@ class MetaContactSelectorWidgetLVI : public Kopete::UI::ListView::Item
+ {
+ 	Q_OBJECT
+ public:
+-	MetaContactSelectorWidgetLVI(Kopete::MetaContact *mc, Q3ListView *parent, QObject *owner = 0 );
++	MetaContactSelectorWidgetLVI(Kopete::MetaContact *mc, QTreeWidget *parent, QObject *owner = 0 );
+ 	virtual ~MetaContactSelectorWidgetLVI();
+ 	Kopete::MetaContact* metaContact();
+ 	virtual QString text ( int column ) const;
+diff --git a/libkopete/ui/metacontactselectorwidget_base.ui b/libkopete/ui/metacontactselectorwidget_base.ui
+index 90b7d162ac5400f09fbf5acc3de9cb8ed11b6bfe..91312719903c996c1076e647cd620d6b7b456427 100644
+--- a/libkopete/ui/metacontactselectorwidget_base.ui
++++ b/libkopete/ui/metacontactselectorwidget_base.ui
+@@ -101,7 +101,6 @@
+  <includes>
+   <include location="global" >kopetelistviewsearchline.h</include>
+   <include location="global" >kopetelistview.h</include>
+-  <include location="global" >q3header.h</include>
+  </includes>
+  <resources/>
+  <connections/>

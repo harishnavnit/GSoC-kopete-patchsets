@@ -1,0 +1,120 @@
+commit f893865a57be1aaaa1fba16e91d6ca6bd001dd36
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Thu May 28 20:40:38 2015 +0530
+
+    k3activelabel --> QLabel in libkopete
+
+diff --git a/libkopete/kopetepassword.cpp b/libkopete/kopetepassword.cpp
+index 715b173a33bf737544cc31bef30c280de91dd2cf..9cb3c9242eb1ed96c5de4cef279ddeb147321f60 100644
+--- a/libkopete/kopetepassword.cpp
++++ b/libkopete/kopetepassword.cpp
+@@ -24,7 +24,7 @@
+ #include <QLabel>
+ #include <QLineEdit>
+ #include <QCheckBox>
+-#include <k3activelabel.h>
++#include <QLabel>
+ #include <kconfig.h>
+ #include <kdebug.h>
+ #include <kdialog.h>
+diff --git a/libkopete/ui/addressbookselectorwidget.cpp b/libkopete/ui/addressbookselectorwidget.cpp
+index 90558bf66dd797be608a7f135fada03668e14154..606be95c7eea160bd89b2f517f7aaea554441bf7 100644
+--- a/libkopete/ui/addressbookselectorwidget.cpp
++++ b/libkopete/ui/addressbookselectorwidget.cpp
+@@ -35,11 +35,10 @@
+ #include <kinputdialog.h>
+ 
+ #include <kpushbutton.h>
+-#include <k3activelabel.h>
+ #include <kdebug.h>
+ #include <k3listview.h>
+ #include <k3listviewsearchline.h>
+-#include <qlabel.h>
++#include <QLabel>
+ 
+ 
+ #include <addresseeitem.h>
+@@ -138,7 +137,9 @@ void AddressBookSelectorWidget::slotLoadAddressees()
+ 
+ void AddressBookSelectorWidget::setLabelMessage( const QString &msg )
+ {
+-	lblHeader->setPlainText(msg);
++	lblHeader->setTextFormat(Qt::PlainText);
++	lblHeader->setText(msg);
++	lblHeader->setTextInteractionFlags(Qt::NoTextInteraction);
+ }
+ 
+ void AddressBookSelectorWidget::slotAddAddresseeClicked()
+diff --git a/libkopete/ui/addressbookselectorwidget_base.ui b/libkopete/ui/addressbookselectorwidget_base.ui
+index de6ec4d24cd10eebfebc11b4fb9839be206552dc..f7e560c426cb6d24f301b4648008240318e9b44d 100644
+--- a/libkopete/ui/addressbookselectorwidget_base.ui
++++ b/libkopete/ui/addressbookselectorwidget_base.ui
+@@ -64,7 +64,7 @@
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2" >
+-    <widget class="K3ActiveLabel" native="1" name="lblHeader" >
++    <widget class="QLabel" native="1" name="lblHeader" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Maximum" hsizetype="Expanding" >
+        <horstretch>0</horstretch>
+@@ -154,9 +154,9 @@
+    <header>k3listview.h</header>
+   </customwidget>
+   <customwidget>
+-   <class>K3ActiveLabel</class>
++   <class>QLabel</class>
+    <extends></extends>
+-   <header>k3activelabel.h</header>
++   <header>QLabel</header>
+   </customwidget>
+   <customwidget>
+    <class>K3ListViewSearchLine</class>
+diff --git a/libkopete/ui/metacontactselectorwidget.cpp b/libkopete/ui/metacontactselectorwidget.cpp
+index c2d8521b9c76aee0854c9ea27124b6f8baa40409..5742741586bfe116ad6c8fa78ee57ec6bb7762e2 100644
+--- a/libkopete/ui/metacontactselectorwidget.cpp
++++ b/libkopete/ui/metacontactselectorwidget.cpp
+@@ -34,7 +34,6 @@
+ #include <kdeversion.h>
+ #include <kinputdialog.h>
+ #include <kpushbutton.h>
+-#include <k3activelabel.h>
+ #include <kdebug.h>
+ #include <k3listview.h>
+ #include <k3listviewsearchline.h>
+@@ -295,7 +294,9 @@ void MetaContactSelectorWidget::slotLoadMetaContacts()
+ 
+ void MetaContactSelectorWidget::setLabelMessage( const QString &msg )
+ {
+-	d->widget->lblHeader->setPlainText(msg);
++	d->widget->lblHeader->setTextFormat(Qt::PlainText);
++	d->widget->lblHeader->setText(msg);
++	d->widget->lblHeader->setTextInteractionFlags(Qt::NoTextInteraction);
+ }
+ 
+ } // namespace UI
+diff --git a/libkopete/ui/metacontactselectorwidget_base.ui b/libkopete/ui/metacontactselectorwidget_base.ui
+index 1f69a48c559ab3f002700068ec6a6c200a9242e3..90b7d162ac5400f09fbf5acc3de9cb8ed11b6bfe 100644
+--- a/libkopete/ui/metacontactselectorwidget_base.ui
++++ b/libkopete/ui/metacontactselectorwidget_base.ui
+@@ -28,7 +28,7 @@
+     <number>6</number>
+    </property>
+    <item>
+-    <widget class="K3ActiveLabel" name="lblHeader" >
++    <widget class="QLabel" name="lblHeader" >
+      <property name="sizePolicy" >
+                 <sizepolicy>
+                     <hsizetype>7</hsizetype>
+@@ -84,9 +84,9 @@
+    <pixmap></pixmap>
+ 	</customwidget>
+ 	<customwidget>
+-		<class>K3ActiveLabel</class>
++		<class>QLabel</class>
+    <extends></extends>
+-		<header>k3activelabel.h</header>
++		<header>QLabel</header>
+    <container>0</container>
+    <pixmap></pixmap>
+   </customwidget>

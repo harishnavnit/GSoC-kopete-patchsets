@@ -1,0 +1,215 @@
+diff --git a/kopete/contactlist/kopeteaddrbookexport.cpp b/kopete/contactlist/kopeteaddrbookexport.cpp
+index 8f285bf23dcad7336bd05b2697a300e983ceca73..4f11b6a701a0ebd744676c2ecf1d46ed4f2636cd 100644
+--- a/kopete/contactlist/kopeteaddrbookexport.cpp
++++ b/kopete/contactlist/kopeteaddrbookexport.cpp
+@@ -27,7 +27,6 @@
+ 
+ #include <kdialog.h>
+ #include <kiconloader.h>
+-#include <k3listbox.h>
+ #include <klocale.h>
+ 
+ #include "kopeteaccount.h"
+@@ -41,6 +40,11 @@ KopeteAddressBookExport::KopeteAddressBookExport( QWidget *parent, Kopete::MetaC
+ 	mParent = parent;
+ 	mAddressBook = KABC::StdAddressBook::self();
+ 	mMetaContact = mc;
++
++	mWorkPhones->setSelectionMode(QAbstractItemView::ExtendedSelection);
++	mMobilePhones->setSelectionMode(QAbstractItemView::ExtendedSelection);
++	mHomePhones->setSelectionMode(QAbstractItemView::ExtendedSelection);
++	mEmails->setSelectionMode(QAbstractItemView::ExtendedSelection);
+ }
+ 
+ KopeteAddressBookExport::~KopeteAddressBookExport()
+@@ -91,12 +95,17 @@ void KopeteAddressBookExport::fetchKABCData()
+ 		
+ 		// emails
+ 		QStringList emails = mAddressee.emails();
++		unsigned int rowCount = 0;
+ 		numEmails = emails.count();
+-		for ( QStringList::Iterator it = emails.begin(); it != emails.end(); ++it )
+-			mEmails->insertItem( mAddrBookIcon, *it );
++		for ( QStringList::Iterator it = emails.begin(); it != emails.end(); ++it ) {
++			mEmails->insertItem(rowCount, *it);
++			mEmails->item(rowCount)->setIcon(QIcon(mAddrBookIcon));
++			++rowCount;
++		}
+ 		if ( numEmails == 0 )
+ 		{
+-			mEmails->insertItem( mAddrBookIcon, i18n("<Not Set>") );
++			mEmails->item(-1)->setIcon(mAddrBookIcon);
++			mEmails->addItem(i18n("<Not Set>"));
+ 			numEmails = 1;
+ 		}
+ 		
+@@ -107,16 +116,20 @@ void KopeteAddressBookExport::fetchKABCData()
+ 	}
+ }
+ 
+-void KopeteAddressBookExport::fetchPhoneNumbers( K3ListBox * listBox, KABC::PhoneNumber::Type type, uint& counter )
++void KopeteAddressBookExport::fetchPhoneNumbers( QListWidget * listBox, KABC::PhoneNumber::Type type, uint& counter )
+ {
+ 	KABC::PhoneNumber::List phones = mAddressee.phoneNumbers( type );
+ 	counter = phones.count();
+ 	KABC::PhoneNumber::List::Iterator it;
+-	for ( it = phones.begin(); it != phones.end(); ++it )
+-		listBox->insertItem( mAddrBookIcon, (*it).number() );
++	unsigned int rowCount = 0;
++	for ( it = phones.begin(); it != phones.end(); ++it ) {
++		listBox->item(rowCount)->setIcon(QIcon(mAddrBookIcon));
++		listBox->insertItem(rowCount, (*it).number());
++	}
+ 	if ( counter == 0 )
+ 	{
+-		listBox->insertItem( mAddrBookIcon, i18n("<Not Set>") );
++		listBox->item(-1)->setIcon(mAddrBookIcon);
++		listBox->addItem(i18n("<Not Set>"));
+ 		counter = 1;
+ 	}
+ }
+@@ -156,12 +169,13 @@ void KopeteAddressBookExport::populateIM( const Kopete::Contact *contact, const
+ 	}	
+ }
+ 
+-void KopeteAddressBookExport::populateIM( const Kopete::Contact *contact, const QPixmap &icon, K3ListBox *listBox, const Kopete::PropertyTmpl &property )
++void KopeteAddressBookExport::populateIM( const Kopete::Contact *contact, const QPixmap &icon, QListWidget *listBox, const Kopete::PropertyTmpl &property )
+ {
+ 	Kopete::Property prop = contact->property( property );
+ 	if ( !prop.isNull() )
+ 	{
+-		listBox->insertItem( icon, prop.value().toString() );
++		listBox->item(-1)->setIcon(QIcon(icon));
++		listBox->insertItem(-1, prop.value().toString());
+ 	}	
+ }
+ 
+@@ -278,24 +292,24 @@ bool KopeteAddressBookExport::newValue( QComboBox *combo )
+ 			( combo->itemText( combo->currentIndex() ) == combo->itemText( 0 ) ) );
+ }
+ 
+-QStringList KopeteAddressBookExport::newValues( K3ListBox *listBox, uint counter )
++QStringList KopeteAddressBookExport::newValues( QListWidget *listBox, uint counter )
+ {
+ 	QStringList newValues;
+ 	// need to iterate all items except those from KABC and check if selected and not same as the first
+ 	// counter is the number of KABC items, and hence the index of the first non KABC item
+-	for ( uint i = counter; i < listBox->count(); ++i )
++	for ( int i = counter; i < listBox->count(); ++i )
+ 	{
+-		if ( listBox->isSelected( i ) )
++		if ( listBox->item(i)->isSelected() )
+ 		{
+ 			// check whether it matches any KABC item
+ 			bool duplicate = false;
+-			for ( uint j = 0; j < counter; ++j )
++			for ( int j = 0; j < counter; ++j )
+ 			{
+-				if ( listBox->text( i ) == listBox->text( j ) )
++				if ( listBox->item(i)->text() == listBox->item(j)->text() )
+ 					duplicate = true;
+ 			}
+ 			if ( !duplicate )
+-				newValues.append( listBox->text( i ) );
++				newValues.append( listBox->item(i)->text() );
+ 		}
+ 	}
+ 	return newValues;
+diff --git a/kopete/contactlist/kopeteaddrbookexport.h b/kopete/contactlist/kopeteaddrbookexport.h
+index 4774ba8efe89cea5282a9566ec685a913012cece..bc94ecca9309b1651d26c822bad47db8e1c12a4f 100644
+--- a/kopete/contactlist/kopeteaddrbookexport.h
++++ b/kopete/contactlist/kopeteaddrbookexport.h
+@@ -27,9 +27,9 @@
+ #include "kopeteproperty.h"
+ #include "ui_kopeteaddrbookexportui.h"
+ #include <QPixmap>
++#include <QListWidget>
+ 
+ class KDialog;
+-class K3ListBox;
+ 
+ namespace Kopete
+ {
+@@ -67,7 +67,7 @@ protected:
+ 	/**
+ 	 * Populate a listbox with a given type of phone number
+ 	 */
+-	void fetchPhoneNumbers( K3ListBox * listBox, KABC::PhoneNumber::Type type, uint& counter );
++	void fetchPhoneNumbers( QListWidget * listBox, KABC::PhoneNumber::Type type, uint& counter );
+ 	/**
+ 	 * Populate the GUI with data from IM systems
+ 	 */
+@@ -81,11 +81,11 @@ protected:
+ 	 * Populate a listbox with a contact's IM data
+ 	 */
+ 	void populateIM( const Kopete::Contact *contact, const QPixmap &icon, 
+-			K3ListBox *combo, const Kopete::PropertyTmpl &property );
++			QListWidget *combo, const Kopete::PropertyTmpl &property );
+ 	
+ 	/** Check the selected item is not the first (existing KABC) item, or the same as it */
+ 	bool newValue( QComboBox *combo );
+-	QStringList newValues( K3ListBox *listBox, uint counter );
++	QStringList newValues( QListWidget *listBox, uint counter );
+ 	
+ 	// the GUI
+ 	QWidget *mParent;
+diff --git a/kopete/contactlist/kopeteaddrbookexportui.ui b/kopete/contactlist/kopeteaddrbookexportui.ui
+index ec6ec9bc5c693b6df06499062defd1865a0a9c4f..db26ea463525d1c4840e673fbfaf48f12caf7e70 100644
+--- a/kopete/contactlist/kopeteaddrbookexportui.ui
++++ b/kopete/contactlist/kopeteaddrbookexportui.ui
+@@ -52,25 +52,13 @@
+     </widget>
+    </item>
+    <item row="5" column="1" >
+-    <widget class="K3ListBox" name="mWorkPhones" >
+-     <property name="selectionMode" >
+-      <enum>Q3ListBox::Extended</enum>
+-     </property>
+-    </widget>
++    <widget class="QListWidget" name="mWorkPhones" > </widget>
+    </item>
+    <item row="6" column="1" >
+-    <widget class="K3ListBox" name="mMobilePhones" >
+-     <property name="selectionMode" >
+-      <enum>Q3ListBox::Extended</enum>
+-     </property>
+-    </widget>
++    <widget class="QListWidget" name="mMobilePhones" > </widget>
+    </item>
+    <item row="4" column="1" >
+-    <widget class="K3ListBox" name="mHomePhones" >
+-     <property name="selectionMode" >
+-      <enum>Q3ListBox::Extended</enum>
+-     </property>
+-    </widget>
++    <widget class="QListWidget" name="mHomePhones" > </widget>
+    </item>
+    <item row="5" column="0" >
+     <widget class="QLabel" name="mLblWorkPhone" >
+@@ -122,11 +110,7 @@
+     </widget>
+    </item>
+    <item row="2" column="1" >
+-    <widget class="K3ListBox" name="mEmails" >
+-     <property name="selectionMode" >
+-      <enum>Q3ListBox::Extended</enum>
+-     </property>
+-    </widget>
++    <widget class="QListWidget" name="mEmails" > </widget>
+    </item>
+    <item row="2" column="0" >
+     <widget class="QLabel" name="mLblEmail" >
+@@ -140,13 +124,6 @@
+    </item>
+   </layout>
+  </widget>
+- <customwidgets>
+-  <customwidget>
+-   <class>K3ListBox</class>
+-   <extends>Q3ListBox</extends>
+-   <header>k3listbox.h</header>
+-  </customwidget>
+- </customwidgets>
+  <tabstops>
+   <tabstop>mFirstName</tabstop>
+   <tabstop>mLastName</tabstop>

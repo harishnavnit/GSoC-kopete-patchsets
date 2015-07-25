@@ -1,0 +1,180 @@
+diff --git a/protocols/sms/services/gsmlib.cpp b/protocols/sms/services/gsmlib.cpp
+index 6931d9add5317c9af2f105987248c0c72c1f4b99..1c1851fa555848bec57bb6dc36bc069f1b6ae21f 100644
+--- a/protocols/sms/services/gsmlib.cpp
++++ b/protocols/sms/services/gsmlib.cpp
+@@ -29,7 +29,7 @@
+ #include <klocale.h>
+ #include <kurlrequester.h>
+ #include <kmessagebox.h>
+-#include <k3process.h>
++#include <KProcess>
+ #include <kdebug.h>
+ #include <kconfigbase.h>
+ 
+diff --git a/protocols/sms/services/smsclient.cpp b/protocols/sms/services/smsclient.cpp
+index 0a619c24f3f517828006e44b0464016c08acfff1..38251dc499a2bd533c25fd883fd38f9436c16364 100644
+--- a/protocols/sms/services/smsclient.cpp
++++ b/protocols/sms/services/smsclient.cpp
+@@ -26,7 +26,7 @@
+ #include <kdebug.h>
+ #include <kconfigbase.h>
+ #include <kconfiggroup.h>
+-#include <k3process.h>
++#include <KProcess>
+ #include "kopeteaccount.h"
+ #include "kopeteuiglobal.h"
+ 
+@@ -73,7 +73,7 @@ void SMSClient::send(const Kopete::Message& msg)
+ 	if (programName.isNull())
+ 		programName = "/usr/bin/sms_client";
+ 
+-	K3Process* p = new K3Process;
++	KProcess* p = new KProcess;
+ 
+ 	QString message = msg.plainBody();
+ 	QString nr = msg.to().first()->contactId();
+@@ -82,11 +82,17 @@ void SMSClient::send(const Kopete::Message& msg)
+ 	*p << provider + ':' + nr;
+ 	*p << message;
+ 
+-	QObject::connect(p, SIGNAL(processExited(K3Process*)), this, SLOT(slotSendFinished(K3Process*)));
+-	QObject::connect(p, SIGNAL(receivedStdout(K3Process*,char*,int)), this, SLOT(slotReceivedOutput(K3Process*,char*,int)));
+-	QObject::connect(p, SIGNAL(receivedStderr(K3Process*,char*,int)), this, SLOT(slotReceivedOutput(K3Process*,char*,int)));
++	QObject::connect(p, SIGNAL(processExited(KProcess*)), this, SLOT(slotSendFinished(KProcess*)));
++	QObject::connect(p, SIGNAL(receivedStdout(KProcess*,char*,int)), this, SLOT(slotReceivedOutput(KProcess*,char*,int)));
++	QObject::connect(p, SIGNAL(receivedStderr(KProcess*,char*,int)), this, SLOT(slotReceivedOutput(KProcess*,char*,int)));
+ 
+-	p->start(K3Process::Block, K3Process::AllOutput);
++	QProcess::ExitStatus exit_status = p->exitStatus();
++	QProcess::ProcessState current_state = p->state();
++	if (current_state != 2) {
++		p->start();
++		p->setOutputChannelMode(KProcess::ForwardedChannels);
++	}
++	qDebug() << "\nExit Status : " << exit_status << "\n";
+ }
+ 
+ QWidget* SMSClient::configureWidget(QWidget* parent)
+@@ -155,14 +161,14 @@ QStringList SMSClient::providers()
+ 	return p;
+ }
+ 
+-void SMSClient::slotReceivedOutput(K3Process*, char  *buffer, int  buflen)
++void SMSClient::slotReceivedOutput(KProcess*, char  *buffer, int  buflen)
+ {
+ 	QStringList lines = QString::fromLocal8Bit(buffer, buflen).split('\n');
+ 	for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it)
+ 		output.append(*it);
+ }
+ 
+-void SMSClient::slotSendFinished(K3Process* p)
++void SMSClient::slotSendFinished(KProcess* p)
+ {
+ 	if (p->exitStatus() == 0)
+ 		emit messageSent(m_msg);
+diff --git a/protocols/sms/services/smsclient.h b/protocols/sms/services/smsclient.h
+index a9c999caf7e939483e351b0ca2d60502ef37ae5b..8c56221cf28d807784d4a3c1dc2077f3fa4f9206 100644
+--- a/protocols/sms/services/smsclient.h
++++ b/protocols/sms/services/smsclient.h
+@@ -25,7 +25,7 @@
+ 
+ class SMSClientPrefsUI;
+ class QGridLayout;
+-class K3Process;
++class KProcess;
+ 
+ class SMSClient : public SMSService
+ {
+@@ -44,8 +44,8 @@ public slots:
+ 	void savePreferences();
+ 
+ private slots:
+-	void slotReceivedOutput(K3Process*, char  *buffer, int  buflen);
+-	void slotSendFinished(K3Process* p);
++	void slotReceivedOutput(KProcess*, char  *buffer, int  buflen);
++	void slotSendFinished(KProcess* p);
+ signals:
+ 	void messageSent(const Kopete::Message &);
+ 
+diff --git a/protocols/sms/services/smssendprovider.cpp b/protocols/sms/services/smssendprovider.cpp
+index 509fb99da0d67e483f320a33ba451f08bd916c55..6d4011f79578e7be2856085cb87c617b222fe7fb 100644
+--- a/protocols/sms/services/smssendprovider.cpp
++++ b/protocols/sms/services/smssendprovider.cpp
+@@ -21,7 +21,7 @@
+ #include <QList>
+ 
+ #include <kconfigbase.h>
+-#include <k3process.h>
++#include <KProcess>
+ #include <klineedit.h>
+ #include <kmessagebox.h>
+ #include <kdebug.h>
+@@ -238,21 +238,23 @@ void SMSSendProvider::send(const Kopete::Message& msg)
+ 	values[messagePos] = message;
+ 	values[telPos] = nr;
+ 
+-	K3Process* p = new K3Process;
++	KProcess* p = new KProcess;
+ 
+ 	kWarning( 14160 ) << "Executing " << QString("%1/bin/smssend").arg(prefix) << " \"" << provider << "\" " << values.join("\" \"") << "\"";
+ 
+ 	*p << QString("%1/bin/smssend").arg(prefix) << provider << values;
+ 
+ 	output = "";
+-	connect( p, SIGNAL(processExited(K3Process*)), this, SLOT(slotSendFinished(K3Process*)));
+-	connect( p, SIGNAL(receivedStdout(K3Process*,char*,int)), this, SLOT(slotReceivedOutput(K3Process*,char*,int)));
+-//	connect( p, SIGNAL(receivedStderr(K3Process*,char*,int)), this, SLOT(slotReceivedOutput(K3Process*,char*,int)));
++	connect( p, SIGNAL(processExited(KProcess*)), this, SLOT(slotSendFinished(KProcess*)));
++	connect( p, SIGNAL(receivedStdout(KProcess*,char*,int)), this, SLOT(slotReceivedOutput(KProcess*,char*,int)));
++//	connect( p, SIGNAL(receivedStderr(KProcess*,char*,int)), this, SLOT(slotReceivedOutput(KProcess*,char*,int)));
+ 
+-	p->start(K3Process::NotifyOnExit, K3Process::AllOutput);
++	p->setOutputChannelMode(KProcess::ForwardedChannels);
++	p->start();
++	QProcess::ExitStatus exit_status = p->exitStatus();
+ }
+ 
+-void SMSSendProvider::slotSendFinished(K3Process *p)
++void SMSSendProvider::slotSendFinished(KProcess *p)
+ {
+ 	kWarning( 14160 ) << "this = " << this << ", es = " << p->exitStatus() << ", p = " << p << " (should be non-zero!!)";
+ 	if (p->exitStatus() == 0)
+@@ -263,7 +265,7 @@ void SMSSendProvider::slotSendFinished(K3Process *p)
+ 	p->deleteLater();
+ }
+ 
+-void SMSSendProvider::slotReceivedOutput(K3Process *, char *buffer, int buflen)
++void SMSSendProvider::slotReceivedOutput(KProcess *, char *buffer, int buflen)
+ {
+ //	QStringList lines = QStringList::split("\n", QString::fromLocal8Bit(buffer, buflen));
+ //	for (QStringList::Iterator it = lines.begin(); it != lines.end(); ++it)
+diff --git a/protocols/sms/services/smssendprovider.h b/protocols/sms/services/smssendprovider.h
+index 8c795de013456eae353d143fea8fd6a8e033bacf..74d35cd2933cc5919aea21210be6165037821e79 100644
+--- a/protocols/sms/services/smssendprovider.h
++++ b/protocols/sms/services/smssendprovider.h
+@@ -23,12 +23,12 @@
+ #include <QByteArray>
+ 
+ #include <klineedit.h>
++#include <KProcess>
+ 
+ #include "kopetemessage.h"
+ 
+ #include "smsaccount.h"
+ 
+-class K3Process;
+ namespace Kopete { class Account; }
+ 
+ class SMSSendProvider : public QObject
+@@ -51,8 +51,8 @@ public:
+ 
+ 	int maxSize();
+ private slots:
+-	void slotReceivedOutput(K3Process*, char  *buffer, int  buflen);
+-	void slotSendFinished(K3Process*);
++	void slotReceivedOutput(KProcess*, char  *buffer, int  buflen);
++	void slotSendFinished(KProcess*);
+ private:
+ 	QStringList names;
+ 	QStringList descriptions;
+

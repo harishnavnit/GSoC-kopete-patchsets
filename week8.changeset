@@ -1,0 +1,2079 @@
+commit 711eed47795bdb84e697b65da0e5b40319678492
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Fri Jul 10 12:02:16 2015 +0530
+
+    Remove Q3ListViews in autoreplace
+
+diff --git a/plugins/autoreplace/autoreplacepreferences.cpp b/plugins/autoreplace/autoreplacepreferences.cpp
+index f899739b3b21e5194a21874fddfc38dd67dc03e0..edbe2808ce430e9ec56e6c25beade98de38bc0d2 100644
+--- a/plugins/autoreplace/autoreplacepreferences.cpp
++++ b/plugins/autoreplace/autoreplacepreferences.cpp
+@@ -21,8 +21,7 @@
+ 
+ #include <qlayout.h>
+ #include <qpushbutton.h>
+-#include <q3header.h>
+-#include <q3listview.h>
++#include <QTreeWidget>
+ 
+ #include <klocale.h>
+ #include <klineedit.h>
+@@ -47,9 +46,13 @@ AutoReplacePreferences::AutoReplacePreferences( QWidget *parent, const QVariantL
+ 	l->addWidget( w );
+ 
+ 	// creates table columns (avoids new columns every time)
+-	preferencesDialog->m_list->addColumn( i18n("Text" ) );
+-	preferencesDialog->m_list->addColumn( i18n("Replacement" ) );
+-	preferencesDialog->m_list->header()->setStretchEnabled( true , 1 );
++	preferencesDialog->m_list->setColumnCount(preferencesDialog->m_list->columnCount() + 1);
++	preferencesDialog->m_list->setHeaderLabel(i18n("Text"));
++	preferencesDialog->m_list->setColumnCount(preferencesDialog->m_list->columnCount() + 1);
++	preferencesDialog->m_list->setHeaderLabel(i18n("Replacement"));
++	preferencesDialog->m_list->header()->setResizeMode(QHeaderView::Stretch);
++	preferencesDialog->m_list->setSelectionMode(QAbstractItemView::SingleSelection);
++	preferencesDialog->m_list->header()->setSortIndicatorShown(true);
+ 	
+ 	// connect SIGNALS/SLOTS
+ 	connect( preferencesDialog->m_add, SIGNAL(pressed()),
+@@ -86,6 +89,7 @@ AutoReplacePreferences::~AutoReplacePreferences()
+ // reload configuration reading it from kopeterc
+ void AutoReplacePreferences::load()
+ {
++	QStringList args;
+ 	m_config->load();
+ 
+ 	// Removes and deletes all the items in this list view and triggers an update
+@@ -96,8 +100,9 @@ void AutoReplacePreferences::load()
+ 	AutoReplaceConfig::WordsToReplace map = m_config->map();
+ 	for ( it = map.begin(); it != map.end(); ++it )
+ 	{
++		args = (QStringList() << it.key() << it.value());
+ 		// notice: insertItem is called automatically by the constructor
+-		new Q3ListViewItem( preferencesDialog->m_list, it.key(), it.value() );
++		new QTreeWidgetItem( preferencesDialog->m_list, args );
+ 	}
+ 
+ 	preferencesDialog->AutoReplaceIncoming->setChecked(m_config->autoReplaceIncoming());
+@@ -111,7 +116,7 @@ void AutoReplacePreferences::save()
+ {
+ 	// make a list reading all values from gui
+ 	AutoReplaceConfig::WordsToReplace newWords;
+-	for ( Q3ListViewItem * i = preferencesDialog->m_list->firstChild(); i != 0; i = i->nextSibling() )
++	for ( QTreeWidgetItem *i = preferencesDialog->m_list->topLevelItem(0); i != 0; i=i->treeWidget()->topLevelItem(i->treeWidget()->indexOfTopLevelItem(i)+1) )
+ 		newWords[ i->text( 0 ) ] = i->text( 1 );
+ 
+ 	// save the words list
+@@ -130,19 +135,21 @@ void AutoReplacePreferences::slotAddCouple()
+ {
+ 	QString k = preferencesDialog->m_key->text();
+ 	QString v = preferencesDialog->m_value->text();
++	QStringList args = (QStringList() << k << v);
+ 	if ( !k.isEmpty() && !k.isNull() && !v.isEmpty() && !v.isNull() )
+ 	{
+-		Q3ListViewItem * lvi;
+-		Q3ListViewItem * oldLvi = 0;
++		QTreeWidgetItem * lvi;
++		QTreeWidgetItem * oldLvi = 0;
+ 		// see if we are replacing an existing entry
+-		oldLvi = preferencesDialog->m_list->findItem( k, 0 );
++		QList<QTreeWidgetItem *> oldLvi_List = preferencesDialog->m_list->findItems( k, Qt::MatchExactly, 0 );
++		oldLvi = oldLvi_List.first();		//SelectionMode::SingleSelection
+                 delete oldLvi;
+-		lvi = new Q3ListViewItem( preferencesDialog->m_list, k, v );
++		lvi = new QTreeWidgetItem( preferencesDialog->m_list, args );
+ 		// Triggers a size, geometry and content update
+ 		// during the next iteration of the event loop
+-		preferencesDialog->m_list->triggerUpdate();
++		preferencesDialog->m_list->update();
+ 		// select last added
+-		preferencesDialog->m_list->setSelected( lvi, true );
++		lvi->setSelected(true);
+ 	}
+ 
+ 	slotWidgetModified();
+@@ -153,12 +160,12 @@ void AutoReplacePreferences::slotEditCouple()
+ {
+ 	const QString k = preferencesDialog->m_key->text();
+ 	const QString v = preferencesDialog->m_value->text();
+-	Q3ListViewItem * lvi;
+-	if ( ( lvi = preferencesDialog->m_list->selectedItem() ) && !k.isEmpty() && !k.isNull() && !v.isEmpty() && !v.isNull() )
++	QTreeWidgetItem * lvi;
++	if ( ( lvi = preferencesDialog->m_list->currentItem() ) && !k.isEmpty() && !k.isNull() && !v.isEmpty() && !v.isNull() )
+ 	{
+ 		lvi->setText( 0, k );
+ 		lvi->setText( 1, v );
+-		preferencesDialog->m_list->triggerUpdate();
++		preferencesDialog->m_list->update();
+ 		slotWidgetModified();
+ 	}
+ }
+@@ -167,7 +174,7 @@ void AutoReplacePreferences::slotEditCouple()
+ // Single selection mode and an item is selected
+ void AutoReplacePreferences::slotRemoveCouple()
+ {
+-	delete preferencesDialog->m_list->selectedItem();
++	delete preferencesDialog->m_list->currentItem();
+ 
+ 	slotWidgetModified();
+ }
+@@ -175,13 +182,13 @@ void AutoReplacePreferences::slotRemoveCouple()
+ void AutoReplacePreferences::slotEnableAddEdit( const QString & keyText )
+ {
+ 	preferencesDialog->m_add->setEnabled( !keyText.isEmpty() );
+-	preferencesDialog->m_edit->setEnabled( !keyText.isEmpty() && preferencesDialog->m_list->selectedItem() );
++	preferencesDialog->m_edit->setEnabled( !keyText.isEmpty() && preferencesDialog->m_list->currentItem() );
+ }
+ 
+ void AutoReplacePreferences::slotSelectionChanged()
+ {
+-	Q3ListViewItem *selection = 0;
+-	if ( ( selection = preferencesDialog->m_list->selectedItem() ) )
++	QTreeWidgetItem *selection = 0;
++	if ( ( selection = preferencesDialog->m_list->currentItem() ) )
+ 	{
+ 		// enable the remove button
+ 		preferencesDialog->m_remove->setEnabled( true );
+@@ -204,14 +211,16 @@ void AutoReplacePreferences::slotWidgetModified()
+ 
+ void AutoReplacePreferences::defaults()
+ {
++	QStringList args;
+     preferencesDialog->m_list->clear();
+     m_config->loadDefaultAutoReplaceList();
+     AutoReplaceConfig::WordsToReplace::Iterator it;
+     AutoReplaceConfig::WordsToReplace map = m_config->map();
+     for ( it = map.begin(); it != map.end(); ++it )
+     {
++		args = (QStringList() << it.key() << it.value());
+         // notice: insertItem is called automatically by the constructor
+-        new Q3ListViewItem( preferencesDialog->m_list, it.key(), it.value() );
++		new QTreeWidgetItem( preferencesDialog->m_list, args );
+     }
+ 
+ 	preferencesDialog->AutoReplaceIncoming->setChecked(false);
+diff --git a/plugins/autoreplace/autoreplaceprefs.ui b/plugins/autoreplace/autoreplaceprefs.ui
+index 034013d41f90dd3d2e4c1e2dc94a0fbded8a7782..9b15a39d410d0036750e2eab00a3111eccfa2225 100644
+--- a/plugins/autoreplace/autoreplaceprefs.ui
++++ b/plugins/autoreplace/autoreplaceprefs.ui
+@@ -89,16 +89,10 @@
+        <number>6</number>
+       </property>
+       <item row="1" column="0" >
+-       <widget class="Q3ListView" name="m_list" >
+-        <property name="selectionMode" >
+-         <enum>Q3ListView::Single</enum>
+-        </property>
++       <widget class="QTreeWidget" name="m_list" >
+         <property name="allColumnsShowFocus" >
+          <bool>true</bool>
+         </property>
+-        <property name="showSortIndicator" >
+-         <bool>true</bool>
+-        </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+@@ -257,13 +251,6 @@
+    </item>
+   </layout>
+  </widget>
+-  <customwidgets>
+-  <customwidget>
+-   <class>Q3ListView</class>
+-   <extends>Q3Frame</extends>
+-   <header>q3listview.h</header>
+-  </customwidget>
+- </customwidgets>
+  <tabstops>
+   <tabstop>DotEndSentence</tabstop>
+   <tabstop>CapitalizeBeginningSentence</tabstop>
+
+commit bdbf968652d8d1f94e01ec0b741e958767e12714
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Fri Jul 10 01:55:42 2015 +0530
+
+    Qt3Support dependency removed from highlight and translator plugins
+
+diff --git a/plugins/highlight/CMakeLists.txt b/plugins/highlight/CMakeLists.txt
+index eb892732f1008bf78150074abf0b96ee6d5017b8..b70019a1e99aa16094fe9a0262e8e3f585446b72 100644
+--- a/plugins/highlight/CMakeLists.txt
++++ b/plugins/highlight/CMakeLists.txt
+@@ -28,7 +28,7 @@ kde4_add_ui_files(kcm_kopete_highlight_PART_SRCS highlightprefsbase.ui )
+ kde4_add_plugin(kcm_kopete_highlight ${kcm_kopete_highlight_PART_SRCS})
+ 
+ 
+-target_link_libraries(kcm_kopete_highlight ${KDE4_KUTILS_LIBS}  ${KDE4_KNOTIFYCONFIG_LIBS} ${QT_QT3SUPPORT_LIBRARY} ${KDE4_KDE3SUPPORT_LIBS})
++target_link_libraries(kcm_kopete_highlight ${KDE4_KUTILS_LIBS}  ${KDE4_KNOTIFYCONFIG_LIBS} ${KDE4_KDE3SUPPORT_LIBS})
+ 
+ install(TARGETS kcm_kopete_highlight  DESTINATION ${PLUGIN_INSTALL_DIR})
+ 
+diff --git a/plugins/translator/CMakeLists.txt b/plugins/translator/CMakeLists.txt
+index 2df6e22ba63e11cdbb5ab8ec98da4876686d1144..887e8a2b9bb8f271df392a0ccb916c77f18c2ebf 100644
+--- a/plugins/translator/CMakeLists.txt
++++ b/plugins/translator/CMakeLists.txt
+@@ -18,7 +18,7 @@ kde4_add_kcfg_files(kopete_translator_PART_SRCS translatorconfig.kcfgc )
+ kde4_add_plugin(kopete_translator ${kopete_translator_PART_SRCS})
+ 
+ 
+-target_link_libraries(kopete_translator  ${KDE4_KIO_LIBS} ${QT_QT3SUPPORT_LIBRARY} kopete )
++target_link_libraries(kopete_translator  ${KDE4_KIO_LIBS} kopete )
+ 
+ install(TARGETS kopete_translator  DESTINATION ${PLUGIN_INSTALL_DIR})
+ 
+
+commit 0d0ddd9b05c41505e912f0be1af24ab1ed801f77
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Fri Jul 10 01:36:56 2015 +0530
+
+    Remove Qt3Support Library from urlpicpreview plugin
+
+diff --git a/plugins/urlpicpreview/CMakeLists.txt b/plugins/urlpicpreview/CMakeLists.txt
+index 9fa72ea53bbb7b679bbe5970df8c17a6c3b3f734..a358f85ab6a5d59f36a92ed6dd2f081ad5f31129 100644
+--- a/plugins/urlpicpreview/CMakeLists.txt
++++ b/plugins/urlpicpreview/CMakeLists.txt
+@@ -32,7 +32,7 @@ kde4_add_kcfg_files(kcm_kopete_urlpicpreview_PART_SRCS urlpicpreviewconfig.kcfgc
+ kde4_add_plugin(kcm_kopete_urlpicpreview ${kcm_kopete_urlpicpreview_PART_SRCS})
+ 
+ 
+-target_link_libraries(kcm_kopete_urlpicpreview ${KDE4_KIO_LIBS} ${QT_QT3SUPPORT_LIBRARY} ${KDE4_KUTILS_LIBS} kopete )
++target_link_libraries(kcm_kopete_urlpicpreview ${KDE4_KIO_LIBS} ${KDE4_KUTILS_LIBS} kopete )
+ 
+ install(TARGETS kcm_kopete_urlpicpreview  DESTINATION ${PLUGIN_INSTALL_DIR})
+ 
+diff --git a/plugins/urlpicpreview/urlpicpreviewprefsbase.ui b/plugins/urlpicpreview/urlpicpreviewprefsbase.ui
+index 8db3d1025f860999ec5c7a975fffbace67129c09..a0a438b12161451f923e8217d56c13c5c37a17e6 100644
+--- a/plugins/urlpicpreview/urlpicpreviewprefsbase.ui
++++ b/plugins/urlpicpreview/urlpicpreviewprefsbase.ui
+@@ -32,7 +32,7 @@
+     <number>0</number>
+    </property>
+    <item>
+-    <widget class="Q3GroupBox" name="groupBox1" >
++    <widget class="QGroupBox" name="groupBox1" >
+      <property name="title" >
+       <string>Preview</string>
+      </property>
+@@ -87,7 +87,7 @@ Otherwise, an unlimited number of previews are generated.</string>
+     </widget>
+    </item>
+    <item>
+-    <widget class="Q3GroupBox" name="groupBox2" >
++    <widget class="QGroupBox" name="groupBox2" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+        <horstretch>0</horstretch>
+@@ -160,7 +160,7 @@ Otherwise, the images are not scaled at all and appear in their original size.</
+     </widget>
+    </item>
+    <item>
+-    <widget class="Q3GroupBox" name="linkPreviewGroup" >
++    <widget class="QGroupBox" name="linkPreviewGroup" >
+      <property name="title" >
+       <string>Link Preview</string>
+      </property>
+@@ -272,13 +272,7 @@ Use 0 seconds to never abort the creation.</string>
+    </item>
+   </layout>
+  </widget>
+-  <customwidgets>
+-  <customwidget>
+-   <class>Q3GroupBox</class>
+-   <extends>QGroupBox</extends>
+-   <header>Qt3Support/Q3GroupBox</header>
+-   <container>1</container>
+-  </customwidget>
++ <customwidgets>
+   <customwidget>
+    <class>KIntNumInput</class>
+    <extends>QWidget</extends>
+
+commit 58112bafa161e58dc845a362a5988fee6ce7d5c2
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Fri Jul 10 01:28:57 2015 +0530
+
+    Remove needless q3valuelist header
+
+diff --git a/plugins/statistics/statisticscontact.cpp b/plugins/statistics/statisticscontact.cpp
+index 61ce5db01b87a5cad3c4b766d9d5ebff3542d244..1bac76602587a32cabd80e5ce8ff952a8f071397 100644
+--- a/plugins/statistics/statisticscontact.cpp
++++ b/plugins/statistics/statisticscontact.cpp
+@@ -19,8 +19,6 @@
+ 
+ #include <stdlib.h>
+ 
+-#include <q3valuelist.h>
+-
+ #include <kdebug.h>
+ #include <klocale.h>
+ 
+
+commit 2e8a1b99faf08a43837760ed229170618a080bd2
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Tue Jul 7 22:46:38 2015 +0530
+
+    Qt3 changes in libkopete addressbook
+
+diff --git a/libkopete/ui/addressbookselectordialog.cpp b/libkopete/ui/addressbookselectordialog.cpp
+index a545c8b5f2614b17bfccaac9d108e08f5b3e19ef..29ed601a23e2406829b258bd7725027133bb33a5 100644
+--- a/libkopete/ui/addressbookselectordialog.cpp
++++ b/libkopete/ui/addressbookselectordialog.cpp
+@@ -18,18 +18,22 @@
+ 
+ #include "addressbookselectordialog.h"
+ #include "addressbookselectorwidget.h"
++
+ #include <qdialog.h>
+-#include <q3listview.h>
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
++
+ #include <kvbox.h>
+ #include <klocale.h>
+ #include <kdialog.h>
++#include <ktreewidgetsearchline.h>
+ 
+ namespace Kopete
+ {
+ namespace UI
+ {
+ 
+-AddressBookSelectorDialog::AddressBookSelectorDialog(const QString &title, const QString &message, const QString &preSelectUid, QWidget *parent ) 
++AddressBookSelectorDialog::AddressBookSelectorDialog(const QString &title, const QString &message, const QString &preSelectUid, QWidget *parent )
+  : KDialog( parent )
+ {
+ 	setCaption( title );
+@@ -46,7 +50,7 @@ AddressBookSelectorDialog::AddressBookSelectorDialog(const QString &title, const
+ 	enableButtonOk(false);
+ 	//setHelp("linkaddressbook");
+ 	setHelp(QString(), "kopete");
+-	connect(m_addressBookSelectorWidget, SIGNAL(addresseeListClicked(Q3ListViewItem*)), SLOT(slotWidgetAddresseeListClicked(Q3ListViewItem*)));
++	connect(m_addressBookSelectorWidget, SIGNAL(addresseeListClicked(QTreeWidgetItem*)), SLOT(slotWidgetAddresseeListClicked(QTreeWidgetItem*)));
+ 
+ 	if ( !preSelectUid.isEmpty() )
+ 		m_addressBookSelectorWidget->selectAddressee(preSelectUid);
+@@ -70,7 +74,7 @@ KABC::Addressee AddressBookSelectorDialog::getAddressee( const QString &title, c
+ 	return adr;
+ }
+ 
+-void AddressBookSelectorDialog::slotWidgetAddresseeListClicked( Q3ListViewItem *addressee )
++void AddressBookSelectorDialog::slotWidgetAddresseeListClicked( QTreeWidgetItem *addressee )
+ {
+ 	// enable ok if a valid addressee is selected
+ 	enableButtonOk( addressee ? addressee->isSelected() : false);
+diff --git a/libkopete/ui/addressbookselectordialog.h b/libkopete/ui/addressbookselectordialog.h
+index 7fb402ce8290906185e39ec30d8c8cad278d7b30..d1b98006ea0fa78ca81c3c9a93755b02674f14be 100644
+--- a/libkopete/ui/addressbookselectordialog.h
++++ b/libkopete/ui/addressbookselectordialog.h
+@@ -22,8 +22,10 @@
+ #include <kdemacros.h>
+ #include "kopete_export.h"
+ #include <kdialog.h>
++#include <ktreewidgetsearchline.h>
+ 
+-#include <Qt3Support/Q3ListView>
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
+ 
+ namespace KABC
+ {
+@@ -80,7 +82,7 @@ public:
+ protected slots:
+ 	virtual void accept();
+ 	virtual void reject();
+-	void slotWidgetAddresseeListClicked( Q3ListViewItem *addressee );
++	void slotWidgetAddresseeListClicked( QTreeWidgetItem *addressee );
+ protected:
+ 	 AddressBookSelectorWidget *m_addressBookSelectorWidget;
+ };
+diff --git a/libkopete/ui/addressbookselectorwidget.cpp b/libkopete/ui/addressbookselectorwidget.cpp
+index 2a82b52190d2a4ceab92070d1913889e057db5cf..165383232cddcb3d532512563fc8c7e4a8ee6511 100644
+--- a/libkopete/ui/addressbookselectorwidget.cpp
++++ b/libkopete/ui/addressbookselectorwidget.cpp
+@@ -36,9 +36,12 @@
+ 
+ #include <kpushbutton.h>
+ #include <kdebug.h>
+-#include <k3listview.h>
+-#include <k3listviewsearchline.h>
++#include <QTreeWidget>
++#include <ktreewidgetsearchline.h>
+ #include <QLabel>
++#include <QList>
++#include <QHeaderView>
++#include <QAbstractItemView>
+ 
+ 
+ #include <addresseeitem.h>
+@@ -63,23 +66,24 @@ AddressBookSelectorWidget::AddressBookSelectorWidget( QWidget *parent, const cha
+ 	connect( addAddresseeButton, SIGNAL(clicked()), SLOT(slotAddAddresseeClicked()) );
+ 	connect( addAddresseeButton, SIGNAL(clicked()), SIGNAL(addAddresseeClicked()) );
+ 
+-	connect( addresseeListView, SIGNAL(clicked(Q3ListViewItem*)),
+-			SIGNAL(addresseeListClicked(Q3ListViewItem*)) );
+-	connect( addresseeListView, SIGNAL(selectionChanged(Q3ListViewItem*)),
+-			SIGNAL(addresseeListClicked(Q3ListViewItem*)) );
+-	connect( addresseeListView, SIGNAL(spacePressed(Q3ListViewItem*)),
+-			SIGNAL(addresseeListClicked(Q3ListViewItem*)) );
++	connect( addresseeListView, SIGNAL(clicked(QTreeWidgetItem*)),
++			SIGNAL(addresseeListClicked(QTreeWidgetItem*)) );
++	connect( addresseeListView, SIGNAL(selectionChanged(QTreeWidgetItem*)),
++			SIGNAL(addresseeListClicked(QTreeWidgetItem*)) );
++	connect( addresseeListView, SIGNAL(spacePressed(QTreeWidgetItem*)),
++			SIGNAL(addresseeListClicked(QTreeWidgetItem*)) );
+ 
+ 	connect( m_addressBook, SIGNAL(addressBookChanged(AddressBook*)), this, SLOT(slotLoadAddressees()) );
+ 
+ 	//We should add a clear KAction here.  But we can't really do that with a designer file :\  this sucks
+ 
+-	addresseeListView->setColumnText(2, KIcon(QLatin1String("internet-mail")), i18n("Email"));
++	addresseeListView->currentItem()->setIcon(2, QIcon(QLatin1String("internet-mail")));
++	addresseeListView->currentItem()->setText(2, i18n("Email"));
+ 
+-	kListViewSearchLine->setListView(addresseeListView);
++	kListViewSearchLine->setTreeWidget(addresseeListView);
+ 	slotLoadAddressees();
+ 
+-	addresseeListView->setColumnWidthMode(0, Q3ListView::Manual);
++	addresseeListView->header()->setResizeMode(QHeaderView::ResizeToContents);
+ 	addresseeListView->setColumnWidth(0, 63); //Photo is 60, and it's nice to have a small gap, imho
+ }
+ 
+@@ -93,7 +97,7 @@ AddressBookSelectorWidget::~AddressBookSelectorWidget()
+ KABC::Addressee AddressBookSelectorWidget::addressee()
+ {
+ 	AddresseeItem *item = 0L;
+-	item = static_cast<AddresseeItem *>( addresseeListView->selectedItem() );
++	item = static_cast<AddresseeItem *>( addresseeListView->currentItem() );
+ 
+ 	if ( item )
+ 		m_addressee = item->addressee();
+@@ -104,23 +108,23 @@ KABC::Addressee AddressBookSelectorWidget::addressee()
+ void AddressBookSelectorWidget::selectAddressee( const QString &uid )
+ {
+ 	// iterate trough list view
+-	Q3ListViewItemIterator it( addresseeListView );
+-	while( it.current() )
++	QTreeWidgetItemIterator it( addresseeListView );
++	while( (*it) )
+ 	{
+-		AddresseeItem *addrItem = (AddresseeItem *) it.current();
++		AddresseeItem *addrItem = (AddresseeItem *) ( (*it) );
+ 		if ( addrItem->addressee().uid() == uid )
+ 		{
+ 			// select the contact item
+-			addresseeListView->setSelected( addrItem, true );
+-			addresseeListView->ensureItemVisible( addrItem );
+-		}
++			addrItem->setSelected( true );
++			addresseeListView->scrollToItem( addrItem, QAbstractItemView::EnsureVisible );
++ 		}
+ 		++it;
+ 	}
+ }
+ 
+ bool AddressBookSelectorWidget::addresseeSelected()
+ {
+-	return addresseeListView->selectedItem() ? true : false;
++	return addresseeListView->currentItem() ? true : false;
+ }
+ 
+ /**  Read in contacts from addressbook, and select the contact that is for our nick. */
+@@ -153,13 +157,16 @@ void AddressBookSelectorWidget::slotAddAddresseeClicked()
+ 		Kopete::KABCPersistence::self()->writeAddressBook( 0 );
+ 		slotLoadAddressees();
+ 		// select the addressee we just added
+-		Q3ListViewItem * added = addresseeListView->findItem( addresseeName, 1 );
++		QList<QTreeWidgetItem *> added = addresseeListView->findItems( addresseeName, 0, 1 );
++		foreach(QTreeWidgetItem *wi, added) {
++			wi->setSelected( true );
++			addresseeListView->scrollToItem(wi, QAbstractItemView::EnsureVisible);
++		}
+ 		kListViewSearchLine->clear();
+ 		kListViewSearchLine->updateSearch();
+ 		kListViewSearchLine->clear();
+ 		kListViewSearchLine->updateSearch();
+-		addresseeListView->setSelected( added, true );
+-		addresseeListView->ensureItemVisible( added );
++		//addresseeListView->scrollToItem( added, 0 );
+ 	}
+ }
+ 
+diff --git a/libkopete/ui/addressbookselectorwidget.h b/libkopete/ui/addressbookselectorwidget.h
+index 0f8aeffdb1b3c799c508094830d76d4df645b009..9ad8e9fc88c42252c02b71bcfc88c5e58542eccf 100644
+--- a/libkopete/ui/addressbookselectorwidget.h
++++ b/libkopete/ui/addressbookselectorwidget.h
+@@ -77,7 +77,7 @@ protected slots:
+ 	 */
+ 	void slotLoadAddressees();
+ signals:
+-	void addresseeListClicked( Q3ListViewItem *addressee );
++	void addresseeListClicked( QTreeWidgetItem *addressee );
+ 	void addAddresseeClicked();
+ };
+ 
+diff --git a/libkopete/ui/addressbookselectorwidget_base.ui b/libkopete/ui/addressbookselectorwidget_base.ui
+index f7e560c426cb6d24f301b4648008240318e9b44d..68ed3dd67982c23979871fec7bec95e3c61611ce 100644
+--- a/libkopete/ui/addressbookselectorwidget_base.ui
++++ b/libkopete/ui/addressbookselectorwidget_base.ui
+@@ -74,7 +74,7 @@
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2" >
+-    <widget class="K3ListView" name="addresseeListView" >
++    <widget class="QTreeWidget" name="addresseeListView" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <horstretch>0</horstretch>
+@@ -87,9 +87,6 @@
+      <property name="allColumnsShowFocus" >
+       <bool>true</bool>
+      </property>
+-     <property name="resizeMode" >
+-      <enum>Q3ListView::LastColumn</enum>
+-     </property>
+      <column>
+       <property name="text" >
+        <string>Photo</string>
+@@ -141,35 +138,18 @@
+       </widget>
+      </item>
+      <item>
+-      <widget class="K3ListViewSearchLine" native="1" name="kListViewSearchLine" />
++      <widget class="KTreeWidgetSearchLine" native="1" name="kListViewSearchLine" />
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+-  <customwidgets>
+-  <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
+-  </customwidget>
+-  <customwidget>
+-   <class>QLabel</class>
+-   <extends></extends>
+-   <header>QLabel</header>
+-  </customwidget>
+-  <customwidget>
+-   <class>K3ListViewSearchLine</class>
+-   <extends></extends>
+-   <header>k3listviewsearchline.h</header>
+-  </customwidget>
+- </customwidgets>
+  <tabstops>
+   <tabstop>addresseeListView</tabstop>
+   <tabstop>addAddresseeButton</tabstop>
+  </tabstops>
+  <includes>
+-  <include location="global" >k3listviewsearchline.h</include>
++  <include location="global" >ktreewidgetsearchline.h</include>
+  </includes>
+  <resources/>
+  <connections/>
+diff --git a/libkopete/ui/addresseeitem.cpp b/libkopete/ui/addresseeitem.cpp
+index e47f36c8c79e62ca593e282dc66b7874a12d789f..228f2857f1cf8256f6267b9733a789500b5801f5 100644
+--- a/libkopete/ui/addresseeitem.cpp
++++ b/libkopete/ui/addresseeitem.cpp
+@@ -28,8 +28,8 @@
+ #include <klocale.h>
+ #include <kdebug.h>
+ 
+-AddresseeItem::AddresseeItem( Q3ListView *parent, const KABC::Addressee &addressee) :
+-  K3ListViewItem( parent ),
++AddresseeItem::AddresseeItem( QTreeWidget *parent, const KABC::Addressee &addressee) :
++  QTreeWidgetItem( parent ),
+   mAddressee( addressee )
+ {
+   //We can't save showphoto because we don't have a d pointer
+@@ -38,8 +38,9 @@ AddresseeItem::AddresseeItem( Q3ListView *parent, const KABC::Addressee &address
+     pic = mAddressee.logo();
+   if(pic.isIntern())
+   {
+-    QPixmap qpixmap = QPixmap::fromImage( pic.data().scaledToWidth(60) ); //60 pixels seems okay.. kmail uses 60 btw
+-    setPixmap( Photo,qpixmap );
++	// TODO : Fix the QPixmap with KDE/Qt4. Breaks build.
++    /*QPixmap qpixmap = QPixmap::fromImage( pic.data().scaledToWidth(60) ); //60 pixels seems okay.. kmail uses 60 btw
++	setPixmap( Photo,qpixmap );*/
+   }
+ 
+   setText( Name, addressee.realName() );
+diff --git a/libkopete/ui/addresseeitem.h b/libkopete/ui/addresseeitem.h
+index 080f770a1d3c316b8fbf4e4a7fc9d1c130f756fc..4f0b484ad5a3f27af7662c09db42af7ea20ed142 100644
+--- a/libkopete/ui/addresseeitem.h
++++ b/libkopete/ui/addresseeitem.h
+@@ -21,15 +21,17 @@
+ #ifndef ADDRESSEEITEM_H
+ #define ADDRESSEEITEM_H
+ 
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
++
+ #include <klineedit.h>
+-#include <k3listview.h>
+ 
+ #include <kabc/addressbook.h>
+ 
+ /**
+   @short Special ListViewItem
+ */
+-class AddresseeItem : public K3ListViewItem
++class AddresseeItem : public QTreeWidgetItem
+ {
+   public:
+ 
+@@ -38,7 +40,7 @@ class AddresseeItem : public K3ListViewItem
+       @li @p Name -  Name in Addressee
+       @li @p Email - Email in Addressee
+     */
+-    enum columns { Photo =0, Name = 1, Email = 2 };
++    enum columns { Photo = 0, Name = 1, Email = 2 };
+ 
+     /**
+       Constructor.
+@@ -46,8 +48,8 @@ class AddresseeItem : public K3ListViewItem
+       @param parent    The parent listview.
+       @param addressee The associated addressee.
+     */
+-    AddresseeItem( Q3ListView *parent, const KABC::Addressee &addressee );
+-   
++	AddresseeItem( QTreeWidget *parent, const KABC::Addressee &addressee );
++
+     /**
+       Returns the addressee.
+     */
+
+commit ac32a759b9cd032bb7f60f9ad79474379bcf54f8
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Tue Jul 7 18:45:03 2015 +0530
+
+    Remove listViews from account libkopete accountSelector
+
+diff --git a/libkopete/ui/accountselector.cpp b/libkopete/ui/accountselector.cpp
+index 8e7cf9194f4d6664014117e80f04356bca03f810..0e9ebfbed258a4b97bc216620493deef47a6e9ca 100644
+--- a/libkopete/ui/accountselector.cpp
++++ b/libkopete/ui/accountselector.cpp
+@@ -19,22 +19,22 @@
+ #include "kopeteaccount.h"
+ #include "kopeteaccountmanager.h"
+ 
+-#include <q3header.h>
++#include <QHeaderView>
++#include <QTreeWidget>
+ #include <qlayout.h>
+ #include <qpixmap.h>
+ #include <QVBoxLayout>
+ 
+ #include <kdebug.h>
+-#include <k3listview.h>
+ 
+-class AccountListViewItem : public K3ListViewItem
++class AccountListViewItem : public QTreeWidgetItem
+ {
+ 	private:
+ 		Kopete::Account *mAccount;
+ 
+ 	public:
+-		AccountListViewItem(Q3ListView *parent, Kopete::Account *acc)
+-			: K3ListViewItem(parent)
++		AccountListViewItem(QTreeWidget *parent, Kopete::Account *acc)
++			: QTreeWidgetItem(parent)
+ 		{
+ 			if (acc==0)
+ 				return;
+@@ -43,7 +43,7 @@ class AccountListViewItem : public K3ListViewItem
+ 				"account name = " << acc->accountId() << endl;*/
+ 			mAccount = acc;
+ 			setText(0, mAccount->accountId());
+-			setPixmap(0, mAccount->accountIcon());
++			//setPixmap(0, mAccount->accountIcon());
+ 		}
+ 
+ 		Kopete::Account *account()
+@@ -58,7 +58,7 @@ class AccountListViewItem : public K3ListViewItem
+ class AccountSelectorPrivate
+ {
+ 	public:
+-		K3ListView *lv;
++		QTreeWidget *lv;
+ 		Kopete::Protocol *proto;
+ };
+ 
+@@ -93,10 +93,10 @@ void AccountSelector::initUI()
+ {
+ 	kDebug(14010) ;
+ 	QVBoxLayout *layout = new QVBoxLayout(this);
+-	d->lv = new K3ListView(this);
+-	d->lv->setFullWidth(true);
+-	d->lv->addColumn(QString::fromLatin1(""));
+-	d->lv->header()->hide();
++	d->lv = new QTreeWidget(this);
++	d->lv->header()->setResizeMode( QHeaderView::ResizeToContents );
++	d->lv->headerItem()->setText(0, QString::fromLatin1(""));
++	d->lv->headerItem()->setHidden(true);
+ 	layout->addWidget(d->lv);
+ 	setLayout(layout);
+ 	kDebug(14010) << "creating list of all accounts";
+@@ -106,8 +106,8 @@ void AccountSelector::initUI()
+ 			new AccountListViewItem(d->lv, account);
+ 	}
+ 
+-	connect(d->lv, SIGNAL(selectionChanged(Q3ListViewItem*)),
+-		this, SLOT(slotSelectionChanged(Q3ListViewItem*)));
++	connect(d->lv, SIGNAL(selectionChanged(QTreeWidgetItem*)),
++		this, SLOT(slotSelectionChanged(QTreeWidgetItem*)));
+ }
+ 
+ 
+@@ -116,12 +116,12 @@ void AccountSelector::setSelected(Kopete::Account *account)
+ 	if (account==0)
+ 		return;
+ 
+-	Q3ListViewItemIterator it(d->lv);
+-	while (it.current())
++	QTreeWidgetItemIterator it(d->lv);
++	while ( (*it) )
+ 	{
+-		if(static_cast<AccountListViewItem *>(it.current())->account() == account)
++		if(static_cast<AccountListViewItem *>( (*it) )->account() == account)
+ 		{
+-			it.current()->setSelected(true);
++			(*it)->setSelected(true);
+ 			return;
+ 		}
+ 	}
+@@ -133,10 +133,10 @@ bool AccountSelector::isSelected(Kopete::Account *account)
+ 	if (account==0)
+ 		return false;
+ 
+-	Q3ListViewItemIterator it(d->lv);
+-	while (it.current())
++	QTreeWidgetItemIterator it(d->lv);
++	while ( (*it) )
+ 	{
+-		if(static_cast<AccountListViewItem *>(it.current())->account() == account)
++		if(static_cast<AccountListViewItem *>( (*it) )->account() == account)
+ 			return true;
+ 	}
+ 	return false;
+@@ -147,13 +147,13 @@ Kopete::Account *AccountSelector::selectedItem()
+ {
+ 	//kDebug(14010) ;
+ 
+-	if (d->lv->selectedItem() != 0)
+-		return static_cast<AccountListViewItem *>(d->lv->selectedItem())->account();
++	if (d->lv->currentItem())
++		return static_cast<AccountListViewItem *>(d->lv->currentItem())->account();
+ 	return 0;
+ }
+ 
+ 
+-void AccountSelector::slotSelectionChanged(Q3ListViewItem *item)
++void AccountSelector::slotSelectionChanged(QTreeWidgetItem *item)
+ {
+ 	//kDebug(14010) ;
+ 	if (item != 0)
+diff --git a/libkopete/ui/accountselector.h b/libkopete/ui/accountselector.h
+index 80446c073c66c759d59552da5cdf3d31ded1e8e1..601ca883db45eb6bdec03ca3ea334ee7c5320921 100644
+--- a/libkopete/ui/accountselector.h
++++ b/libkopete/ui/accountselector.h
+@@ -23,9 +23,9 @@
+ #include "kopete_export.h"
+ 
+ class AccountSelectorPrivate;
+-class Q3ListViewItem;
++class QTreeWidgetItem;
+ /**
+- * \brief widget to select an account, based on K3ListView
++ * \brief widget to select an account, based on QTreeWidget
+  * @author Stefan Gehn <metz AT gehn.net>
+  */
+ class KOPETE_EXPORT AccountSelector : public QWidget
+@@ -37,7 +37,7 @@ Q_OBJECT
+ 		 * Constructor.
+ 		 *
+ 		 * The parameter @p parent is handled by
+-		 * K3ListView.
++		 * QTreeWidget.
+ 		 */
+ 		AccountSelector(QWidget *parent=0);
+ 
+@@ -45,7 +45,7 @@ Q_OBJECT
+ 		 * Constructor for a list of accounts for one protocol only
+ 		 *
+ 		 * The parameters @p parent is handled by
+-		 * K3ListView. @p proto defines the protocol whose accounts are
++		 * QTreeWidget. @p proto defines the protocol whose accounts are
+ 		 * shown in the list
+ 		 */
+ 		explicit AccountSelector(Kopete::Protocol *proto, QWidget *parent=0);
+@@ -79,7 +79,7 @@ Q_OBJECT
+ 		void selectionChanged(Kopete::Account *acc);
+ 
+ 	private slots:
+-		void slotSelectionChanged(Q3ListViewItem *item);
++		void slotSelectionChanged(QTreeWidgetItem *item);
+ 
+ 	private:
+ 		void initUI();
+
+commit a703a857e68578f29e7bf1f38f8f639ba4cb060e
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Thu Jul 2 00:42:44 2015 +0530
+
+    Do away with q3 classes from sms
+
+diff --git a/protocols/sms/services/gsmlib.cpp b/protocols/sms/services/gsmlib.cpp
+index 08b6736538183402c696187b815b6b7dd8819322..6931d9add5317c9af2f105987248c0c72c1f4b99 100644
+--- a/protocols/sms/services/gsmlib.cpp
++++ b/protocols/sms/services/gsmlib.cpp
+@@ -24,7 +24,7 @@
+ #include <qthread.h>
+ #include <qcheckbox.h>
+ #include <QCustomEvent>
+-#include <Q3GridLayout>
++#include <QGridLayout>
+ 
+ #include <klocale.h>
+ #include <kurlrequester.h>
+@@ -351,7 +351,7 @@ void GSMLib::disconnect()
+ 
+ }
+ 
+-void GSMLib::setWidgetContainer(QWidget* parent, Q3GridLayout* layout)
++void GSMLib::setWidgetContainer(QWidget* parent, QGridLayout* layout)
+ {
+ 	m_parent = parent;
+ 	m_layout = layout;
+diff --git a/protocols/sms/services/gsmlib.h b/protocols/sms/services/gsmlib.h
+index 7a150e98d3e54b040110b45914a3b96131ef6c5f..085e9f2fe1e23c8feb2c83a1473a905b8d84d8d4 100644
+--- a/protocols/sms/services/gsmlib.h
++++ b/protocols/sms/services/gsmlib.h
+@@ -16,7 +16,7 @@
+ #ifndef GSMLIB_H_039562406
+ #define GSMLIB_H_039562406
+ 
+-#include <Q3GridLayout>
++#include <QGridLayout>
+ #include <QCustomEvent>
+ #ifdef INCLUDE_SMSGSM
+ 
+diff --git a/protocols/sms/smsprotocol.h b/protocols/sms/smsprotocol.h
+index 90ac06886df348d6ba0cb81cc71692562790112a..c08bdc4cc42448c2abece55f81306230ea529dc9 100644
+--- a/protocols/sms/smsprotocol.h
++++ b/protocols/sms/smsprotocol.h
+@@ -20,7 +20,6 @@
+ #include <qmap.h>
+ #include <qmovie.h>
+ #include <qpixmap.h>
+-#include <q3ptrdict.h>
+ #include <qstringlist.h>
+ 
+ #include "kopeteprotocol.h"
+
+commit 024b2a9649f214be1b8356238c6eef68b1e55f3b
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Thu Jul 2 00:01:30 2015 +0530
+
+    Remove Qt3 support from qq
+
+diff --git a/protocols/qq/CMakeLists.txt b/protocols/qq/CMakeLists.txt
+index 00640b2d33160ea5dab9499afda89f91d5586ea8..c3166fcaeea5a594672d89e798e8d0793801f897 100644
+--- a/protocols/qq/CMakeLists.txt
++++ b/protocols/qq/CMakeLists.txt
+@@ -39,7 +39,7 @@ set(kopete_qq_PART_SRCS
+ 
+ kde4_add_plugin(kopete_qq ${kopete_qq_PART_SRCS})
+ 
+-target_link_libraries(kopete_qq ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QT3SUPPORT_LIBRARY} kopete)
++target_link_libraries(kopete_qq ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} kopete)
+ if(NOT DISABLE_VIDEOSUPPORT)
+   target_link_libraries(kopete_qq kopete_videodevice)
+ endif(NOT DISABLE_VIDEOSUPPORT)
+diff --git a/protocols/qq/qqchatsession.h b/protocols/qq/qqchatsession.h
+index 5cbac9d1ca1e9399a9467bc1ad7fc35bc9e300bf..36a84365116fd298efd01facbe8b4e1c49f61a11 100644
+--- a/protocols/qq/qqchatsession.h
++++ b/protocols/qq/qqchatsession.h
+@@ -13,7 +13,6 @@
+ #ifndef QQCHATSESSION_H
+ #define QQCHATSESSION_H
+ 
+-#include <q3ptrqueue.h>
+ #include <QLabel>
+ #include <QList>
+ #include <QDateTime>
+diff --git a/protocols/qq/ui/qqeditaccountwidget.cpp b/protocols/qq/ui/qqeditaccountwidget.cpp
+index fd115d3a2210637cf7616b3c2e34a05497b1cfa2..39eaac88b952b2321837b920458d551cbd39b894 100644
+--- a/protocols/qq/ui/qqeditaccountwidget.cpp
++++ b/protocols/qq/ui/qqeditaccountwidget.cpp
+@@ -19,12 +19,10 @@
+ #include "qqeditaccountwidget.h"
+ 
+ #include <qcheckbox.h>
+-#include <q3groupbox.h>
+ #include <qimage.h>
+ #include <qlabel.h>
+ #include <qlayout.h>
+ #include <qlineedit.h>
+-#include <q3listbox.h>
+ #include <qpushbutton.h>
+ #include <qregexp.h>
+ #include <qspinbox.h>
+@@ -89,7 +87,7 @@ QQEditAccountWidget::QQEditAccountWidget( QQProtocol *proto, Kopete::Account *ac
+ 		QQContact *myself = static_cast<QQContact *>( account->myself() );
+ 		if( myself )
+ 			connect( d->ui->buttonVCard, SIGNAL(clicked()), myself, SLOT(slotUserInfo()));
+-			
++
+ 		QQAccount *m_account = static_cast<QQAccount*>( account );
+ 		d->ui->m_serverName->setText( m_account->serverName() );
+ 		d->ui->m_serverPort->setValue( m_account->serverPort() );
+@@ -116,7 +114,7 @@ Kopete::Account * QQEditAccountWidget::apply()
+ {
+ 	if ( !account() )
+ 		setAccount( new QQAccount( d->protocol, d->ui->m_login->text() ) );
+-	
++
+ 	KConfigGroup *config=account()->configGroup();
+ 
+ 	account()->setExcludeConnect( d->ui->m_autologin->isChecked() );
+
+commit 1d1a763899f3998ec318d86eadc46fdea3beea6c
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Wed Jul 1 23:33:33 2015 +0530
+
+    Remove Q3ListView class in winpopup
+
+diff --git a/protocols/winpopup/wpcontact.h b/protocols/winpopup/wpcontact.h
+index eab7585c5fe5d1f086764a8527e16dce9a192563..1e059a037efeeb653b09997e8f8e7a18d6fff4c1 100644
+--- a/protocols/winpopup/wpcontact.h
++++ b/protocols/winpopup/wpcontact.h
+@@ -39,7 +39,6 @@
+ #include "wpuserinfo.h"
+ 
+ class QTimer;
+-class Q3ListView;
+ class KAction;
+ namespace Kopete { class MetaContact; }
+ 
+
+commit a4c9001886eaa7da9ecede4e22e7ba4e79771aa9
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Wed Jul 1 02:28:23 2015 +0530
+
+    Remove needless q3 headers from groupwise
+
+diff --git a/protocols/groupwise/libgroupwise/chatroommanager.cpp b/protocols/groupwise/libgroupwise/chatroommanager.cpp
+index ebeda2cb81699daef94d883b49c4f0f25640766c..c6e6bb63d11395136b9c98b2e4b5e3213b91daea 100644
+--- a/protocols/groupwise/libgroupwise/chatroommanager.cpp
++++ b/protocols/groupwise/libgroupwise/chatroommanager.cpp
+@@ -19,7 +19,6 @@
+ #include "chatroommanager.h"
+ 
+ #include <qmap.h>
+-#include <q3valuelist.h>
+ 
+ #include <kdebug.h>
+ 
+diff --git a/protocols/groupwise/libgroupwise/coreprotocol.cpp b/protocols/groupwise/libgroupwise/coreprotocol.cpp
+index 3cea3e5fd301658b1f2c009c5e2ac5eff52529ad..7a36bb182a43a77cf4b5781d3b8e592ae37d5ffa 100644
+--- a/protocols/groupwise/libgroupwise/coreprotocol.cpp
++++ b/protocols/groupwise/libgroupwise/coreprotocol.cpp
+@@ -28,7 +28,6 @@
+ 
+ #include <qdatastream.h>
+ #include <qdatetime.h>
+-#include <q3textstream.h>
+ #include <QByteArray>
+ 
+ 
+diff --git a/protocols/groupwise/libgroupwise/coreprotocol.h b/protocols/groupwise/libgroupwise/coreprotocol.h
+index 23326708d5637b2d4667ee0fee6774064603295c..59fe68ba24f4895d711b2d25f30287fd01c5e5a6 100644
+--- a/protocols/groupwise/libgroupwise/coreprotocol.h
++++ b/protocols/groupwise/libgroupwise/coreprotocol.h
+@@ -22,7 +22,6 @@
+ #define GW_CORE_PROTOCOL_H
+ 
+ #include <QLatin1Char>
+-#include <q3cstring.h>
+ #include <qobject.h>
+ 
+ #include "gwfield.h"
+diff --git a/protocols/groupwise/libgroupwise/eventtransfer.h b/protocols/groupwise/libgroupwise/eventtransfer.h
+index bd3d89cf661d5d9030b9e1a3545a5933e5776bb9..8942a1b8b203d881941b38e4f89a6c9030f2d7b5 100644
+--- a/protocols/groupwise/libgroupwise/eventtransfer.h
++++ b/protocols/groupwise/libgroupwise/eventtransfer.h
+@@ -18,7 +18,6 @@
+ #ifndef GW_EVENTTRANSFER_H
+ #define GW_EVENTTRANSFER_H
+ 
+-#include <q3cstring.h>
+ #include <qdatetime.h>
+ 
+ #include "gwerror.h" 
+diff --git a/protocols/groupwise/libgroupwise/gwfield.cpp b/protocols/groupwise/libgroupwise/gwfield.cpp
+index 8608cd0a391cb640670c01ede23edd49f3061a58..8bca432a44ab1aaeb731232f72c0ebe07b05bbe0 100644
+--- a/protocols/groupwise/libgroupwise/gwfield.cpp
++++ b/protocols/groupwise/libgroupwise/gwfield.cpp
+@@ -19,8 +19,6 @@
+ 
+ #include "gwfield.h"
+ 
+-#include <q3cstring.h>
+-
+ #include "gwerror.h"
+ 
+ #ifdef LIBGW_USE_KDEBUG
+diff --git a/protocols/groupwise/libgroupwise/tasks/eventtask.h b/protocols/groupwise/libgroupwise/tasks/eventtask.h
+index 0a9eb68ff341d70ce253453a67756b9985c5713d..138eabdadb1584d64abd518cebbb4cbb164c0237 100644
+--- a/protocols/groupwise/libgroupwise/tasks/eventtask.h
++++ b/protocols/groupwise/libgroupwise/tasks/eventtask.h
+@@ -21,8 +21,6 @@
+ #ifndef GW_EVENTTASK_H
+ #define GW_EVENTTASK_H
+ 
+-#include <q3valuelist.h>
+-
+ #include "eventtransfer.h"
+ #include "task.h"
+ 
+diff --git a/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h b/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h
+index 3120a2f894ee1aeb30a8fd34b05b4edf18b8f617..f95593405a370453bb55067f274eb47a0efb7908 100644
+--- a/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h
++++ b/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h
+@@ -21,7 +21,6 @@
+ #ifndef POLLSEARCHRESULTSTASK_H
+ #define POLLSEARCHRESULTSTASK_H
+ 
+-#include <q3valuelist.h>
+ 
+ #include "gwerror.h"
+ 
+diff --git a/protocols/groupwise/ui/gwaddcontactpage.cpp b/protocols/groupwise/ui/gwaddcontactpage.cpp
+index 8ff9fc008e5d56951f0ba5ee4a39795a0ac71abd..fa70fa3cba6fd5ba3a8889f7cb52cff9883bd690 100644
+--- a/protocols/groupwise/ui/gwaddcontactpage.cpp
++++ b/protocols/groupwise/ui/gwaddcontactpage.cpp
+@@ -30,7 +30,6 @@
+ #include <qpushbutton.h>
+ #include <qradiobutton.h>
+ #include <qtabwidget.h>
+-#include <q3valuelist.h>
+ #include <QVBoxLayout>
+ 
+ #include <kdebug.h>
+diff --git a/protocols/groupwise/ui/gwcontactproperties.cpp b/protocols/groupwise/ui/gwcontactproperties.cpp
+index d9978575ea0a6dbd5e318de9b0ac40984c53eba8..be9acd40543ec1ee175b856ce03848a935a24f5b 100644
+--- a/protocols/groupwise/ui/gwcontactproperties.cpp
++++ b/protocols/groupwise/ui/gwcontactproperties.cpp
+@@ -19,7 +19,6 @@
+ 
+ #include "gwcontactproperties.h"
+ #include <qclipboard.h>
+-#include <q3header.h>
+ #include <qlabel.h>
+ #include <qlineedit.h>
+ #include <qmap.h>
+
+commit 550835533efd0ccb6613d108e009f3fbb580c828
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Fri Jun 26 09:58:34 2015 +0530
+
+    Remove Qt3 dependencies from meanwhile protocol
+    
+    REVIEW: 124184
+
+diff --git a/protocols/meanwhile/CMakeLists.txt b/protocols/meanwhile/CMakeLists.txt
+index 5b3e7d468bda985add7a83c1b3f9a9939c8ef81f..8cc44e06ab7878bdc9ef5b278c01a862129f9a69 100644
+--- a/protocols/meanwhile/CMakeLists.txt
++++ b/protocols/meanwhile/CMakeLists.txt
+@@ -24,7 +24,7 @@ kde4_add_plugin(kopete_meanwhile ${kopete_meanwhile_PART_SRCS})
+ 
+ target_link_libraries(kopete_meanwhile
+   ${KDE4_KDECORE_LIBS} ${GLIB2_LIBRARIES} ${LIBMEANWHILE_LIBRARY}
+-  ${KDE4_KDEUI_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QT3SUPPORT_LIBRARY}
++  ${KDE4_KDEUI_LIBS} ${QT_QTNETWORK_LIBRARY}
+   kopete)
+ 
+ install(TARGETS kopete_meanwhile DESTINATION ${PLUGIN_INSTALL_DIR})
+diff --git a/protocols/meanwhile/ui/meanwhileeditaccount.ui b/protocols/meanwhile/ui/meanwhileeditaccount.ui
+index 5e61aed483fb2501a26aa2452247e0a61782ed8d..fea065ca384dd730d79a90ccf252e80dc6805fe6 100644
+--- a/protocols/meanwhile/ui/meanwhileeditaccount.ui
++++ b/protocols/meanwhile/ui/meanwhileeditaccount.ui
+@@ -36,7 +36,7 @@
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <item>
+-        <widget class="Q3GroupBox" name="groupBox53" >
++        <widget class="QGroupBox" name="groupBox53" >
+          <property name="title" >
+           <string>Account Information</string>
+          </property>
+@@ -98,7 +98,7 @@
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <item>
+-        <widget class="Q3GroupBox" name="groupBox54" >
++        <widget class="QGroupBox" name="groupBox54" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
+            <horstretch>0</horstretch>
+@@ -193,7 +193,7 @@
+         </widget>
+        </item>
+        <item>
+-        <widget class="Q3GroupBox" name="groupBox5" >
++        <widget class="QGroupBox" name="groupBox5" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
+            <horstretch>0</horstretch>
+@@ -343,12 +343,6 @@
+  </widget>
+  <customwidgets>
+   <customwidget>
+-   <class>Q3GroupBox</class>
+-   <extends>QGroupBox</extends>
+-   <header>Qt3Support/Q3GroupBox</header>
+-   <container>1</container>
+-  </customwidget>
+-  <customwidget>
+    <class>Kopete::UI::PasswordWidget</class>
+    <extends>QWidget</extends>
+    <header>kopetepasswordwidget.h</header>
+
+commit a1b9b0373ec1397857ee275b5e3ddf801f38cfea
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Thu Jun 25 23:45:17 2015 +0530
+
+    Remove K3ListBox and needless includes from groupwise.
+    
+    REVIEW: 124181
+
+diff --git a/protocols/groupwise/gwconnector.cpp b/protocols/groupwise/gwconnector.cpp
+index d1330ad824dc7c731dc37a95b8735273c4890a46..2c62eaa80249e5397110ec5ec83bd4a30333d9aa 100644
+--- a/protocols/groupwise/gwconnector.cpp
++++ b/protocols/groupwise/gwconnector.cpp
+@@ -18,9 +18,7 @@
+  ***************************************************************************/
+ 
+ #include "gwconnector.h"
+-#include <k3bufferedsocket.h>
+ #include <kdebug.h>
+-#include <k3resolver.h>
+ 
+ #include "gwerror.h"
+ #include "gwbytestream.h"
+diff --git a/protocols/groupwise/ui/gwchatprops.ui b/protocols/groupwise/ui/gwchatprops.ui
+index f93fb5db8269323d5b28bd60181bbe3a209f80e3..5e987de01728ce4c99c30a556c6e602760581575 100644
+--- a/protocols/groupwise/ui/gwchatprops.ui
++++ b/protocols/groupwise/ui/gwchatprops.ui
+@@ -372,12 +372,12 @@
+       <bool>false</bool>
+      </property>
+      <property name="buddy" >
+-      <cstring>k3ListBox1</cstring>
++      <cstring>QListWidget1</cstring>
+      </property>
+     </widget>
+    </item>
+    <item>
+-    <widget class="K3ListBox" name="acl" >
++    <widget class="QListWidget" name="acl" >
+      <property name="toolTip" >
+       <string>Access permissions for specific users</string>
+      </property>
+@@ -433,9 +433,9 @@
+    <container>1</container>
+   </customwidget>
+   <customwidget>
+-   <class>K3ListBox</class>
+-   <extends>Q3ListBox</extends>
+-   <header>k3listbox.h</header>
++   <class>QListWidget</class>
++   <extends>QListView</extends>
++   <header>QListWidget</header>
+   </customwidget>
+  </customwidgets>
+  <tabstops>
+@@ -457,7 +457,7 @@
+   <tabstop>deleteAcl</tabstop>
+  </tabstops>
+  <includes>
+-  <include location="local" >k3listbox.h</include>
++  <include location="local" >QListWidget</include>
+   <include location="local" >kpushbutton.h</include>
+   <include location="local" >kpushbutton.h</include>
+   <include location="local" >kpushbutton.h</include>
+
+commit 2ac7800bfbd51b750ceeab557302f0a4b32b904e
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Thu Jun 25 18:22:34 2015 +0530
+
+    Replace ListViews with TreeWidgets in the groupwise protocol.
+    
+    REVIEW: 124173
+
+diff --git a/protocols/gadu/ui/gadusearch.ui b/protocols/gadu/ui/gadusearch.ui
+index 8b1ecc1898f74f49f3efcf2346241545ff876de1..3011347434e10205a390adf872a6a80077afb6b2 100644
+--- a/protocols/gadu/ui/gadusearch.ui
++++ b/protocols/gadu/ui/gadusearch.ui
+@@ -438,11 +438,6 @@
+  </widget>
+  <customwidgets>
+   <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
+-  </customwidget>
+-  <customwidget>
+    <class>KRestrictedLine</class>
+    <extends>KLineEdit</extends>
+    <header>krestrictedline.h</header>
+diff --git a/protocols/groupwise/ui/gwaddcontactpage.cpp b/protocols/groupwise/ui/gwaddcontactpage.cpp
+index be2ead4e8fd4b521cf11b70fe81afad8f27a9f01..8ff9fc008e5d56951f0ba5ee4a39795a0ac71abd 100644
+--- a/protocols/groupwise/ui/gwaddcontactpage.cpp
++++ b/protocols/groupwise/ui/gwaddcontactpage.cpp
+@@ -27,7 +27,6 @@
+ #include <qlayout.h>
+ #include <qlineedit.h>
+ #include <QPainter>
+-#include <q3listview.h>
+ #include <qpushbutton.h>
+ #include <qradiobutton.h>
+ #include <qtabwidget.h>
+diff --git a/protocols/groupwise/ui/gwchatpropsdialog.cpp b/protocols/groupwise/ui/gwchatpropsdialog.cpp
+index 7361241c6f6380338774315332530daa6fb3705f..5226bb3959439e0c954c7416c10ce839988f8d2e 100644
+--- a/protocols/groupwise/ui/gwchatpropsdialog.cpp
++++ b/protocols/groupwise/ui/gwchatpropsdialog.cpp
+@@ -22,7 +22,6 @@
+ #include <qlabel.h>
+ #include <qlineedit.h>
+ #include <QPainter>
+-#include <q3listview.h>
+ 
+ #include <kdebug.h>
+ #include <kpushbutton.h>
+diff --git a/protocols/groupwise/ui/gwchatsearch.ui b/protocols/groupwise/ui/gwchatsearch.ui
+index f7e95071f8b9cd8b2c3815306b4fed4ac2afeec8..95585f224049dc1f845aef6732cee58f32549a93 100644
+--- a/protocols/groupwise/ui/gwchatsearch.ui
++++ b/protocols/groupwise/ui/gwchatsearch.ui
+@@ -26,7 +26,7 @@
+     <number>11</number>
+    </property>
+    <item>
+-    <widget class="K3ListView" name="chatrooms" >
++     <widget class="QTreeWidget" name="chatrooms" >
+      <property name="allColumnsShowFocus" >
+       <bool>true</bool>
+      </property>
+@@ -81,11 +81,6 @@
+  </widget>
+  <customwidgets>
+   <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
+-  </customwidget>
+-  <customwidget>
+    <class>KPushButton</class>
+    <extends>QPushButton</extends>
+    <header>kpushbutton.h</header>
+@@ -93,7 +88,6 @@
+   </customwidget>
+  </customwidgets>
+  <includes>
+-  <include location="local" >k3listview.h</include>
+   <include location="local" >kpushbutton.h</include>
+  </includes>
+  <resources/>
+diff --git a/protocols/groupwise/ui/gwchatsearchdialog.cpp b/protocols/groupwise/ui/gwchatsearchdialog.cpp
+index ae23311cafb8c318f2da671e0809bf0a57f4b373..95fab9436ed0277c6968bbd4ab26bd1a23bd9607 100644
+--- a/protocols/groupwise/ui/gwchatsearchdialog.cpp
++++ b/protocols/groupwise/ui/gwchatsearchdialog.cpp
+@@ -20,8 +20,8 @@
+ #include "gwchatsearchdialog.h"
+ #include <qmap.h>
+ 
+-#include <k3listview.h>
+-#include <k3listviewsearchline.h>
++#include <QTreeWidget>
++#include <ktreewidgetsearchline.h>
+ 
+ #include <kpushbutton.h>
+ #include <kdebug.h>
+@@ -66,35 +66,39 @@ GroupWiseChatSearchDialog::~GroupWiseChatSearchDialog()
+ void GroupWiseChatSearchDialog::slotUpdateClicked()
+ {
+ 	kDebug () << "updating chatroom list ";
+-	Q3ListViewItem * first = m_ui.chatrooms->firstChild();
+-	QString updateMessage = i18n("Updating chatroom list..." );
++	QStringList updateMessage;
++	QTreeWidgetItem * first = m_ui.chatrooms->topLevelItem(0);
++	updateMessage.append(i18n("Updating chatroom list..." ));
+ 	if ( first )
+-		new Q3ListViewItem( first, updateMessage );
++		new QTreeWidgetItem(first, updateMessage);
+ 	else
+-		new Q3ListViewItem( m_ui.chatrooms, updateMessage );
++		new QTreeWidgetItem( m_ui.chatrooms, updateMessage );
+ 	m_manager->updateRooms();
+ 
+ }
+ 
+ void GroupWiseChatSearchDialog::slotManagerUpdated()
+ {
++	QStringList argsList;
+ 	m_ui.chatrooms->clear();
+ 	ChatroomMap rooms = m_manager->rooms();
+ 	ChatroomMap::iterator it = rooms.begin();
+ 	const ChatroomMap::iterator end = rooms.end();
+ 	while ( it != end )
+ 	{
+-		new Q3ListViewItem( m_ui.chatrooms,
+-						   it.value().displayName,
+-						   m_account->protocol()->dnToDotted( it.value().ownerDN ),
+-						   QString::number( it.value().participantsCount ) );
++		// Populate the String List
++		argsList.append(it.value().displayName);
++		argsList.append(m_account->protocol()->dnToDotted(it.value().ownerDN));
++		argsList.append(QString::number(it.value().participantsCount));
++
++		new QTreeWidgetItem( m_ui.chatrooms, argsList);
+ 		++it;
+ 	}
+ }
+ 
+ void GroupWiseChatSearchDialog::slotPropertiesClicked()
+ {
+-	Q3ListViewItem * selected  = m_ui.chatrooms->selectedItem();
++	QTreeWidgetItem * selected  = m_ui.chatrooms->currentItem();
+ 	if ( selected )
+ 	{
+ 		m_manager->requestProperties( selected->text( 0 ) );
+diff --git a/protocols/groupwise/ui/gwcontactproperties.h b/protocols/groupwise/ui/gwcontactproperties.h
+index b0a68812dffbe618205c4528586d7799d71e9131..d9a96e6b999cced31638a158e8ea3a8777c62fa1 100644
+--- a/protocols/groupwise/ui/gwcontactproperties.h
++++ b/protocols/groupwise/ui/gwcontactproperties.h
+@@ -27,7 +27,6 @@
+ 
+ namespace Ui { class GroupWiseContactPropsWidget; }
+ class KDialog;
+-class Q3ListViewItem;
+ class KAction;
+ 
+ /**
+diff --git a/protocols/groupwise/ui/gwcontactprops.ui b/protocols/groupwise/ui/gwcontactprops.ui
+index 19425b934a018f614642d3d48599a1d532ee5def..72923b849cc990369061fa306faea438bb8c82be 100644
+--- a/protocols/groupwise/ui/gwcontactprops.ui
++++ b/protocols/groupwise/ui/gwcontactprops.ui
+@@ -209,9 +209,6 @@
+   <tabstop>firstName</tabstop>
+   <tabstop>lastName</tabstop>
+  </tabstops>
+- <includes>
+-  <include location="local" >k3listview.h</include>
+- </includes>
+  <resources/>
+  <connections/>
+ </ui>
+diff --git a/protocols/groupwise/ui/gwcustomstatus.ui b/protocols/groupwise/ui/gwcustomstatus.ui
+index bbd7e5052975810963bde1f84c3efdc9a7074769..d0d689cc6e58a3e6c2ba4f82f5ac24105b4b1797 100644
+--- a/protocols/groupwise/ui/gwcustomstatus.ui
++++ b/protocols/groupwise/ui/gwcustomstatus.ui
+@@ -17,7 +17,7 @@
+     <number>6</number>
+    </property>
+    <item>
+-    <widget class="K3ListView" name="m_list" >
++     <widget class="QTreeWidget" name="m_list" >
+      <property name="allColumnsShowFocus" >
+       <bool>true</bool>
+      </property>
+@@ -72,21 +72,6 @@
+    </item>
+   </layout>
+  </widget>
+- <customwidgets>
+-  <customwidget>
+-   <class>Q3ListView</class>
+-   <extends>Q3Frame</extends>
+-   <header>q3listview.h</header>
+-  </customwidget>
+-  <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
+-  </customwidget>
+- </customwidgets>
+- <includes>
+-  <include location="local" >k3listview.h</include>
+- </includes>
+  <resources/>
+  <connections/>
+ </ui>
+diff --git a/protocols/groupwise/ui/gwprivacydialog.cpp b/protocols/groupwise/ui/gwprivacydialog.cpp
+index 95328c738a3d21556a598408cfadd4a8bbeda227..3b2210f6907d29931de50e27f299fa67b6c7fdc6 100644
+--- a/protocols/groupwise/ui/gwprivacydialog.cpp
++++ b/protocols/groupwise/ui/gwprivacydialog.cpp
+@@ -19,7 +19,6 @@
+ 
+ #include "gwprivacydialog.h"
+ #include <q3listbox.h>
+-#include <q3listview.h>
+ #include <QtCore/QStringList>
+ #include <QtCore/QList>
+ #include <QtGui/QPainter>
+
+commit 10122a497f1ea10ff8ea678d785d76d71990db58
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Sun Jun 14 19:20:06 2015 +0530
+
+    Do away with k3listbox in texteffect plugin
+    
+    REVIEW: 124094
+
+diff --git a/plugins/texteffect/texteffectpreferences.cpp b/plugins/texteffect/texteffectpreferences.cpp
+index 35fac60d419cbac5644a8e143be1fc7c640385a9..a8a520914cbb7575e34b51e3a75cf8a46a93c932 100644
+--- a/plugins/texteffect/texteffectpreferences.cpp
++++ b/plugins/texteffect/texteffectpreferences.cpp
+@@ -22,6 +22,8 @@
+ #include <qcheckbox.h>
+ #include <qpushbutton.h>
+ #include <QVBoxLayout>
++#include <QListWidget>
++#include <QListWidgetItem>
+ 
+ #include <klocale.h>
+ #include <kcolordialog.h>
+@@ -96,7 +98,7 @@ void TextEffectPreferences::load()
+ 
+ 	config->load();
+ 
+-	preferencesDialog->mColorsListBox->insertStringList(config->colors());
++	preferencesDialog->mColorsListBox->addItems(config->colors());
+ 	preferencesDialog->m_fg->setChecked(config->colorLines());
+ 	preferencesDialog->m_words->setChecked(config->colorWords());
+ 	preferencesDialog->m_char->setChecked(config->colorChar());
+@@ -143,9 +145,9 @@ void TextEffectPreferences::save()
+ QStringList TextEffectPreferences::colors()
+ {
+ 	QStringList ret;
+-	for(unsigned int f=0; f<preferencesDialog->mColorsListBox->count() ; f++)
++	for(int f=0; f < preferencesDialog->mColorsListBox->count() ; ++f)
+ 	{
+-		ret.append(preferencesDialog->mColorsListBox->text(f));
++		ret.append(preferencesDialog->mColorsListBox->item(f)->text());
+ 	}
+ 	return ret;
+ }
+@@ -155,7 +157,7 @@ void TextEffectPreferences::slotAddPressed()
+ 	QColor myColor;
+ 	if( KColorDialog::getColor( myColor ) == KColorDialog::Accepted )
+ 	{
+-		preferencesDialog->mColorsListBox->insertItem(myColor.name());
++		preferencesDialog->mColorsListBox->insertItem(preferencesDialog->mColorsListBox->currentRow(), myColor.name());
+ 	}
+ 
+ 	// Indicate that something has changed
+@@ -164,7 +166,8 @@ void TextEffectPreferences::slotAddPressed()
+ }
+ void TextEffectPreferences::slotRemovePressed()
+ {
+-	delete preferencesDialog->mColorsListBox->selectedItem();
++	delete preferencesDialog->mColorsListBox->currentItem();
++
+ 	// Indicate that something has changed
+ 	slotSettingChanged();
+ }
+@@ -172,16 +175,17 @@ void TextEffectPreferences::slotRemovePressed()
+ 
+ void TextEffectPreferences::slotUpPressed()
+ {
+-	int p=preferencesDialog->mColorsListBox->currentItem();
++	int p=preferencesDialog->mColorsListBox->currentRow();
+ 	if(p <= 0 )
+ 		return;
+-	Q3ListBoxItem *i=preferencesDialog->mColorsListBox->selectedItem();
++
++	QListWidgetItem *i = preferencesDialog->mColorsListBox->currentItem();
+ 	if(!i)
+ 		return;
+-	preferencesDialog->mColorsListBox->setSelected(i,false);
+-	preferencesDialog->mColorsListBox->takeItem(i);
+-	preferencesDialog->mColorsListBox->insertItem(i , p-1 );
+-	preferencesDialog->mColorsListBox->setSelected(i,true);
++	i->setSelected(false);
++	preferencesDialog->mColorsListBox->takeItem(i->listWidget()->row(i));
++	preferencesDialog->mColorsListBox->insertItem(p-1, i);
++	i->setSelected(true);
+ 
+ 	// Indicate that something has changed
+ 	slotSettingChanged();
+@@ -189,16 +193,17 @@ void TextEffectPreferences::slotUpPressed()
+ }
+ void TextEffectPreferences::slotDownPressed()
+ {
+-	int p=preferencesDialog->mColorsListBox->currentItem();
++	int p=preferencesDialog->mColorsListBox->currentRow();
+ 	if(p < 0 )
+ 		return;
+-	Q3ListBoxItem *i=preferencesDialog->mColorsListBox->selectedItem();
++
++	QListWidgetItem *i = preferencesDialog->mColorsListBox->currentItem();
+ 	if(!i)
+ 		return;
+-	preferencesDialog->mColorsListBox->setSelected(i,false);
+-	preferencesDialog->mColorsListBox->takeItem(i);
+-	preferencesDialog->mColorsListBox->insertItem(i , p+1 );
+-	preferencesDialog->mColorsListBox->setSelected(i,true);
++	i->setSelected(false);
++	preferencesDialog->mColorsListBox->takeItem(p);
++	preferencesDialog->mColorsListBox->insertItem(p+1, i);
++	i->setSelected(true);
+ 
+ 	// Indicate that something has changed
+ 	slotSettingChanged();
+@@ -217,7 +222,7 @@ void TextEffectPreferences::slotSettingChanged()
+ void TextEffectPreferences::defaults()
+ {
+     preferencesDialog->mColorsListBox->clear();
+-    preferencesDialog->mColorsListBox->insertStringList(config->defaultColorList());
++    preferencesDialog->mColorsListBox->addItems(config->defaultColorList());
+     preferencesDialog->m_fg->setChecked(false);
+     preferencesDialog->m_words->setChecked(false);
+     preferencesDialog->m_char->setChecked(false);
+diff --git a/plugins/texteffect/texteffectprefs.ui b/plugins/texteffect/texteffectprefs.ui
+index 1b82f3de4b449373a3dedb39b664c0f645f1d02a..2d7f6a23cfa984c4f1ec7e1afa7f60580364c5d2 100644
+--- a/plugins/texteffect/texteffectprefs.ui
++++ b/plugins/texteffect/texteffectprefs.ui
+@@ -82,7 +82,7 @@
+            <number>6</number>
+           </property>
+           <item rowspan="5" row="0" column="0" >
+-           <widget class="K3ListBox" native="1" name="mColorsListBox" />
++			<widget class="QListWidget" native="1" name="mColorsListBox" />
+           </item>
+           <item row="0" column="1" >
+            <widget class="QPushButton" name="mColorsAdd" >
+@@ -239,12 +239,7 @@
+    </item>
+   </layout>
+  </widget>
+-  <customwidgets>
+-  <customwidget>
+-   <class>K3ListBox</class>
+-   <extends></extends>
+-   <header>k3listbox.h</header>
+-  </customwidget>
++ <customwidgets>
+  </customwidgets>
+  <tabstops>
+   <tabstop>TabWidget3</tabstop>
+
+commit 4c353ff313e96690150de9fa33f6c6e24d0ffd37
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Sun Jun 14 01:12:31 2015 +0530
+
+    Do away k3listview from plugins/
+
+diff --git a/plugins/alias/aliasdialog.ui b/plugins/alias/aliasdialog.ui
+index 7e68bf1d4bf20c48fbec3c58074bdeeaca92288d..8ad8dfc84ea3bcd337258e362d1d6485eb5f3c63 100644
+--- a/plugins/alias/aliasdialog.ui
++++ b/plugins/alias/aliasdialog.ui
+@@ -93,7 +93,7 @@ Do not include the '/' in the command (if you do it will be stripped off anyway)
+     </widget>
+    </item>
+    <item row="2" column="1" colspan="2" >
+-    <widget class="K3ListView" name="protocolList" >
++    <widget class="QTreeWidget" name="protocolList" >
+      <property name="enabled" >
+       <bool>true</bool>
+      </property>
+@@ -104,13 +104,13 @@ Do not include the '/' in the command (if you do it will be stripped off anyway)
+       <string>If you want this alias to only be active for certain protocols, select those protocols here.</string>
+      </property>
+      <property name="selectionMode" >
+-      <enum>Q3ListView::Multi</enum>
++      <enum>QTreeWidget::Multi</enum>
+      </property>
+      <property name="itemMargin" >
+       <number>0</number>
+      </property>
+      <property name="resizeMode" >
+-      <enum>Q3ListView::AllColumns</enum>
++      <enum>QHeaderView::Stretch</enum>
+      </property>
+      <property name="fullWidth" >
+       <bool>true</bool>
+@@ -158,9 +158,9 @@ Do not include the '/' in the command (if you do it will be stripped off anyway)
+  </widget>
+   <customwidgets>
+   <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
++   <class>QTreeWidget</class>
++   <extends>QTreeWidget</extends>
++   <header>QTreeWidget</header>
+   </customwidget>
+   <customwidget>
+    <class>KLineEdit</class>
+diff --git a/plugins/alias/aliasdialogbase.ui b/plugins/alias/aliasdialogbase.ui
+index f521d0fbbaea47834e596ac489031d4b303ae1d0..2b74d331d99b5ec4963688e91d0d6c1708b248c9 100644
+--- a/plugins/alias/aliasdialogbase.ui
++++ b/plugins/alias/aliasdialogbase.ui
+@@ -29,12 +29,12 @@
+     <number>6</number>
+    </property>
+    <item row="0" column="0" colspan="3" >
+-    <widget class="K3ListView" name="aliasList" >
++    <widget class="QTreeWidget" name="aliasList" >
+      <property name="whatsThis" >
+       <string>This is the list of custom aliases and the commands that you have already added</string>
+      </property>
+      <property name="selectionMode" >
+-      <enum>Q3ListView::Extended</enum>
++      <enum>QTreeWidget::Extended</enum>
+      </property>
+      <property name="allColumnsShowFocus" >
+       <bool>true</bool>
+@@ -87,9 +87,9 @@
+  </widget>
+   <customwidgets>
+   <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
++   <class>QTreeWidget</class>
++   <extends>QTreeWidget</extends>
++   <header>QTreeWidget</header>
+   </customwidget>
+   <customwidget>
+    <class>KPushButton</class>
+diff --git a/plugins/alias/aliaspreferences.cpp b/plugins/alias/aliaspreferences.cpp
+index 2c69306a7674208a44a2d5173c19d740599503d8..f50e2b161f50009957a97669343a55d94019b7d8 100644
+--- a/plugins/alias/aliaspreferences.cpp
++++ b/plugins/alias/aliaspreferences.cpp
+@@ -42,14 +42,14 @@
+ K_PLUGIN_FACTORY( AliasPreferencesFactory, registerPlugin<AliasPreferences>(); )
+ K_EXPORT_PLUGIN( AliasPreferencesFactory( "kcm_kopete_alias" ) )
+ 
+-class AliasItem : public Q3ListViewItem
++class AliasItem : public QTreeWidgetItem
+ {
+ 	public:
+-		AliasItem( Q3ListView *parent,
++		AliasItem( QTreeWidget *parent,
+ 			uint number,
+ 			const QString &alias,
+ 			const QString &command, const ProtocolList &p ) :
+-		Q3ListViewItem( parent, alias, command )
++		QTreeWidgetItem( parent, alias, command )
+ 		{
+ 			protocolList = p;
+ 			id = number;
+@@ -68,10 +68,10 @@ class AliasItem : public Q3ListViewItem
+ 				if ( cellWidth < 0 )
+ 					cellWidth = 0;
+ 
+-				Q3ListViewItem::paintCell( p, cg, column, cellWidth, align );
++				QTreeWidgetItem::paintCell( p, cg, column, cellWidth, align );
+ 
+ 				// Draw the rest of the background
+-				Q3ListView *lv = listView();
++				QTreeWidget *lv = listView();
+ 				if ( !lv )
+ 					return;
+ 
+@@ -108,16 +108,16 @@ class AliasItem : public Q3ListViewItem
+ 			else
+ 			{
+ 				// Use Qt's own drawing
+-				Q3ListViewItem::paintCell( p, cg, column, width, align );
++				QTreeWidgetItem::paintCell( p, cg, column, width, align );
+ 			}
+ 		}
+ };
+ 
+-class ProtocolItem : public Q3ListViewItem
++class ProtocolItem : public QTreeWidgetItem
+ {
+ 	public:
+-		ProtocolItem( Q3ListView *parent, const KPluginInfo &p ) :
+-		Q3ListViewItem( parent, p.name() )
++		ProtocolItem( QTreeWidget *parent, const KPluginInfo &p ) :
++		QTreeWidgetItem( parent, p.name() )
+ 		{
+ 			this->setPixmap( 0, SmallIcon( p.icon() ) );
+ 			id = p.pluginName();
+@@ -147,7 +147,7 @@ AliasPreferences::AliasPreferences( QWidget *parent, const QVariantList &args )
+ 
+ AliasPreferences::~AliasPreferences()
+ {
+-	Q3ListViewItem *myChild = preferencesDialog->aliasList->firstChild();
++	QTreeWidgetItem *myChild = preferencesDialog->aliasList->firstChild();
+         while( myChild )
+ 	{
+ 		ProtocolList protocols = static_cast<AliasItem*>( myChild )->protocolList;
+@@ -358,7 +358,7 @@ void AliasPreferences::slotAddAlias()
+ const ProtocolList AliasPreferences::selectedProtocols( EditAliasDialog *dialog )
+ {
+ 	ProtocolList protocolList;
+-	Q3ListViewItem *item = dialog->protocolList->firstChild();
++	QTreeWidgetItem *item = dialog->protocolList->firstChild();
+ 
+ 	while( item )
+ 	{
+@@ -394,7 +394,7 @@ void AliasPreferences::slotEditAlias()
+ 
+ 	loadProtocols( &editDialog );
+ 
+-	Q3ListViewItem *item = preferencesDialog->aliasList->selectedItems().first();
++	QTreeWidgetItem *item = preferencesDialog->aliasList->selectedItems().first();
+ 	if( item )
+ 	{
+ 		QString oldAlias = item->text(0);
+@@ -457,12 +457,12 @@ void AliasPreferences::slotEditAlias()
+ 
+ void AliasPreferences::slotDeleteAliases()
+ {
+-        QList< Q3ListViewItem* > items = preferencesDialog->aliasList->selectedItems();
++        QList< QTreeWidgetItem* > items = preferencesDialog->aliasList->selectedItems();
+         if( items.isEmpty())
+             return;
+ 	if( KMessageBox::warningContinueCancel(this, i18n("Are you sure you want to delete the selected aliases?"), i18n("Delete Aliases"), KGuiItem(i18n("Delete"), "edit-delete") ) == KMessageBox::Continue )
+ 	{
+-		foreach( Q3ListViewItem *i, items)
++		foreach( QTreeWidgetItem *i, items)
+ 		{
+ 			ProtocolList protocols = static_cast<AliasItem*>( i )->protocolList;
+ 			for( ProtocolList::Iterator it = protocols.begin(); it != protocols.end(); ++it )
+diff --git a/plugins/statistics/statisticsdialog.cpp b/plugins/statistics/statisticsdialog.cpp
+index 79f6efce97780499b798212a1366622877c43368..d2abe54a5befe01b48a5d699859187069cfdbebe 100644
+--- a/plugins/statistics/statisticsdialog.cpp
++++ b/plugins/statistics/statisticsdialog.cpp
+@@ -254,11 +254,11 @@ void StatisticsDialog::generatePageFromQStringList ( QStringList values, const Q
+ 	                                "<a href=\"monthofyear:12\">December</a>&nbsp;"
+ 	                                "</span></div><br>" ) );
+ 
+-//	dialogUi->listView->addColumn(i18n("Status"));
+-//	dialogUi->listView->addColumn(i18n("Start Date"));
+-//	dialogUi->listView->addColumn(i18n("End Date"));
+-//	dialogUi->listView->addColumn(i18n("Start Date"));
+-//	dialogUi->listView->addColumn(i18n("End Date"));
++//	dialogUi->listView->headerItem()->setText(0, i18n("Status"));
++//	dialogUi->listView->headerItem()->setText(0, i18n("Start Date"));
++//	dialogUi->listView->headerItem()->setText(0, i18n("End Date"));
++//	dialogUi->listView->headerItem()->setText(0, i18n("Start Date"));
++//	dialogUi->listView->headerItem()->setText(0, i18n("End Date"));
+ 
+ 	QString todayString;
+ 	todayString.append ( i18n ( "<div class=\"statgroup\" title=\"Contact status history for today\"><h2>Today</h2><table width=\"100%\"><tr><td>Status</td><td>From</td><td>To</td></tr>" ) );
+@@ -392,7 +392,7 @@ void StatisticsDialog::generatePageFromQStringList ( QStringList values, const Q
+ 		// QDateTime listViewDT1, listViewDT2;
+ 		// listViewDT1.setTime_t(values[i+1].toInt());
+ 		// listViewDT2.setTime_t(values[i+2].toInt());
+-		// new K3ListViewItem(dialogUi->listView, values[i], values[i+1], values[i+2], listViewDT1.toString(), listViewDT2.toString());
++		// new QTreeWidgetItem(dialogUi->listView, values[i], values[i+1], values[i+2], listViewDT1.toString(), listViewDT2.toString());
+ 	}
+ 
+ 
+
+commit 0797c1bf4ab4fa3832d951cfc9556867c63f9fbc
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Sun Jun 14 00:58:37 2015 +0530
+
+    Port k3process, k3listview and k3listviewsearchline
+    
+    some k3 classes in libkopete/ui still remain
+
+diff --git a/libkopete/kopetecontact.cpp b/libkopete/kopetecontact.cpp
+index 670fba008f6b0aa134de1a97644cd42190a8e336..2117331269aba6fae979038912d8e8e0329c73eb 100644
+--- a/libkopete/kopetecontact.cpp
++++ b/libkopete/kopetecontact.cpp
+@@ -34,7 +34,7 @@
+ #include <kicon.h>
+ #include <kmenu.h>
+ #include <kmessagebox.h>
+-#include <k3listviewsearchline.h>
++#include <ktreewidgetsearchline.h>
+ 
+ #include "kopetecontactlist.h"
+ #include "kopeteglobal.h"
+@@ -58,7 +58,7 @@
+ #include <qimage.h>
+ #include <qmime.h>
+ #include <kvbox.h>
+-#include <k3listview.h>
++#include <QTreeWidget>
+ #include <qcheckbox.h>
+ 
+ 
+diff --git a/libkopete/tests/kopetemessage_test.cpp b/libkopete/tests/kopetemessage_test.cpp
+index 5cd37a1340345e208ffd29a111cb54af38e3bedc..af831e5cff98fe5a70c60a86ba8a3c81b4eeedfa 100644
+--- a/libkopete/tests/kopetemessage_test.cpp
++++ b/libkopete/tests/kopetemessage_test.cpp
+@@ -30,7 +30,7 @@
+ 
+ #include <kstandarddirs.h>
+ #include <kcomponentdata.h>
+-#include <k3process.h>
++#include <kprocess.h>
+ #include <kdebug.h>
+ 
+ #include "kopetemessage_test.moc"
+
+commit f68da7ccf145d856850545aee2fb6432ad67305b
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Thu May 28 20:40:38 2015 +0530
+
+    k3activelabel --> QLabel in libkopete
+
+diff --git a/libkopete/kopetepassword.cpp b/libkopete/kopetepassword.cpp
+index 715b173a33bf737544cc31bef30c280de91dd2cf..9cb3c9242eb1ed96c5de4cef279ddeb147321f60 100644
+--- a/libkopete/kopetepassword.cpp
++++ b/libkopete/kopetepassword.cpp
+@@ -24,7 +24,7 @@
+ #include <QLabel>
+ #include <QLineEdit>
+ #include <QCheckBox>
+-#include <k3activelabel.h>
++#include <QLabel>
+ #include <kconfig.h>
+ #include <kdebug.h>
+ #include <kdialog.h>
+diff --git a/libkopete/ui/addressbookselectorwidget.cpp b/libkopete/ui/addressbookselectorwidget.cpp
+index 90558bf66dd797be608a7f135fada03668e14154..2a82b52190d2a4ceab92070d1913889e057db5cf 100644
+--- a/libkopete/ui/addressbookselectorwidget.cpp
++++ b/libkopete/ui/addressbookselectorwidget.cpp
+@@ -35,11 +35,10 @@
+ #include <kinputdialog.h>
+ 
+ #include <kpushbutton.h>
+-#include <k3activelabel.h>
+ #include <kdebug.h>
+ #include <k3listview.h>
+ #include <k3listviewsearchline.h>
+-#include <qlabel.h>
++#include <QLabel>
+ 
+ 
+ #include <addresseeitem.h>
+@@ -138,7 +137,7 @@ void AddressBookSelectorWidget::slotLoadAddressees()
+ 
+ void AddressBookSelectorWidget::setLabelMessage( const QString &msg )
+ {
+-	lblHeader->setPlainText(msg);
++	lblHeader->setText(msg);
+ }
+ 
+ void AddressBookSelectorWidget::slotAddAddresseeClicked()
+diff --git a/libkopete/ui/addressbookselectorwidget_base.ui b/libkopete/ui/addressbookselectorwidget_base.ui
+index de6ec4d24cd10eebfebc11b4fb9839be206552dc..f7e560c426cb6d24f301b4648008240318e9b44d 100644
+--- a/libkopete/ui/addressbookselectorwidget_base.ui
++++ b/libkopete/ui/addressbookselectorwidget_base.ui
+@@ -64,7 +64,7 @@
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2" >
+-    <widget class="K3ActiveLabel" native="1" name="lblHeader" >
++    <widget class="QLabel" native="1" name="lblHeader" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Maximum" hsizetype="Expanding" >
+        <horstretch>0</horstretch>
+@@ -154,9 +154,9 @@
+    <header>k3listview.h</header>
+   </customwidget>
+   <customwidget>
+-   <class>K3ActiveLabel</class>
++   <class>QLabel</class>
+    <extends></extends>
+-   <header>k3activelabel.h</header>
++   <header>QLabel</header>
+   </customwidget>
+   <customwidget>
+    <class>K3ListViewSearchLine</class>
+diff --git a/libkopete/ui/metacontactselectorwidget.cpp b/libkopete/ui/metacontactselectorwidget.cpp
+index c2d8521b9c76aee0854c9ea27124b6f8baa40409..96f9eb17b850db0a5925d94e9da531a6190da61b 100644
+--- a/libkopete/ui/metacontactselectorwidget.cpp
++++ b/libkopete/ui/metacontactselectorwidget.cpp
+@@ -18,7 +18,7 @@
+ #include "metacontactselectorwidget.h"
+ 
+ #include <qcheckbox.h>
+-#include <qlabel.h>
++#include <QLabel>
+ 
+ #include <qimage.h>
+ #include <qpixmap.h>
+@@ -34,7 +34,6 @@
+ #include <kdeversion.h>
+ #include <kinputdialog.h>
+ #include <kpushbutton.h>
+-#include <k3activelabel.h>
+ #include <kdebug.h>
+ #include <k3listview.h>
+ #include <k3listviewsearchline.h>
+@@ -295,7 +294,7 @@ void MetaContactSelectorWidget::slotLoadMetaContacts()
+ 
+ void MetaContactSelectorWidget::setLabelMessage( const QString &msg )
+ {
+-	d->widget->lblHeader->setPlainText(msg);
++	d->widget->lblHeader->setText(msg);
+ }
+ 
+ } // namespace UI
+diff --git a/libkopete/ui/metacontactselectorwidget_base.ui b/libkopete/ui/metacontactselectorwidget_base.ui
+index 1f69a48c559ab3f002700068ec6a6c200a9242e3..90b7d162ac5400f09fbf5acc3de9cb8ed11b6bfe 100644
+--- a/libkopete/ui/metacontactselectorwidget_base.ui
++++ b/libkopete/ui/metacontactselectorwidget_base.ui
+@@ -28,7 +28,7 @@
+     <number>6</number>
+    </property>
+    <item>
+-    <widget class="K3ActiveLabel" name="lblHeader" >
++    <widget class="QLabel" name="lblHeader" >
+      <property name="sizePolicy" >
+                 <sizepolicy>
+                     <hsizetype>7</hsizetype>
+@@ -84,9 +84,9 @@
+    <pixmap></pixmap>
+ 	</customwidget>
+ 	<customwidget>
+-		<class>K3ActiveLabel</class>
++		<class>QLabel</class>
+    <extends></extends>
+-		<header>k3activelabel.h</header>
++		<header>QLabel</header>
+    <container>0</container>
+    <pixmap></pixmap>
+   </customwidget>
+
+commit 1b3909d2d81042804a217bfe9f81b8caa38bdb86
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Mon Apr 27 23:28:17 2015 +0530
+
+    Remove needless k3listview includes
+    
+    REVIEW: 123489
+
+diff --git a/kopete/addaccountwizard/addaccountwizard.cpp b/kopete/addaccountwizard/addaccountwizard.cpp
+index cc9fc8a5a4960e6a1eb00100bca1aab4952e8ed2..fd0506fa8b4c09510137d114a68eb57ac9782667 100644
+--- a/kopete/addaccountwizard/addaccountwizard.cpp
++++ b/kopete/addaccountwizard/addaccountwizard.cpp
+@@ -24,7 +24,6 @@
+ #include <kcolorbutton.h>
+ #include <kdebug.h>
+ #include <kiconloader.h>
+-#include <k3listview.h>
+ #include <klocale.h>
+ #include <kmessagebox.h>
+ #include <kplugininfo.h>
+diff --git a/kopete/contactlist/kopetestatusgroupviewitem.h b/kopete/contactlist/kopetestatusgroupviewitem.h
+index e691e66c03cdd631c739875914f80403c5edebc7..fb4a20648e1b12d464e98c51b8638f7d618ef53f 100644
+--- a/kopete/contactlist/kopetestatusgroupviewitem.h
++++ b/kopete/contactlist/kopetestatusgroupviewitem.h
+@@ -20,7 +20,6 @@
+ #ifndef KOPETESTATUSGROUPVIEWITEM_H
+ #define KOPETESTATUSGROUPVIEWITEM_H
+ 
+-#include <k3listview.h>
+ #include "kopetemetacontact.h"
+ 
+ /**
+diff --git a/plugins/alias/aliaspreferences.cpp b/plugins/alias/aliaspreferences.cpp
+index 19e54202e8978e27e354cc2014ffde1d39714dc1..2c69306a7674208a44a2d5173c19d740599503d8 100644
+--- a/plugins/alias/aliaspreferences.cpp
++++ b/plugins/alias/aliaspreferences.cpp
+@@ -18,7 +18,6 @@
+ #include "aliaspreferences.h"
+ 
+ #include <kpushbutton.h>
+-#include <k3listview.h>
+ #include <klocale.h>
+ #include <klineedit.h>
+ #include <kglobal.h>
+diff --git a/plugins/alias/editaliasdialog.cpp b/plugins/alias/editaliasdialog.cpp
+index fed313c237de3fc18c8e4de298c74a641011675f..2b76353aaf3b1ec7452e5546cc63d0e1ff821471 100644
+--- a/plugins/alias/editaliasdialog.cpp
++++ b/plugins/alias/editaliasdialog.cpp
+@@ -21,7 +21,6 @@
+ #include <qwidget.h>
+ #include <qstring.h>
+ #include <klineedit.h>
+-#include <k3listview.h>
+ 
+ 
+ EditAliasDialog::EditAliasDialog( QWidget* parent )
+diff --git a/plugins/highlight/highlightpreferences.cpp b/plugins/highlight/highlightpreferences.cpp
+index 891dc22f90c0253e36cbdae6b36f4b62a33f5ff8..1cb176ff9b0d7b294f69328fbf2879956b7d684c 100644
+--- a/plugins/highlight/highlightpreferences.cpp
++++ b/plugins/highlight/highlightpreferences.cpp
+@@ -27,7 +27,6 @@
+ #include <klineedit.h>
+ #include <kparts/componentfactory.h>
+ #include <klocale.h>
+-#include <k3listview.h>
+ #include <kgenericfactory.h>
+ #include <kcolorbutton.h>
+ #include <kinputdialog.h>
+diff --git a/protocols/gadu/gadupubdir.cpp b/protocols/gadu/gadupubdir.cpp
+index 32d5a3dc425ac4d64aa124c62fa172910b3f2a98..c264519c44aa273039f0acb664e1a5df90b1640f 100644
+--- a/protocols/gadu/gadupubdir.cpp
++++ b/protocols/gadu/gadupubdir.cpp
+@@ -37,7 +37,6 @@
+ #include <kcombobox.h>
+ #include <krestrictedline.h>
+ #include <klineedit.h>
+-#include <k3listview.h>
+ #include <klocale.h>
+ 
+ GaduPublicDir::GaduPublicDir( GaduAccount* account, QWidget* parent )
+diff --git a/protocols/groupwise/ui/gwcontactproperties.cpp b/protocols/groupwise/ui/gwcontactproperties.cpp
+index c383585d1744053ffd09ee04a0629661839526ea..d9978575ea0a6dbd5e318de9b0ac40984c53eba8 100644
+--- a/protocols/groupwise/ui/gwcontactproperties.cpp
++++ b/protocols/groupwise/ui/gwcontactproperties.cpp
+@@ -22,7 +22,6 @@
+ #include <q3header.h>
+ #include <qlabel.h>
+ #include <qlineedit.h>
+-#include <k3listview.h>
+ #include <qmap.h>
+ #include <QMenu>
+ #include <QHeaderView>
+
+commit b729e4f5e947554fd8bc74a5e6df26caa07a268b
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Wed Apr 22 22:27:07 2015 +0530
+
+    Replace "Configure" with "Configure Kopete" in the Kopete Settings menu
+    
+    BUG:125199
+
+diff --git a/libkopete/ui/kopetestdaction.cpp b/libkopete/ui/kopetestdaction.cpp
+index e069e9110ce68b51280f37a7e4747239e028626c..596219b85e13d223148de4738840d4630dff38c5 100644
+--- a/libkopete/ui/kopetestdaction.cpp
++++ b/libkopete/ui/kopetestdaction.cpp
+@@ -39,7 +39,7 @@
+ KSettings::Dialog *KopetePreferencesAction::s_settingsDialog = 0L;
+ 
+ KopetePreferencesAction::KopetePreferencesAction( KActionCollection *parent, const char *name )
+-: KAction( KIcon(KStandardGuiItem::configure().iconName()), KStandardGuiItem::configure().text(), parent )
++: KAction( KIcon(KStandardGuiItem::configure().iconName()), i18n("&Configure Kopete..."), parent )
+ {
+ 	connect( this, SIGNAL(triggered(bool)), this, SLOT(slotShowPreferences()) );
+         parent->addAction( name, this );
+
+commit 3a618f68d2a3eb4633fb680f28786ae0637d1d1b
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Sun Mar 15 01:47:59 2015 +0530
+
+    don't track build, add gitignore
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000000000000000000000000000000000000..a007feab071f496a016f150e1acd8fae57669cce
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1 @@
++build/*

@@ -1,0 +1,114 @@
+commit 1dd42c4ebe766bf8dea6fd92ce8edf671a36e77d
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Tue Jul 14 12:31:19 2015 +0530
+
+    Replace k3activelabel classes with QLabel
+
+diff --git a/libkopete/ui/addressbookselectorwidget.cpp b/libkopete/ui/addressbookselectorwidget.cpp
+index d1686ed855a94ee5a01db8a4ed0c04d573cd5be4..5c8675199cb3734435735f66bcca709c49267cca 100644
+--- a/libkopete/ui/addressbookselectorwidget.cpp
++++ b/libkopete/ui/addressbookselectorwidget.cpp
+@@ -35,11 +35,10 @@
+ #include <kinputdialog.h>
+ 
+ #include <kpushbutton.h>
+-#include <k3activelabel.h>
+ #include <kdebug.h>
+ #include <k3listview.h>
+ #include <k3listviewsearchline.h>
+-#include <qlabel.h>
++#include <QLabel>
+ 
+ 
+ #include <addresseeitem.h>
+@@ -138,7 +137,7 @@ void AddressBookSelectorWidget::slotLoadAddressees()
+ 
+ void AddressBookSelectorWidget::setLabelMessage( const QString &msg )
+ {
+-	lblHeader->setPlainText(msg);
++	lblHeader->setText(msg);
+ }
+ 
+ void AddressBookSelectorWidget::slotAddAddresseeClicked()
+diff --git a/libkopete/ui/addressbookselectorwidget_base.ui b/libkopete/ui/addressbookselectorwidget_base.ui
+index de6ec4d24cd10eebfebc11b4fb9839be206552dc..545d7e23de289445e2f5b6093bc108489ddc3127 100644
+--- a/libkopete/ui/addressbookselectorwidget_base.ui
++++ b/libkopete/ui/addressbookselectorwidget_base.ui
+@@ -64,7 +64,7 @@
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2" >
+-    <widget class="K3ActiveLabel" native="1" name="lblHeader" >
++    <widget class="QLabel" native="1" name="lblHeader" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Maximum" hsizetype="Expanding" >
+        <horstretch>0</horstretch>
+@@ -154,11 +154,6 @@
+    <header>k3listview.h</header>
+   </customwidget>
+   <customwidget>
+-   <class>K3ActiveLabel</class>
+-   <extends></extends>
+-   <header>k3activelabel.h</header>
+-  </customwidget>
+-  <customwidget>
+    <class>K3ListViewSearchLine</class>
+    <extends></extends>
+    <header>k3listviewsearchline.h</header>
+diff --git a/libkopete/ui/metacontactselectorwidget.cpp b/libkopete/ui/metacontactselectorwidget.cpp
+index 6a45cf2ac9f6d904e7f7363d2fb7e7306f0c6c3a..a877ad0588d81cab347593708ea4eb3959d0660f 100644
+--- a/libkopete/ui/metacontactselectorwidget.cpp
++++ b/libkopete/ui/metacontactselectorwidget.cpp
+@@ -18,7 +18,7 @@
+ #include "metacontactselectorwidget.h"
+ 
+ #include <qcheckbox.h>
+-#include <qlabel.h>
++#include <QLabel>
+ 
+ #include <qimage.h>
+ #include <qpixmap.h>
+@@ -34,7 +34,6 @@
+ #include <kdeversion.h>
+ #include <kinputdialog.h>
+ #include <kpushbutton.h>
+-#include <k3activelabel.h>
+ #include <kdebug.h>
+ #include <k3listview.h>
+ #include <k3listviewsearchline.h>
+@@ -295,7 +294,7 @@ void MetaContactSelectorWidget::slotLoadMetaContacts()
+ 
+ void MetaContactSelectorWidget::setLabelMessage( const QString &msg )
+ {
+-	d->widget->lblHeader->setPlainText(msg);
++	d->widget->lblHeader->setText(msg);
+ }
+ 
+ } // namespace UI
+diff --git a/libkopete/ui/metacontactselectorwidget_base.ui b/libkopete/ui/metacontactselectorwidget_base.ui
+index 1f69a48c559ab3f002700068ec6a6c200a9242e3..5cfb9ad47e711e0d34433eb606214664dcbc1a8c 100644
+--- a/libkopete/ui/metacontactselectorwidget_base.ui
++++ b/libkopete/ui/metacontactselectorwidget_base.ui
+@@ -28,7 +28,7 @@
+     <number>6</number>
+    </property>
+    <item>
+-    <widget class="K3ActiveLabel" name="lblHeader" >
++    <widget class="QLabel" name="lblHeader" >
+      <property name="sizePolicy" >
+                 <sizepolicy>
+                     <hsizetype>7</hsizetype>
+@@ -83,13 +83,6 @@
+    <container>0</container>
+    <pixmap></pixmap>
+ 	</customwidget>
+-	<customwidget>
+-		<class>K3ActiveLabel</class>
+-   <extends></extends>
+-		<header>k3activelabel.h</header>
+-   <container>0</container>
+-   <pixmap></pixmap>
+-  </customwidget>
+   <customwidget>
+    <class>Kopete::UI::ListView::SearchLine</class>
+    <extends></extends>

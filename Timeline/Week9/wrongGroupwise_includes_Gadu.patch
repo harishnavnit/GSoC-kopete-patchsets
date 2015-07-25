@@ -1,0 +1,218 @@
+commit bc4575cf07a516b95a87a9789b0c868668ce9c52
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Fri Jul 3 11:57:00 2015 +0530
+
+    Replace ListViews with TreeWidgets in the groupwise protocol.
+    
+    REVIEW: 124173
+
+diff --git a/protocols/gadu/ui/gadusearch.ui b/protocols/gadu/ui/gadusearch.ui
+index 8b1ecc1898f74f49f3efcf2346241545ff876de1..3011347434e10205a390adf872a6a80077afb6b2 100644
+--- a/protocols/gadu/ui/gadusearch.ui
++++ b/protocols/gadu/ui/gadusearch.ui
+@@ -438,11 +438,6 @@
+  </widget>
+  <customwidgets>
+   <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
+-  </customwidget>
+-  <customwidget>
+    <class>KRestrictedLine</class>
+    <extends>KLineEdit</extends>
+    <header>krestrictedline.h</header>
+diff --git a/protocols/groupwise/ui/gwaddcontactpage.cpp b/protocols/groupwise/ui/gwaddcontactpage.cpp
+index be2ead4e8fd4b521cf11b70fe81afad8f27a9f01..8ff9fc008e5d56951f0ba5ee4a39795a0ac71abd 100644
+--- a/protocols/groupwise/ui/gwaddcontactpage.cpp
++++ b/protocols/groupwise/ui/gwaddcontactpage.cpp
+@@ -27,7 +27,6 @@
+ #include <qlayout.h>
+ #include <qlineedit.h>
+ #include <QPainter>
+-#include <q3listview.h>
+ #include <qpushbutton.h>
+ #include <qradiobutton.h>
+ #include <qtabwidget.h>
+diff --git a/protocols/groupwise/ui/gwchatpropsdialog.cpp b/protocols/groupwise/ui/gwchatpropsdialog.cpp
+index 7361241c6f6380338774315332530daa6fb3705f..5226bb3959439e0c954c7416c10ce839988f8d2e 100644
+--- a/protocols/groupwise/ui/gwchatpropsdialog.cpp
++++ b/protocols/groupwise/ui/gwchatpropsdialog.cpp
+@@ -22,7 +22,6 @@
+ #include <qlabel.h>
+ #include <qlineedit.h>
+ #include <QPainter>
+-#include <q3listview.h>
+ 
+ #include <kdebug.h>
+ #include <kpushbutton.h>
+diff --git a/protocols/groupwise/ui/gwchatsearch.ui b/protocols/groupwise/ui/gwchatsearch.ui
+index f7e95071f8b9cd8b2c3815306b4fed4ac2afeec8..95585f224049dc1f845aef6732cee58f32549a93 100644
+--- a/protocols/groupwise/ui/gwchatsearch.ui
++++ b/protocols/groupwise/ui/gwchatsearch.ui
+@@ -26,7 +26,7 @@
+     <number>11</number>
+    </property>
+    <item>
+-    <widget class="K3ListView" name="chatrooms" >
++     <widget class="QTreeWidget" name="chatrooms" >
+      <property name="allColumnsShowFocus" >
+       <bool>true</bool>
+      </property>
+@@ -81,11 +81,6 @@
+  </widget>
+  <customwidgets>
+   <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
+-  </customwidget>
+-  <customwidget>
+    <class>KPushButton</class>
+    <extends>QPushButton</extends>
+    <header>kpushbutton.h</header>
+@@ -93,7 +88,6 @@
+   </customwidget>
+  </customwidgets>
+  <includes>
+-  <include location="local" >k3listview.h</include>
+   <include location="local" >kpushbutton.h</include>
+  </includes>
+  <resources/>
+diff --git a/protocols/groupwise/ui/gwchatsearchdialog.cpp b/protocols/groupwise/ui/gwchatsearchdialog.cpp
+index ae23311cafb8c318f2da671e0809bf0a57f4b373..95fab9436ed0277c6968bbd4ab26bd1a23bd9607 100644
+--- a/protocols/groupwise/ui/gwchatsearchdialog.cpp
++++ b/protocols/groupwise/ui/gwchatsearchdialog.cpp
+@@ -20,8 +20,8 @@
+ #include "gwchatsearchdialog.h"
+ #include <qmap.h>
+ 
+-#include <k3listview.h>
+-#include <k3listviewsearchline.h>
++#include <QTreeWidget>
++#include <ktreewidgetsearchline.h>
+ 
+ #include <kpushbutton.h>
+ #include <kdebug.h>
+@@ -66,35 +66,39 @@ GroupWiseChatSearchDialog::~GroupWiseChatSearchDialog()
+ void GroupWiseChatSearchDialog::slotUpdateClicked()
+ {
+ 	kDebug () << "updating chatroom list ";
+-	Q3ListViewItem * first = m_ui.chatrooms->firstChild();
+-	QString updateMessage = i18n("Updating chatroom list..." );
++	QStringList updateMessage;
++	QTreeWidgetItem * first = m_ui.chatrooms->topLevelItem(0);
++	updateMessage.append(i18n("Updating chatroom list..." ));
+ 	if ( first )
+-		new Q3ListViewItem( first, updateMessage );
++		new QTreeWidgetItem(first, updateMessage);
+ 	else
+-		new Q3ListViewItem( m_ui.chatrooms, updateMessage );
++		new QTreeWidgetItem( m_ui.chatrooms, updateMessage );
+ 	m_manager->updateRooms();
+ 
+ }
+ 
+ void GroupWiseChatSearchDialog::slotManagerUpdated()
+ {
++	QStringList argsList;
+ 	m_ui.chatrooms->clear();
+ 	ChatroomMap rooms = m_manager->rooms();
+ 	ChatroomMap::iterator it = rooms.begin();
+ 	const ChatroomMap::iterator end = rooms.end();
+ 	while ( it != end )
+ 	{
+-		new Q3ListViewItem( m_ui.chatrooms,
+-						   it.value().displayName,
+-						   m_account->protocol()->dnToDotted( it.value().ownerDN ),
+-						   QString::number( it.value().participantsCount ) );
++		// Populate the String List
++		argsList.append(it.value().displayName);
++		argsList.append(m_account->protocol()->dnToDotted(it.value().ownerDN));
++		argsList.append(QString::number(it.value().participantsCount));
++
++		new QTreeWidgetItem( m_ui.chatrooms, argsList);
+ 		++it;
+ 	}
+ }
+ 
+ void GroupWiseChatSearchDialog::slotPropertiesClicked()
+ {
+-	Q3ListViewItem * selected  = m_ui.chatrooms->selectedItem();
++	QTreeWidgetItem * selected  = m_ui.chatrooms->currentItem();
+ 	if ( selected )
+ 	{
+ 		m_manager->requestProperties( selected->text( 0 ) );
+diff --git a/protocols/groupwise/ui/gwcontactproperties.h b/protocols/groupwise/ui/gwcontactproperties.h
+index b0a68812dffbe618205c4528586d7799d71e9131..d9a96e6b999cced31638a158e8ea3a8777c62fa1 100644
+--- a/protocols/groupwise/ui/gwcontactproperties.h
++++ b/protocols/groupwise/ui/gwcontactproperties.h
+@@ -27,7 +27,6 @@
+ 
+ namespace Ui { class GroupWiseContactPropsWidget; }
+ class KDialog;
+-class Q3ListViewItem;
+ class KAction;
+ 
+ /**
+diff --git a/protocols/groupwise/ui/gwcontactprops.ui b/protocols/groupwise/ui/gwcontactprops.ui
+index 19425b934a018f614642d3d48599a1d532ee5def..72923b849cc990369061fa306faea438bb8c82be 100644
+--- a/protocols/groupwise/ui/gwcontactprops.ui
++++ b/protocols/groupwise/ui/gwcontactprops.ui
+@@ -209,9 +209,6 @@
+   <tabstop>firstName</tabstop>
+   <tabstop>lastName</tabstop>
+  </tabstops>
+- <includes>
+-  <include location="local" >k3listview.h</include>
+- </includes>
+  <resources/>
+  <connections/>
+ </ui>
+diff --git a/protocols/groupwise/ui/gwcustomstatus.ui b/protocols/groupwise/ui/gwcustomstatus.ui
+index bbd7e5052975810963bde1f84c3efdc9a7074769..d0d689cc6e58a3e6c2ba4f82f5ac24105b4b1797 100644
+--- a/protocols/groupwise/ui/gwcustomstatus.ui
++++ b/protocols/groupwise/ui/gwcustomstatus.ui
+@@ -17,7 +17,7 @@
+     <number>6</number>
+    </property>
+    <item>
+-    <widget class="K3ListView" name="m_list" >
++     <widget class="QTreeWidget" name="m_list" >
+      <property name="allColumnsShowFocus" >
+       <bool>true</bool>
+      </property>
+@@ -72,21 +72,6 @@
+    </item>
+   </layout>
+  </widget>
+- <customwidgets>
+-  <customwidget>
+-   <class>Q3ListView</class>
+-   <extends>Q3Frame</extends>
+-   <header>q3listview.h</header>
+-  </customwidget>
+-  <customwidget>
+-   <class>K3ListView</class>
+-   <extends>Q3ListView</extends>
+-   <header>k3listview.h</header>
+-  </customwidget>
+- </customwidgets>
+- <includes>
+-  <include location="local" >k3listview.h</include>
+- </includes>
+  <resources/>
+  <connections/>
+ </ui>
+diff --git a/protocols/groupwise/ui/gwprivacydialog.cpp b/protocols/groupwise/ui/gwprivacydialog.cpp
+index 95328c738a3d21556a598408cfadd4a8bbeda227..3b2210f6907d29931de50e27f299fa67b6c7fdc6 100644
+--- a/protocols/groupwise/ui/gwprivacydialog.cpp
++++ b/protocols/groupwise/ui/gwprivacydialog.cpp
+@@ -19,7 +19,6 @@
+ 
+ #include "gwprivacydialog.h"
+ #include <q3listbox.h>
+-#include <q3listview.h>
+ #include <QtCore/QStringList>
+ #include <QtCore/QList>
+ #include <QtGui/QPainter>

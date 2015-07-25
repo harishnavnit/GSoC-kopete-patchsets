@@ -1,0 +1,26 @@
+diff --git a/protocols/groupwise/ui/gwchatprops.ui b/protocols/groupwise/ui/gwchatprops.ui
+index f93fb5db8269323d5b28bd60181bbe3a209f80e3..ed0adceac965b77dcb4bf61dd4134e858b6b79d9 100644
+--- a/protocols/groupwise/ui/gwchatprops.ui
++++ b/protocols/groupwise/ui/gwchatprops.ui
+@@ -432,11 +432,6 @@
+    <header>kpushbutton.h</header>
+    <container>1</container>
+   </customwidget>
+-  <customwidget>
+-   <class>K3ListBox</class>
+-   <extends>Q3ListBox</extends>
+-   <header>k3listbox.h</header>
+-  </customwidget>
+  </customwidgets>
+  <tabstops>
+   <tabstop>topic</tabstop>
+@@ -457,9 +452,6 @@
+   <tabstop>deleteAcl</tabstop>
+  </tabstops>
+  <includes>
+-  <include location="local" >k3listbox.h</include>
+-  <include location="local" >kpushbutton.h</include>
+-  <include location="local" >kpushbutton.h</include>
+   <include location="local" >kpushbutton.h</include>
+  </includes>
+  <resources/>

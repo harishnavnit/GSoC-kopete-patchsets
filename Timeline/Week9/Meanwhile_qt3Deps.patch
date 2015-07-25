@@ -1,0 +1,63 @@
+commit 2849b1b1de34ba0ceda5d1c5aed4683338535477
+Author: R. Harish Navnit <harishnavnit@gmail.com>
+Date:   Fri Jul 3 11:14:12 2015 +0530
+
+    Remove Qt3 dependencies from meanwhile protocol
+
+diff --git a/protocols/meanwhile/CMakeLists.txt b/protocols/meanwhile/CMakeLists.txt
+index 5b3e7d468bda985add7a83c1b3f9a9939c8ef81f..8cc44e06ab7878bdc9ef5b278c01a862129f9a69 100644
+--- a/protocols/meanwhile/CMakeLists.txt
++++ b/protocols/meanwhile/CMakeLists.txt
+@@ -24,7 +24,7 @@ kde4_add_plugin(kopete_meanwhile ${kopete_meanwhile_PART_SRCS})
+ 
+ target_link_libraries(kopete_meanwhile
+   ${KDE4_KDECORE_LIBS} ${GLIB2_LIBRARIES} ${LIBMEANWHILE_LIBRARY}
+-  ${KDE4_KDEUI_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QT3SUPPORT_LIBRARY}
++  ${KDE4_KDEUI_LIBS} ${QT_QTNETWORK_LIBRARY}
+   kopete)
+ 
+ install(TARGETS kopete_meanwhile DESTINATION ${PLUGIN_INSTALL_DIR})
+diff --git a/protocols/meanwhile/ui/meanwhileeditaccount.ui b/protocols/meanwhile/ui/meanwhileeditaccount.ui
+index 5e61aed483fb2501a26aa2452247e0a61782ed8d..fea065ca384dd730d79a90ccf252e80dc6805fe6 100644
+--- a/protocols/meanwhile/ui/meanwhileeditaccount.ui
++++ b/protocols/meanwhile/ui/meanwhileeditaccount.ui
+@@ -36,7 +36,7 @@
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <item>
+-        <widget class="Q3GroupBox" name="groupBox53" >
++        <widget class="QGroupBox" name="groupBox53" >
+          <property name="title" >
+           <string>Account Information</string>
+          </property>
+@@ -98,7 +98,7 @@
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <item>
+-        <widget class="Q3GroupBox" name="groupBox54" >
++        <widget class="QGroupBox" name="groupBox54" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
+            <horstretch>0</horstretch>
+@@ -193,7 +193,7 @@
+         </widget>
+        </item>
+        <item>
+-        <widget class="Q3GroupBox" name="groupBox5" >
++        <widget class="QGroupBox" name="groupBox5" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
+            <horstretch>0</horstretch>
+@@ -343,12 +343,6 @@
+  </widget>
+  <customwidgets>
+   <customwidget>
+-   <class>Q3GroupBox</class>
+-   <extends>QGroupBox</extends>
+-   <header>Qt3Support/Q3GroupBox</header>
+-   <container>1</container>
+-  </customwidget>
+-  <customwidget>
+    <class>Kopete::UI::PasswordWidget</class>
+    <extends>QWidget</extends>
+    <header>kopetepasswordwidget.h</header>

@@ -1,0 +1,75 @@
+diff --git a/libkopete/kopetestatusmessage.cpp b/libkopete/kopetestatusmessage.cpp
+index ca53f99ac3a5b239ca1bbfa9bf8e5382c011076d..a616455b716dcf554a82e935941602b371cb84f5 100644
+--- a/libkopete/kopetestatusmessage.cpp
++++ b/libkopete/kopetestatusmessage.cpp
+@@ -16,10 +16,15 @@
+ */
+ #include "kopetestatusmessage.h"
+ 
++#include <QUrl>
+ #include <QHash>
++#include <QDebug>
++#include <QString>
++#include <QStringList>
+ 
+ namespace Kopete
+ {
++QString status_message;
+ 
+ class StatusMessage::Private : public KShared
+ {
+@@ -28,9 +33,9 @@ public:
+ 	{}
+ 
+ 	QString statusTitle;
+-	QString statusMessage;
++    QString statusMessage;
+ 	QHash<QString, QVariant> metaData;
+-};	
++};
+ 
+ StatusMessage::StatusMessage()
+  : d(new Private)
+@@ -39,14 +44,21 @@ StatusMessage::StatusMessage()
+ StatusMessage::StatusMessage(const QString &message)
+  : d(new Private)
+ {
+-	d->statusMessage = message;
++    if (message.contains("http://") || message.contains("https://")) {
++        int index     = message.indexOf("http");
++        QString c_url = message.section(" ", index, index);
++        int url_size  = c_url.size();
++        message.replace(index, url_size, QUrl(c_url));
++    }
++    d->statusMessage = message;
+ }
+ 
+ StatusMessage::StatusMessage(const QString &title, const QString &message)
+ 	: d(new Private)
+ {
++    status_message = message;
+ 	d->statusTitle = title;
+-	d->statusMessage = message;
++    StatusMessage(staus_message);
+ }
+ 
+ StatusMessage::~StatusMessage()
+@@ -69,7 +81,8 @@ bool StatusMessage::isEmpty() const
+ 
+ void StatusMessage::setMessage(const QString &message)
+ {
+-	d->statusMessage = message;
++    status_message = message;
++    StatusMessage(status_message);
+ }
+ 
+ QString StatusMessage::message() const
+@@ -79,7 +92,7 @@ QString StatusMessage::message() const
+ 
+ void StatusMessage::addMetaData(const QString &key, const QVariant &value)
+ {
+-	d->metaData.insert(key, value);	
++	d->metaData.insert(key, value);
+ }
+ 
+ void StatusMessage::addMetaData(const QHash<QString, QVariant> &otherHash)

@@ -1,0 +1,180 @@
+diff --git a/libkopete/kopetestatusmessage.cpp b/libkopete/kopetestatusmessage.cpp
+index ca53f99ac3a5b239ca1bbfa9bf8e5382c011076d..59779fdf008d6b424cdc1a585f7e8741376a006e 100644
+--- a/libkopete/kopetestatusmessage.cpp
++++ b/libkopete/kopetestatusmessage.cpp
+@@ -17,6 +17,13 @@
+ #include "kopetestatusmessage.h"
+ 
+ #include <QHash>
++#include <QMap>
++#include <QFile>
++#include <QStringList>
++#include <QtCore/QRegExp>
++#include <QtCore/QPointer>
++#include <QTextStream>
++#include <QtCore/QLatin1String>
+ 
+ namespace Kopete
+ {
+@@ -30,7 +37,7 @@ public:
+ 	QString statusTitle;
+ 	QString statusMessage;
+ 	QHash<QString, QVariant> metaData;
+-};	
++};
+ 
+ StatusMessage::StatusMessage()
+  : d(new Private)
+@@ -79,7 +86,7 @@ QString StatusMessage::message() const
+ 
+ void StatusMessage::addMetaData(const QString &key, const QVariant &value)
+ {
+-	d->metaData.insert(key, value);	
++	d->metaData.insert(key, value);
+ }
+ 
+ void StatusMessage::addMetaData(const QHash<QString, QVariant> &otherHash)
+@@ -101,6 +108,61 @@ QVariant StatusMessage::metaData(const QString &key) const
+ 	return d->metaData[key];
+ }
+ 
++QString StatusMessage::plainBody() const
++{
++    QString plainText = d->body->toPlainText();
++    plainText.replace(QChar (QChar::ObjectReplacementCharacter ), QChar(' '') );
++    return plainText;
++}
++
++void StatusMessage::getUrlsFileName(const Kopete::StatusMessage &msg)
++{
++
++}
++
++void StatusMessage::urlSearch(const Kopete::StatusMessage &msg)
++{
++    QStringList lastUrls = findUrls(msg);
++    if (!lastUrls.empty()) {
++        msg.manager()->setLastUrl(lastUrls.last());
++        QString urlFileName = Kopete::StatusMessage::getUrlsFileName(msg.manager()->members().first());
++        QFile file(urlFileName);
++        file.open(QIODevice::Append);
++        QTextStream stream(&file);
++
++        for(int i = 0; i < lastUrls.size(); i++)
++            stream << lastUrls.at(i) << "\n";
++        file.close();
++    }
++}
++
++QStringList StatusMessage::findUrls(const Kopete::StatusMessage &msg)
++{
++    Kopete::StatusMessage message = msg;
++
++    QString temp_str = message.plainBody();
++    QStringList regexppatterns = message.regexppatterns();
++    QRegExp linkregexp;
++    QMap<int, QString> mapUrl;
++
++    for (int i = 0; i < regexppatterns.size(); i++) {
++        linkregexp.setPattern(regexppatterns[i]);
++        int pos = 0;
++
++        while (pos = linkregexp.indexIn(temp_str, pos) != -1) {
++            mapUrl.insert(pos, linkregexp.cap(0));
++            pos += linkregexp.matchedLength();
++        }
++    }
++        QStringList lastUrlList;
++        QMapIterator<int, QString> i(mapUrl);
++        while (i.hasNext()) {   i.next();   lastUrlList << i.value();   }
++        lastUrlList.replaceInStrings(" ", "");
++        lastUrlList.replaceInStrings(QRegExp (regexppatterns[1] ), QLatinString("\\1http://\\2\\3"));
++
++        return lastUrlList;
++}
++
+ void StatusMessage::setTitle(const QString &title)
+ {
+ 	d->statusTitle = title;
+diff --git a/libkopete/kopetestatusmessage.h b/libkopete/kopetestatusmessage.h
+index 1fa7abe8b5c6f10b6df77423cc13dfefda22ab9c..5c55df773a860e949673eaa3993001022e0f01e6 100644
+--- a/libkopete/kopetestatusmessage.h
++++ b/libkopete/kopetestatusmessage.h
+@@ -27,10 +27,10 @@ namespace Kopete
+ 
+ /**
+  * @brief This class encapsulate a status message.
+- * A status message to today(as 2006) standards is more than a simple text. 
++ * A status message to today(as 2006) standards is more than a simple text.
+  * It can be used to show the current listening song, current playing game, show our mood etc..
+  * So this class allows to add metadata to the status message where protocols will be able to use properly.
+- * 
++ *
+  * @code
+  * // Create a new status message.
+  * Kopete::StatusMessage message;
+@@ -39,7 +39,7 @@ namespace Kopete
+  * message.addMetaData( "artist", "Liquid Tension Experiment" );
+  * message.addMetaData( "title", "Acid Rain" );
+  * message.addMetaData( "album", "Liquid Tension Experiment 2" );
+- * 
++ *
+  * account->setStatusMessage(message);
+  * @endcode
+  * This class is implicit shared.
+@@ -54,7 +54,7 @@ public:
+ 	StatusMessage();
+ 	/**
+ 	 * Create a new status message with the specified status message.
+-	 * This constructor is not explicit so it's allow implicit QString 
++	 * This constructor is not explicit so it's allow implicit QString
+ 	 * conversation to this class.
+ 	 * @param statusMessage the status message.
+ 	 */
+@@ -66,7 +66,7 @@ public:
+ 	 */
+ 	StatusMessage(const QString &statusTitle, const QString &statusMessage);
+ 	/**
+-	 * StatusMessage copy constructor. 
++	 * StatusMessage copy constructor.
+ 	 * Very cheap because the class is implicit shared.
+ 	 */
+ 	StatusMessage(const StatusMessage &copy);
+@@ -115,7 +115,7 @@ public:
+ 	/**
+ 	 * Set a new status message.
+ 	 * @param message New status message.
+-	 */ 
++	 */
+ 	void setMessage(const QString &message);
+ 	/**
+ 	 * Return the current status message.
+@@ -123,6 +123,28 @@ public:
+ 	 */
+ 	QString message() const;
+ 
++    /**
++     * Return the message body back as plain text
++     */
++    QString plainBody() const;
++
++    /**
++     * Returns file name where urls for the status message are supposed to be
++     */
++    static QString getUrlsFileName(const Kopete::StatusMessage &msg);
++
++    /**
++     * Processes the status message.
++     * Looks for urls, if found: sets the current lastUrl and saves it to proper file
++     */
++    void urlSearch(const Kopete::StatusMessage &msg);
++
++    /**
++     * Finds all urls in the status message(if there's more than one)
++     * sorts them as they are in the message QStringList[0] - is the earliest
++     */
++    QStringList findUrls(const Kopete::StatusMessage &msg);
++
+ 	/**
+ 	 * Set a new status title.
+ 	 * @param title New status title.

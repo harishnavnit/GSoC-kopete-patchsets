@@ -1,0 +1,399 @@
+diff --git a/protocols/gadu/CMakeLists.txt b/protocols/gadu/CMakeLists.txt
+index b6da7736c94a1174b507aac3055b88c76da6aec2..c4056bbca2e4c5c0adb9e9bbaea64e516c9e4d71 100644
+--- a/protocols/gadu/CMakeLists.txt
++++ b/protocols/gadu/CMakeLists.txt
+@@ -43,7 +43,7 @@ set(kopete_gadu_PART_SRCS
+ kde4_add_plugin(kopete_gadu ${kopete_gadu_PART_SRCS})
+ 
+ 
+-target_link_libraries(kopete_gadu ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} ${KDE4_KDE3SUPPORT_LIBS} ${LIBGADU_LIBRARIES} kopete )
++target_link_libraries(kopete_gadu ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} ${LIBGADU_LIBRARIES} kopete )
+ 
+ install(TARGETS kopete_gadu  DESTINATION ${PLUGIN_INSTALL_DIR})
+ 
+diff --git a/protocols/gadu/gaduaddcontactpage.cpp b/protocols/gadu/gaduaddcontactpage.cpp
+index e55bd301b2bf4a6205c88b02c798b0094ceced5f..fefb5865ea8077467ab41bad87bd9fa27479cf64 100644
+--- a/protocols/gadu/gaduaddcontactpage.cpp
++++ b/protocols/gadu/gaduaddcontactpage.cpp
+@@ -39,7 +39,7 @@
+ #include <qlabel.h>
+ #include <qlayout.h>
+ #include <qlineedit.h>
+-#include <q3listview.h>
++#include <QTreeWidget>
+ #include <qcombobox.h>
+ #include <QShowEvent>
+ #include <QVBoxLayout>
+diff --git a/protocols/gadu/gadueditaccount.cpp b/protocols/gadu/gadueditaccount.cpp
+index 20635e38b1bb4a99d220830747cc48731c7ccc63..2f4a500b9efd4bdc14c3597bfdeb8ad025a79a90 100644
+--- a/protocols/gadu/gadueditaccount.cpp
++++ b/protocols/gadu/gadueditaccount.cpp
+@@ -30,10 +30,10 @@
+ #include <qstring.h>
+ #include <qcheckbox.h>
+ #include <qlineedit.h>
+-#include <q3button.h>
++#include <QAbstractButton>
+ #include <qregexp.h>
+ #include <qpushbutton.h>
+-#include <q3groupbox.h>
++#include <QGroupBox>
+ 
+ #include <klineedit.h>
+ #include <kmessagebox.h>
+diff --git a/protocols/gadu/gadueditcontact.cpp b/protocols/gadu/gadueditcontact.cpp
+index 7475a4954173da0e9aac657cf90f4a3d2986bb4a..68504ee3acc327847eb36e8a56d476699deb1421 100644
+--- a/protocols/gadu/gadueditcontact.cpp
++++ b/protocols/gadu/gadueditcontact.cpp
+@@ -34,11 +34,10 @@
+ #include <kopetecontactlist.h>
+ #include <kopetemetacontact.h>
+ 
+-#include <q3buttongroup.h>
++#include <QButtonGroup>
+ #include <qradiobutton.h>
+ #include <qlineedit.h>
+ #include <qlayout.h>
+-#include <q3listview.h>
+ 
+ #include <krestrictedline.h>
+ 
+@@ -94,6 +93,7 @@ GaduEditContact::fillGroups()
+ 	Kopete::Group *g, *cg;
+ 	QList<Kopete::Group*> cgl;
+ 	QList<Kopete::Group*> gl;
++	QStringList args;
+ 
+ 	if ( contact_ ) {
+ 		cgl = contact_->metaContact()->groups();
+@@ -105,11 +105,14 @@ GaduEditContact::fillGroups()
+ 		if ( g->type() == Kopete::Group::Temporary ) {
+ 			continue;
+ 		}
+-		Q3CheckListItem* item = new Q3CheckListItem( ui_->groups, g->displayName(), Q3CheckListItem::CheckBox );
++		args = (QStringList() << g->displayName());
++		QTreeWidgetItem *item = new QTreeWidgetItem( ui_->groups, args );
++		item->setFlags(Qt::ItemIsUserCheckable);
+ 		// FIXME: optimize this O(2) search
+ 		foreach( cg , cgl ) {
+ 			if ( cg->groupId() == g->groupId() ) {
+-				item->setOn( true );
++				//FIXME: Not sure of the column number
++				item->setCheckState( 0, Qt::Checked );
+ 				break;
+ 			}
+ 		}
+@@ -130,11 +133,11 @@ GaduEditContact::init()
+ 
+ 	show();
+ 	connect( this, SIGNAL(okClicked()), SLOT(slotApply()) );
+-	connect( ui_->groups, SIGNAL(clicked(Q3ListViewItem*)), SLOT(listClicked(Q3ListViewItem*)) );
++	connect( ui_->groups, SIGNAL(clicked(QTreeWidgetItem*)), SLOT(listClicked(QTreeWidgetItem*)) );
+ }
+ 
+ void
+-GaduEditContact::listClicked( Q3ListViewItem* /*item*/ )
++GaduEditContact::listClicked( QTreeWidgetItem* /*item*/ )
+ {
+ 
+ }
+@@ -184,16 +187,16 @@ GaduEditContact::slotApply()
+ 	contact_->setContactDetails( cl_ );
+ 
+ 	gl = Kopete::ContactList::self()->groups();
+-	for ( Q3ListViewItemIterator it( ui_->groups ); it.current(); ++it ) {
+-		Q3CheckListItem *check = dynamic_cast<Q3CheckListItem *>( it.current() );
+-		
++	for ( QTreeWidgetItemIterator it( ui_->groups ); (*it); ++it ) {
++		QTreeWidgetItem *check = dynamic_cast<QTreeWidgetItem *>( (*it) );
++
+ 		if ( !check ) {
+ 			continue;
+ 		}
+ 
+-		if ( check->isOn() ) {
++		if ( check->checkState(0) == Qt::Checked ) {
+ 			foreach( group, gl )  {
+-				if ( group->displayName() == check->text() ) {
++				if ( group->displayName() == check->text(1) ) {
+ 					contact_->metaContact()->addToGroup( group );
+ 				}
+ 			}
+@@ -201,7 +204,8 @@ GaduEditContact::slotApply()
+ 		else {
+ 			// check metacontact's in the group, and if so, remove it from
+ 			foreach( group, gl ) {
+-				if ( group->displayName() == check->text() ) {
++				//FIXME: Not sure of the column number in text()
++				if ( group->displayName() == check->text(1) ) {
+ 					contact_->metaContact()->removeFromGroup( group );
+ 				}
+ 			}
+diff --git a/protocols/gadu/gadueditcontact.h b/protocols/gadu/gadueditcontact.h
+index 6b93fa3d84f7e54ec7ca3269f423e3b29e117449..719f38dd73f9259d8669ab348736e6d368454ac5 100644
+--- a/protocols/gadu/gadueditcontact.h
++++ b/protocols/gadu/gadueditcontact.h
+@@ -27,13 +27,14 @@
+ 
+ #include <kdialog.h>
+ #include <QLabel>
++#include <QTreeWidget>
++#include <QTreeWidgetItem>
+ 
+ class GaduAccount;
+ namespace Ui { class GaduAddUI; }
+ class QLabel;
+ class QWidget;
+ class GaduContact;
+-class Q3ListViewItem;
+ 
+ class GaduEditContact : public KDialog
+ {
+@@ -47,7 +48,7 @@ public:
+ 	~GaduEditContact();
+ protected slots:
+ 	void slotApply();
+-	void listClicked( Q3ListViewItem* );
++	void listClicked( QTreeWidgetItem* );
+ private:
+ 
+ 	void init();
+diff --git a/protocols/gadu/gadupubdir.cpp b/protocols/gadu/gadupubdir.cpp
+index c264519c44aa273039f0acb664e1a5df90b1640f..7dfb0c46d84ff1e5769db3be97837071ea6a5b2d 100644
+--- a/protocols/gadu/gadupubdir.cpp
++++ b/protocols/gadu/gadupubdir.cpp
+@@ -27,8 +27,8 @@
+ #include "gaduaccount.h"
+ #include "gaduprotocol.h"
+ 
+-#include <q3widgetstack.h>
+-#include <q3listview.h>
++#include <QStackedWidget>
++#include <QTreeWidget>
+ #include <qradiobutton.h>
+ #include <qspinbox.h>
+ #include <qcheckbox.h>
+@@ -67,13 +67,17 @@ GaduPublicDir::GaduPublicDir( GaduAccount* account, int searchFor, QWidget* pare
+ 	kDebug( 14100 ) << "search for Uin: " << searchFor;
+ 
+ 	mMainWidget->listFound->clear();
++	mMainWidget->listFound->setSelectionMode(QAbstractItemView::ExtendedSelection);
++	mMainWidget->listFound->header()->setResizeMode(QHeaderView::Fixed);
++	mMainWidget->listFound->header()->setResizeMode(QHeaderView::ResizeToContents);
++	mMainWidget->listFound->header()->setSortIndicatorShown(true);
+ 	show();
+ 
+ 	if ( searchFor == 0 ) {
+ 		return;
+ 	}
+ 
+-	mMainWidget->pubsearch->raiseWidget( 1 );
++	mMainWidget->pubsearch->widget(1)->raise();
+ 	mMainWidget->radioByUin->setChecked( true );
+ 
+ 	setButtonGuiItem( KDialog::User2, KGuiItem( i18n( "Search &More..." ) ) );
+@@ -84,7 +88,7 @@ GaduPublicDir::GaduPublicDir( GaduAccount* account, int searchFor, QWidget* pare
+ 
+ 	// now it is time to switch to Right Page(tm)
+ 	rs.uin = searchFor;
+-	
++
+ 	fName.clear();
+   fSurname.clear();
+   fNick.clear();
+@@ -113,6 +117,7 @@ GaduPublicDir::createWidget()
+ 	setMainWidget( w );
+ 
+ 	mMainWidget->UIN->setValidChars( "1234567890" );
++	//mMainWidget->listFound->headerItem()->setSortIndicator(true);
+ 
+ 	setButtonGuiItem( KDialog::User1, KGuiItem( i18n( "&New Search" ) ) );
+ 	setButtonGuiItem( KDialog::User2, KGuiItem( i18n( "S&earch" ) ) );
+@@ -133,7 +138,7 @@ void
+ GaduPublicDir::slotAddContact()
+ {
+ 	GaduContactsList::ContactLine* cl = new GaduContactsList::ContactLine;
+-	Q3ListViewItem* item = mMainWidget->listFound->currentItem();
++	QTreeWidgetItem *item = mMainWidget->listFound->currentItem();
+ 
+ 	cl->ignored	= false;
+ 	cl->firstname	= item->text( 1 );
+@@ -149,7 +154,7 @@ GaduPublicDir::slotAddContact()
+ void
+ GaduPublicDir::slotListSelected(  )
+ {
+-	Q3ListViewItem* item = mMainWidget->listFound->currentItem();
++	QTreeWidgetItem* item = mMainWidget->listFound->currentItem();
+ 	if ( item ) {
+ 		enableButton( KDialog::User3, true );
+ 	}
+@@ -253,25 +258,19 @@ GaduPublicDir::iconForStatus( uint status )
+ void
+ GaduPublicDir::slotSearchResult( const SearchResult& result, unsigned int )
+ {
+-	Q3ListView* list = mMainWidget->listFound;
++	QTreeWidget *list = mMainWidget->listFound;
++	QTreeWidgetItem *sl;
++	QStringList args;
+ 
+ 	kDebug(14100) << "searchResults(" << result.count() <<")";
+ 
+-	Q3ListViewItem* sl;
+-
+ 	SearchResult::const_iterator r;
+ 
+ 	for ( r = result.begin(); r != result.end() ; ++r ){
+ 		kDebug(14100) << "adding" << (*r).uin;
+-		sl= new Q3ListViewItem(
+-					list, QString::fromAscii(""),
+-					(*r).firstname,
+-					(*r).nickname,
+-					(*r).age,
+-					(*r).city,
+-					QString::number( (*r).uin ).toAscii()
+-						);
+-		sl->setPixmap( 0, iconForStatus( (*r).status ) );
++		args = (QStringList() << QString::fromAscii("") << (*r).firstname << (*r).nickname << (*r).age << (*r).city << QString::number( (*r).uin ).toAscii() );
++		sl= new QTreeWidgetItem( list, args );
++		sl->setIcon( 0, QIcon(iconForStatus( (*r).status )) );
+ 	}
+ 
+ 	// if not found anything, obviously we don't want to search for more
+@@ -290,7 +289,7 @@ GaduPublicDir::slotSearchResult( const SearchResult& result, unsigned int )
+ void
+ GaduPublicDir::slotNewSearch()
+ {
+-	mMainWidget->pubsearch->raiseWidget( 0 );
++	mMainWidget->pubsearch->widget(0)->raise();
+ 
+ 	setButtonGuiItem( KDialog::User2, KGuiItem( i18n( "S&earch" ) ) );
+ 
+@@ -309,7 +308,7 @@ GaduPublicDir::slotSearch()
+ 	QString empty;
+ 
+ 	// search more, or search ?
+-	if ( mMainWidget->pubsearch->id( mMainWidget->pubsearch->visibleWidget() ) == 0 ) {
++	if ( mMainWidget->pubsearch->indexOf( mMainWidget->pubsearch->currentWidget() ) == 0 ) {
+ 		kDebug(14100) << "start search... ";
+ 		getData();
+ 
+@@ -319,7 +318,7 @@ GaduPublicDir::slotSearch()
+ 		}
+ 
+ 		// go on
+-		mMainWidget->pubsearch->raiseWidget( 1 );
++		mMainWidget->pubsearch->widget(1)->raise();
+ 
+ 	}
+ 	else{
+diff --git a/protocols/gadu/gadusession.h b/protocols/gadu/gadusession.h
+index 02a0242b3e41ced78f7c20af434a76ba0486af63..bc92f8a5f656e997929766c9d59f3df0cf87615a 100644
+--- a/protocols/gadu/gadusession.h
++++ b/protocols/gadu/gadusession.h
+@@ -27,7 +27,6 @@
+ #include <qstring.h>
+ #include <qstringlist.h>
+ #include <qdatetime.h>
+-#include <q3cstring.h>
+ #include <qhostaddress.h>
+ #include <QList>
+ 
+diff --git a/protocols/gadu/ui/gaduadd.ui b/protocols/gadu/ui/gaduadd.ui
+index fdbe4a63fe1336095479b8f690a039e1652e7195..8c45e9a707ea34144e1eda22511a735eea8593f7 100644
+--- a/protocols/gadu/ui/gaduadd.ui
++++ b/protocols/gadu/ui/gaduadd.ui
+@@ -304,7 +304,7 @@
+     </widget>
+    </item>
+    <item row="3" column="0" >
+-    <widget class="Q3ListView" name="groups" >
++    <widget class="QTreeWidget" name="groups" >
+      <column>
+       <property name="text" >
+        <string>Group</string>
+@@ -316,13 +316,6 @@
+  </widget>
+  <customwidgets>
+   <customwidget>
+-   <class>Q3ListView</class>
+-   <extends></extends>
+-   <header>q3listview.h</header>
+-   <container>0</container>
+-   <pixmap></pixmap>
+-  </customwidget>
+-  <customwidget>
+    <class>KRestrictedLine</class>
+    <extends></extends>
+    <header>krestrictedline.h</header>
+diff --git a/protocols/gadu/ui/gadusearch.ui b/protocols/gadu/ui/gadusearch.ui
+index 3011347434e10205a390adf872a6a80077afb6b2..0ae92693948e5a3c1a78a6236e01224680090d39 100644
+--- a/protocols/gadu/ui/gadusearch.ui
++++ b/protocols/gadu/ui/gadusearch.ui
+@@ -17,7 +17,7 @@
+     <number>0</number>
+    </property>
+    <item>
+-    <widget class="Q3WidgetStack" name="pubsearch" >
++    <widget class="QStackedWidget" name="pubsearch" >
+      <widget class="QWidget" name="page" >
+       <property name="geometry" >
+        <rect>
+@@ -32,7 +32,7 @@
+         <number>0</number>
+        </property>
+        <item>
+-        <widget class="Q3ButtonGroup" name="buttonGroup2" >
++        <widget class="QGroupBox" name="buttonGroup2" >
+          <property name="title" >
+           <string/>
+          </property>
+@@ -378,7 +378,7 @@
+       </property>
+       <layout class="QGridLayout" name="gridLayout" >
+        <item row="0" column="0" >
+-        <widget class="K3ListView" name="listFound" >
++        <widget class="QTreeWidget" name="listFound" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+            <horstretch>0</horstretch>
+@@ -400,21 +400,9 @@
+          <property name="lineWidth" >
+           <number>2</number>
+          </property>
+-         <property name="resizePolicy" >
+-          <enum>Q3ScrollView::AutoOneFit</enum>
+-         </property>
+-         <property name="selectionMode" >
+-          <enum>Q3ListView::Extended</enum>
+-         </property>
+          <property name="allColumnsShowFocus" >
+           <bool>true</bool>
+          </property>
+-         <property name="showSortIndicator" >
+-          <bool>true</bool>
+-         </property>
+-         <property name="resizeMode" >
+-          <enum>Q3ListView::NoColumn</enum>
+-         </property>
+         </widget>
+        </item>
+       </layout>
+@@ -442,18 +430,6 @@
+    <extends>KLineEdit</extends>
+    <header>krestrictedline.h</header>
+   </customwidget>
+-  <customwidget>
+-   <class>Q3WidgetStack</class>
+-   <extends>Q3WidgetStack</extends>
+-   <header>q3widgetstack.h</header>
+-   <container>1</container>
+-  </customwidget>
+-  <customwidget>
+-   <class>Q3ButtonGroup</class>
+-   <extends>Q3GroupBox</extends>
+-   <header>Qt3Support/Q3ButtonGroup</header>
+-   <container>1</container>
+-  </customwidget>
+  </customwidgets>
+  <resources/>
+  <connections>

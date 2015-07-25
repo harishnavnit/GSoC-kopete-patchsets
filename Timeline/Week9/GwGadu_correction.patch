@@ -1,0 +1,16 @@
+diff --git a/protocols/gadu/ui/gadusearch.ui b/protocols/gadu/ui/gadusearch.ui
+index 3011347434e10205a390adf872a6a80077afb6b2..8b1ecc1898f74f49f3efcf2346241545ff876de1 100644
+--- a/protocols/gadu/ui/gadusearch.ui
++++ b/protocols/gadu/ui/gadusearch.ui
+@@ -438,6 +438,11 @@
+  </widget>
+  <customwidgets>
+   <customwidget>
++   <class>K3ListView</class>
++   <extends>Q3ListView</extends>
++   <header>k3listview.h</header>
++  </customwidget>
++  <customwidget>
+    <class>KRestrictedLine</class>
+    <extends>KLineEdit</extends>
+    <header>krestrictedline.h</header>

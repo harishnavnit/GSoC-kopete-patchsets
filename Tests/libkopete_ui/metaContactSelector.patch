@@ -1,0 +1,106 @@
+diff --git a/libkopete/ui/metacontactselectorwidget.cpp b/libkopete/ui/metacontactselectorwidget.cpp
+index 96f9eb17b850db0a5925d94e9da531a6190da61b..80a588402fb0afa2a2c6db8e8e29729f8b2c5084 100644
+--- a/libkopete/ui/metacontactselectorwidget.cpp
++++ b/libkopete/ui/metacontactselectorwidget.cpp
+@@ -35,8 +35,8 @@
+ #include <kinputdialog.h>
+ #include <kpushbutton.h>
+ #include <kdebug.h>
+-#include <k3listview.h>
+-#include <k3listviewsearchline.h>
++#include <QTreeWidget>
++#include <ktreewidgetsearchline.h>
+ 
+ #include "kopetelistview.h"
+ #include "kopetelistviewsearchline.h"
+@@ -68,7 +68,7 @@ public:
+ };
+ 
+ 
+-MetaContactSelectorWidgetLVI::MetaContactSelectorWidgetLVI(Kopete::MetaContact *mc, Q3ListView *parent, QObject *owner) : Kopete::UI::ListView::Item(parent, owner) , d( new Private() )
++MetaContactSelectorWidgetLVI::MetaContactSelectorWidgetLVI(Kopete::MetaContact *mc, QTreeWidget *parent, QObject *owner) : Kopete::UI::ListView::Item(parent, owner) , d( new Private() )
+ {
+ 	d->metaContact = mc;
+ 	d->photoSize = 60;
+@@ -200,21 +200,21 @@ MetaContactSelectorWidget::MetaContactSelectorWidget( QWidget *parent, const cha
+ 	d->widget->setupUi(w);
+ 	l->addWidget(w);
+ 
+-	connect( d->widget->metaContactListView, SIGNAL(clicked(Q3ListViewItem*)),
+-			SIGNAL(metaContactListClicked(Q3ListViewItem*)) );
+-	connect( d->widget->metaContactListView, SIGNAL(selectionChanged(Q3ListViewItem*)),
+-			SIGNAL(metaContactListClicked(Q3ListViewItem*)) );
+-	connect( d->widget->metaContactListView, SIGNAL(spacePressed(Q3ListViewItem*)),
+-			SIGNAL(metaContactListClicked(Q3ListViewItem*)) );
++	connect( d->widget->metaContactListView, SIGNAL(clicked(QTreeWidgetItem*)),
++			SIGNAL(metaContactListClicked(QTreeWidgetItem*)) );
++	connect( d->widget->metaContactListView, SIGNAL(selectionChanged(QTreeWidgetItem*)),
++			SIGNAL(metaContactListClicked(QTreeWidgetItem*)) );
++	connect( d->widget->metaContactListView, SIGNAL(spacePressed(QTreeWidgetItem*)),
++			SIGNAL(metaContactListClicked(QTreeWidgetItem*)) );
+ 
+ 	connect( Kopete::ContactList::self(), SIGNAL(metaContactAdded(Kopete::MetaContact*)), this, SLOT(slotLoadMetaContacts()) );
+ 
+ 	d->widget->kListViewSearchLine->setListView(d->widget->metaContactListView);
+ 	d->widget->kListViewSearchLine->setFocus();
+ 	d->widget->metaContactListView->setFullWidth( true );
+-	d->widget->metaContactListView->addColumn( i18n( "Contacts" ), 0 );
++	d->widget->metaContactListView->headerItem()->setText(0, i18n( "Contacts" ), 0 );
+ 	d->widget->metaContactListView->header()->hide();
+-	d->widget->metaContactListView->setColumnWidthMode(0, Q3ListView::Maximum);
++	d->widget->metaContactListView->setColumnWidthMode(0, QTreeWidget::Maximum);
+ 	slotLoadMetaContacts();
+ }
+ 
+@@ -241,7 +241,7 @@ Kopete::MetaContact* MetaContactSelectorWidget::metaContact()
+ void MetaContactSelectorWidget::selectMetaContact( Kopete::MetaContact *mc )
+ {
+ 	// iterate trough list view
+-	Q3ListViewItemIterator it( d->widget->metaContactListView );
++	QTreeWidgetItemIterator it( d->widget->metaContactListView );
+ 	while( it.current() )
+ 	{
+ 		MetaContactSelectorWidgetLVI *item = (MetaContactSelectorWidgetLVI *) it.current();
+@@ -289,7 +289,7 @@ void MetaContactSelectorWidget::slotLoadMetaContacts()
+ 		}
+ 	}
+ 
+-	d->widget->metaContactListView->sort();
++	d->widget->metaContactListView->slotSort();
+ }
+ 
+ void MetaContactSelectorWidget::setLabelMessage( const QString &msg )
+diff --git a/libkopete/ui/metacontactselectorwidget.h b/libkopete/ui/metacontactselectorwidget.h
+index 1086eaeb232605a5879709f2889ae0e1d746b3b0..38b115487d0003bc588fb1469ea3643014f4c2bf 100644
+--- a/libkopete/ui/metacontactselectorwidget.h
++++ b/libkopete/ui/metacontactselectorwidget.h
+@@ -67,7 +67,7 @@ protected slots:
+ 	 */
+ 	void slotLoadMetaContacts();
+ signals:
+-	void metaContactListClicked( Q3ListViewItem *mc );
++	void metaContactListClicked( QTreeWidgetItem *mc );
+ private:
+ 	class Private;
+ 	Private * const d;
+@@ -81,7 +81,7 @@ class MetaContactSelectorWidgetLVI : public Kopete::UI::ListView::Item
+ {
+ 	Q_OBJECT
+ public:
+-	MetaContactSelectorWidgetLVI(Kopete::MetaContact *mc, Q3ListView *parent, QObject *owner = 0 );
++	MetaContactSelectorWidgetLVI(Kopete::MetaContact *mc, QTreeWidget *parent, QObject *owner = 0 );
+ 	virtual ~MetaContactSelectorWidgetLVI();
+ 	Kopete::MetaContact* metaContact();
+ 	virtual QString text ( int column ) const;
+diff --git a/libkopete/ui/metacontactselectorwidget_base.ui b/libkopete/ui/metacontactselectorwidget_base.ui
+index 90b7d162ac5400f09fbf5acc3de9cb8ed11b6bfe..91312719903c996c1076e647cd620d6b7b456427 100644
+--- a/libkopete/ui/metacontactselectorwidget_base.ui
++++ b/libkopete/ui/metacontactselectorwidget_base.ui
+@@ -101,7 +101,6 @@
+  <includes>
+   <include location="global" >kopetelistviewsearchline.h</include>
+   <include location="global" >kopetelistview.h</include>
+-  <include location="global" >q3header.h</include>
+  </includes>
+  <resources/>
+  <connections/>

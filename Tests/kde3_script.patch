@@ -1,0 +1,413 @@
+diff --git a/kopete/chatwindow/kopeteemailwindow.cpp b/kopete/chatwindow/kopeteemailwindow.cpp
+index 7bb04b2955cd96d46f9bf00d516048a50f25bf9a..0d3753b5496a05e51574cae3fe09d117b8d9ffe0 100644
+--- a/kopete/chatwindow/kopeteemailwindow.cpp
++++ b/kopete/chatwindow/kopeteemailwindow.cpp
+@@ -260,7 +260,7 @@ void KopeteEmailWindow::initActions(void)
+ 
+ 	// The animated toolbarbutton
+ 	d->normalIcon = QPixmap( BarIcon( QLatin1String( "kopete" ) ) );
+-//	d->animIcon = KGlobal::iconLoader()->loadMovie( QLatin1String( "newmessage" ), KIconLoader::Toolbar);
++//	d->animIcon = KIconLoader::global()->loadMovie( QLatin1String( "newmessage" ), KIconLoader::Toolbar);
+ 	d->animIcon.setPaused(true);
+ 
+ 	d->anim = new QLabel( this );
+@@ -550,9 +550,9 @@ void KopeteEmailWindow::raise(bool activate)
+ 	/* Removed Nov 2003
+ 	According to Zack, the user double-clicking a contact is not valid reason for a non-pager
+ 	to grab window focus. While I don't agree with this, and it runs contradictory to every other
+-	IM out there, commenting this code out to agree with KWin policy.
++	IM out there, commenting this code out to agree with KWindowSystem policy.
+ 
+-	Redirect any bugs relating to the widnow now not grabbing focus on clicking a contact to KWin.
++	Redirect any bugs relating to the widnow now not grabbing focus on clicking a contact to KWindowSystem.
+ 		- Jason K
+ 	*/
+ 	//Will not activate window if user was typing
+diff --git a/kopete/identity/identitystatuswidget.cpp b/kopete/identity/identitystatuswidget.cpp
+index 94f5b05845116bec172f6607787256207a67b831..13634af24b68a1eda730e5725f71201dd73845ff 100644
+--- a/kopete/identity/identitystatuswidget.cpp
++++ b/kopete/identity/identitystatuswidget.cpp
+@@ -266,7 +266,7 @@ void IdentityStatusWidget::addAccountItem( Kopete::Account *account )
+ 
+ void IdentityStatusWidget::slotAccountStatusIconChanged( Kopete::Contact *contact )
+ {
+-	///kdDebug( 14000 ) << k_funcinfo << contact->property( Kopete::Global::Properties::self()->awayMessage() ).value() << endl;
++	///kDebug( 14000 ) << k_funcinfo << contact->property( Kopete::Global::Properties::self()->awayMessage() ).value();
+ 	Kopete::OnlineStatus status = contact->onlineStatus();
+ 	QListWidgetItem * item = 0;
+ 	QHashIterator<QListWidgetItem*, Kopete::Account *> i( d->accountHash );
+diff --git a/kopete/kimiface.h b/kopete/kimiface.h
+index 9028472cab99c8df905c16b079c859a1bc812094..93f33b81ca6ae82b2f865abbe1f7a31d61dfadda 100644
+--- a/kopete/kimiface.h
++++ b/kopete/kimiface.h
+@@ -24,7 +24,7 @@
+ 
+ #include <qpixmap.h>
+ #include <QByteArray>
+-#include <dcopobject.h>
++
+ #include <qstringlist.h>
+ #include <kurl.h>
+ 
+diff --git a/libkopete/clientiface.h b/libkopete/clientiface.h
+index 83d63a12a4cc857595062e35005ee5cad4f880f9..7b5629209cd1bd0635bfc40d3893dd4d607e3938 100644
+--- a/libkopete/clientiface.h
++++ b/libkopete/clientiface.h
+@@ -3,7 +3,7 @@
+ 
+ #include "networkstatuscommon.h"
+ 
+-#include <dcopobject.h>
++
+ 
+ class ClientIface : virtual public DCOPObject
+ {
+diff --git a/libkopete/connectionmanager.h b/libkopete/connectionmanager.h
+index 5cc743803acacfbea89cd0d51babe7efae21ed0d..8221bfd4628f2a61d485548a19979c82bfab25cd 100644
+--- a/libkopete/connectionmanager.h
++++ b/libkopete/connectionmanager.h
+@@ -18,7 +18,7 @@
+ #ifndef KDE_CONNECTION_MANAGER_H
+ #define KDE_CONNECTION_MANAGER_H
+ 
+-#include <dcopobject.h>
++
+ 
+ #include "kopete_export.h"
+ #include "networkstatuscommon.h"
+diff --git a/libkopete/kopetecommandhandler.cpp b/libkopete/kopetecommandhandler.cpp
+index 24a1eb4835fdb0b7794d6f13f963153826308342..31f0fe340985e578f3167a14f3401d995f456639 100644
+--- a/libkopete/kopetecommandhandler.cpp
++++ b/libkopete/kopetecommandhandler.cpp
+@@ -26,7 +26,7 @@
+ #include <kauthorized.h>
+ #include <kactioncollection.h>
+ #include <ktoolinvocation.h>
+-#include <kprocess.h>
++#include <k3process.h>
+ 
+ #include "kopetechatsessionmanager.h"
+ #include "kopeteprotocol.h"
+@@ -92,7 +92,7 @@ struct CommandHandlerPrivate
+ {
+ 	PluginCommandMap pluginCommands;
+ 	Kopete::CommandHandler *s_handler;
+-	QMap<KProcess*,ManagerPair> processMap;
++	QMap<K3Process*,ManagerPair> processMap;
+ 	bool inCommand;
+ 	QList<KAction *> m_commands;
+ };
+@@ -295,9 +295,9 @@ void Kopete::CommandHandler::slotExecCommand( const QString &args, Kopete::ChatS
+ {
+ 	if( !args.isEmpty() )
+ 	{
+-		KProcess *proc = 0L;
++		K3Process *proc = 0L;
+ 		if ( KAuthorized::authorizeKAction( "shell_access" ) )
+-				proc = new KProcess(manager);
++				proc = new K3Process(manager);
+ 		if( proc )
+ 		{
+ 			*proc << QString::fromLatin1("sh") << QString::fromLatin1("-c");
+@@ -317,7 +317,7 @@ void Kopete::CommandHandler::slotExecCommand( const QString &args, Kopete::ChatS
+ 			connect(proc, SIGNAL(error(QProcess::ProcessError)), this, SLOT(slotExecError(QProcess::ProcessError)));
+ 			connect(proc, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(slotExecFinished()));
+ 
+-			proc->setOutputChannelMode(KProcess::MergedChannels);
++			proc->setOutputChannelMode(K3Process::MergedChannels);
+ 			proc->setNextOpenMode(QIODevice::ReadOnly);
+ 			proc->clearEnvironment();
+ 			proc->start();
+@@ -383,7 +383,7 @@ void Kopete::CommandHandler::slotCloseCommand( const QString &, Kopete::ChatSess
+ void Kopete::CommandHandler::slotExecError( QProcess::ProcessError error )
+ {
+ 	kDebug(14010);
+-	KProcess *proc = static_cast<KProcess *>(sender());
++	K3Process *proc = static_cast<K3Process *>(sender());
+ 	if (error == QProcess::FailedToStart) {
+ 		ManagerPair &mgrPair = p->processMap[ proc ];
+ 		Kopete::Message msg( mgrPair.first->myself(), mgrPair.first->members() );
+@@ -403,7 +403,7 @@ void Kopete::CommandHandler::slotExecError( QProcess::ProcessError error )
+ void Kopete::CommandHandler::slotExecFinished()
+ {
+ 	kDebug(14010);
+-	KProcess *proc = static_cast<KProcess *>(sender());
++	K3Process *proc = static_cast<K3Process *>(sender());
+ 	const QString &buffer = QString::fromUtf8(proc->readAll());
+ 	if (!buffer.isEmpty())
+ 		slotExecSendMessage(proc, buffer);
+@@ -412,7 +412,7 @@ void Kopete::CommandHandler::slotExecFinished()
+ 	proc->deleteLater();
+ }
+ 
+-void Kopete::CommandHandler::slotExecSendMessage( KProcess *proc, const QString &buffer )
++void Kopete::CommandHandler::slotExecSendMessage( K3Process *proc, const QString &buffer )
+ {
+ 	kDebug(14010);
+ 	ManagerPair &mgrPair = p->processMap[ proc ];
+diff --git a/libkopete/kopetecommandhandler.h b/libkopete/kopetecommandhandler.h
+index 46596eaebc16fad9a72ae76926b4c6cdb1f4251e..a097bab940800ae4205dbd5fae2958e657d22e3c 100644
+--- a/libkopete/kopetecommandhandler.h
++++ b/libkopete/kopetecommandhandler.h
+@@ -20,7 +20,7 @@
+ #include <QtCore/QMultiHash>
+ 
+ #include <kshortcut.h>
+-#include <kprocess.h>
++#include <k3process.h>
+ #include "kopetemessage.h"
+ 
+ #include "kopete_export.h"
+@@ -184,7 +184,7 @@ class KOPETE_EXPORT CommandHandler : public QObject
+ 		void slotPluginDestroyed( QObject * );
+ 		void slotExecError( QProcess::ProcessError error );
+ 		void slotExecFinished();
+-		void slotExecSendMessage( KProcess *proc, const QString &buffer );
++		void slotExecSendMessage( K3Process *proc, const QString &buffer );
+ 		void slotViewCreated( KopeteView *view );
+ 
+ 		void slotHelpCommand( const QString & args, Kopete::ChatSession *manager );
+diff --git a/plugins/history/historydialog.cpp b/plugins/history/historydialog.cpp
+index 0720cb7fb1a9fc11afd0c12b37a7abe2e936c0c6..edca0492b867260831be52b2f4d1d8d705c60662 100644
+--- a/plugins/history/historydialog.cpp
++++ b/plugins/history/historydialog.cpp
+@@ -437,7 +437,7 @@ void HistoryDialog::treeWidgetHideElements(bool s)
+ * How does the search work
+ * ------------------------
+ * We do the search respecting the current metacontact filter item. To do this, we iterate over the
+-* elements in the KListView (KListViewDateItems) and, for each one, we iterate over its subcontacts,
++* elements in the K3ListView (KListViewDateItems) and, for each one, we iterate over its subcontacts,
+ * manually searching the log files of each one. To avoid searching files twice, the months that have
+ * been searched already are stored in monthsSearched. The matches are placed in the matches QMap.
+ * Finally, the current date item is checked in the matches QMap, and if it is present, it is shown.
+diff --git a/plugins/history2/history2dialog.cpp b/plugins/history2/history2dialog.cpp
+index e5fa8a2844f1acc17b16618489c2ae2b7499e70c..85c70824e03043c65aba32c1d4001d3c547c3196 100644
+--- a/plugins/history2/history2dialog.cpp
++++ b/plugins/history2/history2dialog.cpp
+@@ -323,7 +323,7 @@ void History2Dialog::treeWidgetHideElements(bool s) {
+ * How does the search work
+ * ------------------------
+ * We do the search respecting the current metacontact filter item. To do this, we iterate over the
+-* elements in the KListView (KListViewDateItems) and, for each one, we iterate over its subcontacts,
++* elements in the K3ListView (KListViewDateItems) and, for each one, we iterate over its subcontacts,
+ * manually searching the log files of each one. To avoid searching files twice, the months that have
+ * been searched already are stored in monthsSearched. The matches are placed in the matches QMap.
+ * Finally, the current date item is checked in the matches QMap, and if it is present, it is shown.
+diff --git a/plugins/latex/latexplugin.cpp b/plugins/latex/latexplugin.cpp
+index e52161dac5d0f70ce8e8d0fe271db5290045a314..04aba5b2b488ae2340db795f214e060a8eea2cb8 100644
+--- a/plugins/latex/latexplugin.cpp
++++ b/plugins/latex/latexplugin.cpp
+@@ -26,7 +26,7 @@
+ #include <kgenericfactory.h>
+ #include <kdebug.h>
+ #include <kstandarddirs.h>
+-#include <kprocess.h>
++#include <k3process.h>
+ #include <ktemporaryfile.h>
+ #include <kcodecs.h>
+ #include <kmessagebox.h>
+@@ -228,7 +228,7 @@ QString LatexPlugin::handleLatex(const QString &latexFormula)
+ 	m_tempFiles.append(tempFile);
+ 	QString fileName = tempFile->fileName();
+ 
+-	KProcess p;
++	K3Process p;
+ 	
+ 	QString argumentRes = QString("-r %1x%2").arg(LatexConfig::horizontalDPI()).arg(LatexConfig::verticalDPI());
+ 	QString argumentOut = QString("-o %1").arg(fileName);
+diff --git a/plugins/otr/otrlchatinterface.cpp b/plugins/otr/otrlchatinterface.cpp
+index cf5b492d6cc364e3d8780058054b885db6be4755..288df2d56865b2ac14c94e1b8f0279636433eeb4 100644
+--- a/plugins/otr/otrlchatinterface.cpp
++++ b/plugins/otr/otrlchatinterface.cpp
+@@ -73,12 +73,12 @@ OtrlPolicy OtrlChatInterface::policy(void *opdata, ConnContext *context){
+ 
+ 	// Disable OTR for IRC
+ 	if( session->protocol()->pluginId() == "IRCProtocol" ){
+-//		kdDebug() << "Disabling OTR for: " << session->protocol()->pluginId() << endl;
++//		kDebug() << "Disabling OTR for: " << session->protocol()->pluginId();
+ 		return OTRL_POLICY_NEVER;
+ 	}
+ 	QString policy;
+ 	policy = session->members().first()->metaContact()->pluginData( chatPlugin, QString("otr_policy") );
+-//	kdDebug() << "Metacontact policy is: " << policy.toInt( &noerr, 10) << endl;
++//	kDebug() << "Metacontact policy is: " << policy.toInt( &noerr, 10);
+ 	switch( policy.toInt( &noerr, 10 ) ){
+ 		case 1:
+ 			return OTRL_POLICY_ALWAYS;
+@@ -168,7 +168,7 @@ void OtrlChatInterface::new_fingerprint(void *opdata, OtrlUserState us, const ch
+ 	Q_UNUSED(username)
+ 	Q_UNUSED(fingerprint)
+ 
+-//	kdDebug() << "Received a new Fingerprint" << endl;
++//	kDebug() << "Received a new Fingerprint";
+ 	Kopete::ChatSession *session= ((Kopete::ChatSession*)opdata);
+ 	Kopete::Message msg( session->members().first(), session->account()->myself() );
+ 	msg.setHtmlBody( i18n("<b>Received a new fingerprint from <a>%1</a>. You should authenticate this contact.</b>", session->members().first()->contactId()) );
+@@ -180,7 +180,7 @@ void OtrlChatInterface::write_fingerprints(void *opdata){
+ 
+ 	Q_UNUSED(opdata)
+ 
+-//	kdDebug() << "Writing fingerprints" << endl;
++//	kDebug() << "Writing fingerprints";
+ 	QString savePath = QString(KGlobal::dirs()->saveLocation("data", "kopete_otr/", true )) + "fingerprints";
+ 	otrl_privkey_write_fingerprints( userstate, savePath.toLocal8Bit() );
+ }
+@@ -209,7 +209,7 @@ void OtrlChatInterface::gone_insecure(void *opdata, ConnContext *context){
+ 
+ 	Q_UNUSED(context)
+ 
+-//	kdDebug() << "gone insecure" << endl;
++//	kDebug() << "gone insecure";
+ 	OtrlChatInterface::self()->emitGoneSecure(((Kopete::ChatSession*)opdata), 0);
+ 	Kopete::ChatSession *session= ((Kopete::ChatSession*)opdata);
+ 	Kopete::Message msg( session->members().first(), session->account()->myself() );
+diff --git a/plugins/otr/otrlconfinterface.cpp b/plugins/otr/otrlconfinterface.cpp
+index 692189b0b0978c88811fb1b83c0e7567cd3105f0..9bdfc5afc9b7d11c952f3830b14a1c9fbd580b7a 100644
+--- a/plugins/otr/otrlconfinterface.cpp
++++ b/plugins/otr/otrlconfinterface.cpp
+@@ -152,10 +152,10 @@ bool OtrlConfInterface::isVerified( const QString &strFingerprint ){
+ 	fingerprint = findFingerprint( strFingerprint );
+ 
+ 	if( fingerprint->trust && fingerprint->trust[0] ){
+-//		kdDebug() << "found trust" << endl;
++//		kDebug() << "found trust";
+ 		return true;
+ 	} else {
+-//		kdDebug() << "not trusted" << endl;
++//		kDebug() << "not trusted";
+ 		return false;
+ 	}
+ }
+@@ -204,7 +204,7 @@ bool OtrlConfInterface::isEncrypted( const QString &strFingerprint ){
+ 		tmpFingerprint = context->fingerprint_root.next;
+ 		while( tmpFingerprint ){
+ 			if( tmpFingerprint == fingerprint ){
+-//				kdDebug() << "Found context" << endl;
++//				kDebug() << "Found context";
+ 				foundContext = context;
+ 				foundFingerprint = tmpFingerprint;
+ 			}
+diff --git a/plugins/otr/otrplugin.h b/plugins/otr/otrplugin.h
+index c3b121e7e93ad9e2588cf8262db5036cc1c06bc4..aab15d9c3d3a5940b6f249bb87c61f16173286c7 100644
+--- a/plugins/otr/otrplugin.h
++++ b/plugins/otr/otrplugin.h
+@@ -44,10 +44,10 @@ private:
+ 	QPointer<OTRPlugin> plugin;
+ public:
+ 	OtrMessageHandler( OTRPlugin *plugin ) : plugin(plugin) {
+-//		kdDebug() << "MessageHandler created" << endl;
++//		kDebug() << "MessageHandler created";
+ 	}
+ 	~OtrMessageHandler(){
+-//		kdDebug() << "MessageHandler destroyed" << endl;
++//		kDebug() << "MessageHandler destroyed";
+ 	}
+ 	void handleMessage( Kopete::MessageEvent *event );
+ };
+diff --git a/plugins/urlpicpreview/urlpicpreviewplugin.cpp b/plugins/urlpicpreview/urlpicpreviewplugin.cpp
+index 9ce7fa392bd0cd508bf1c793102a37affe432034..b06846be73b800e9dca8b714fd9d467b414f7922 100644
+--- a/plugins/urlpicpreview/urlpicpreviewplugin.cpp
++++ b/plugins/urlpicpreview/urlpicpreviewplugin.cpp
+@@ -199,7 +199,7 @@ QString URLPicPreviewPlugin::createPreviewPicture ( const KUrl& url )
+ 	else
+ 	{ // Experimental
+ 		/*
+-		KTempFile tmp;
++		KTemporaryFile tmp;
+ 		tmpFile = tmp.name();
+ 		LinkPreview::self(this)->getPreviewPic(url).save(tmpFile, "PNG");
+ 		*/
+diff --git a/protocols/irc/ircaccount.cpp b/protocols/irc/ircaccount.cpp
+index 7c694d18d94d5db8a1bd1e6872551b8528498f9c..ac9669f350882eba1de4f82dce1374a8ebc1a5b9 100644
+--- a/protocols/irc/ircaccount.cpp
++++ b/protocols/irc/ircaccount.cpp
+@@ -39,13 +39,12 @@
+ 
+ #include <kactionmenu.h>
+ #include <kconfig.h>
+-#include <kcompletionbox.h>
++#include <k3completionbox.h>
+ #include <kdebug.h>
+ #include <kglobal.h>
+ #include <kinputdialog.h>
+ //#include <klineedit.h>
+-//#include <klineeditdlg.h>
+-#include <klocale.h>
++//#include <klocale.h>
+ #include <kmenu.h>
+ #include <kmessagebox.h>
+ 
+@@ -582,7 +581,7 @@ void IRCAccount::slotJoinChannel()
+ 		return;
+ 
+ 	QStringList chans = configGroup()->readEntry( "Recent Channel list", QStringList() );
+-	//kdDebug(14120) << "Recent channel list from config: " << chans << endl;
++	//kDebug(14120) << "Recent channel list from config: " << chans;
+ 	QString channelName=KInputDialog::getText( i18n( "Join Channel" ),
+ 			i18n("Please enter the name of the channel you want to join:"),
+ 			QString(), 0,
+diff --git a/protocols/jabber/jabbercontact.cpp b/protocols/jabber/jabbercontact.cpp
+index 9241256b7517cbb7372f489db155a6bd21cae321..2ee72cd3934868496482ed9946bcb937385e6954 100644
+--- a/protocols/jabber/jabbercontact.cpp
++++ b/protocols/jabber/jabbercontact.cpp
+@@ -1039,7 +1039,7 @@ void JabberContact::sync ( unsigned int )
+ 	if ( dontSync () || !account()->isConnected () || metaContact()->isTemporary () || metaContact() == Kopete::ContactList::self()->myself() )
+ 		return;
+ 	
+-	kDebug ( JABBER_DEBUG_GLOBAL ) << contactId () /*<< " - " <<kdBacktrace()*/;
++	kDebug ( JABBER_DEBUG_GLOBAL ) << contactId () /*<< " - " <<kBacktrace()*/;
+ 
+ 	if(!m_syncTimer)
+ 	{
+diff --git a/protocols/oscar/liboscar/oscarmessage.cpp b/protocols/oscar/liboscar/oscarmessage.cpp
+index 13aed5e4b34c981e08a2e97a1f2fdd1d86b55a08..0732b0d46cd8e254edd5d5df85ecfeb26adca5a1 100644
+--- a/protocols/oscar/liboscar/oscarmessage.cpp
++++ b/protocols/oscar/liboscar/oscarmessage.cpp
+@@ -208,7 +208,7 @@ QString Message::text( QTextCodec *codec ) const
+ 		break; // Should never happen.
+ 	}
+ 	return QString();
+-	//FIXME: warn at least with kdWarning if an unrecognised encoding style was seen.
++	//FIXME: warn at least with kWarning if an unrecognised encoding style was seen.
+ }
+ 
+ Message::Encoding Message::encodingForText( const QString& newText, bool allowUCS2 )
+diff --git a/protocols/skype/skypeaddcontact.h b/protocols/skype/skypeaddcontact.h
+index a417143d53ebb3fc7a43ef4984ec2efafda11305..a50e060d18d4963d3b96c4d286365ef394f9ce9f 100644
+--- a/protocols/skype/skypeaddcontact.h
++++ b/protocols/skype/skypeaddcontact.h
+@@ -56,7 +56,7 @@ class SkypeAddContact : public AddContactPage
+ 		virtual bool validateData();
+ 	public slots:
+ 		/**
+-		 * Adds it into the account.kdDebug(14311) << k_funcinfo << endl;//some debug info
++		 * Adds it into the account.kDebug(14311) << k_funcinfo;//some debug info
+ 		 * @param account Where to add it.
+ 		 * @param metaContact Metacontact which will hold it.
+ 		 * @return True if it worked, false if not.
+diff --git a/protocols/wlm/wlmchatmanager.cpp b/protocols/wlm/wlmchatmanager.cpp
+index 50dcb54935972866881c1d3526ef55a404cdef35..3a79af3bb5ac0015e90f679ae972fc3bc3f33b08 100644
+--- a/protocols/wlm/wlmchatmanager.cpp
++++ b/protocols/wlm/wlmchatmanager.cpp
+@@ -584,7 +584,7 @@ void WlmChatManager::slotGotEmoticonNotification (MSN::SwitchboardServerConnecti
+         return;
+ 
+     QString newlocation =
+-        KGlobal::dirs ()->locateLocal ("appdata",
++        KGlobal::dirs ()->KStandardDirs::locateLocal ("appdata",
+                                        "wlmpictures/" +
+                                        QString (SHA1D.replace ('/', '_')));
+     QFile f(newlocation);
+diff --git a/protocols/wlm/wlmchatsession.cpp b/protocols/wlm/wlmchatsession.cpp
+index 0c09bf65e4e6db0a5b71cb4fce3c8f77d58c3f05..6897190291442476aab9ea0568abe90382219d77 100644
+--- a/protocols/wlm/wlmchatsession.cpp
++++ b/protocols/wlm/wlmchatsession.cpp
+@@ -1176,7 +1176,7 @@ WlmChatSession::requestDisplayPicture ()
+     }
+     if (isReady ())
+     {
+-        QString newlocation = KGlobal::dirs()->locateLocal("appdata", "wlmpictures/" + QString(SHA1D.replace ('/', '_')));
++        QString newlocation = KGlobal::dirs()->KStandardDirs::locateLocal("appdata", "wlmpictures/" + QString(SHA1D.replace ('/', '_')));
+         getChatService()->requestDisplayPicture(generateSessionID(), QFile::encodeName(newlocation).constData(),
+                                                 contact->getMsnObj().toUtf8().constData());
+         setDownloadDisplayPicture (false);

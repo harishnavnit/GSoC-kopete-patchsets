@@ -1,0 +1,528 @@
+diff --git a/protocols/groupwise/libgroupwise/chatroommanager.cpp b/protocols/groupwise/libgroupwise/chatroommanager.cpp
+index ebeda2cb81699daef94d883b49c4f0f25640766c..34c840a52b0a97d5a20255b2e385fce35e9e21a3 100644
+--- a/protocols/groupwise/libgroupwise/chatroommanager.cpp
++++ b/protocols/groupwise/libgroupwise/chatroommanager.cpp
+@@ -19,7 +19,6 @@
+ #include "chatroommanager.h"
+ 
+ #include <qmap.h>
+-#include <q3valuelist.h>
+ 
+ #include <kdebug.h>
+ 
+@@ -64,7 +63,7 @@ void ChatroomManager::slotGotChatroomList()
+ 	{
+ 		if ( m_replace )
+ 			m_rooms.clear();
+-		
++
+ 		const QList<ChatroomSearchResult> roomsFound = sct->results();
+ 		QList<ChatroomSearchResult>::ConstIterator it = roomsFound.begin();
+ 		QList<ChatroomSearchResult>::ConstIterator end = roomsFound.end();
+@@ -103,7 +102,7 @@ void ChatroomManager::slotGotChatCounts()
+ void ChatroomManager::requestProperties( const QString & displayName )
+ {
+ 	if ( 0 /*m_rooms.contains( displayName ) */)
+-		emit gotProperties( m_rooms[ displayName ] );	
++		emit gotProperties( m_rooms[ displayName ] );
+ 	else
+ 	{
+ 		ChatPropertiesTask * cpt = new ChatPropertiesTask( m_client->rootTask() );
+diff --git a/protocols/groupwise/libgroupwise/coreprotocol.cpp b/protocols/groupwise/libgroupwise/coreprotocol.cpp
+index 3cea3e5fd301658b1f2c009c5e2ac5eff52529ad..bf59142eedd581b934978514403cae5d290a9470 100644
+--- a/protocols/groupwise/libgroupwise/coreprotocol.cpp
++++ b/protocols/groupwise/libgroupwise/coreprotocol.cpp
+@@ -3,13 +3,13 @@
+     coreprotocol.h- the core GroupWise protocol
+ 
+     Copyright (c) 2004      SUSE Linux AG	 	 http://www.suse.com
+-    
++
+     Based on Iris, Copyright (C) 2003  Justin Karneges <justin@affinix.com>
+     url_escape_string from Gaim src/protocols/novell/nmconn.c
+     Copyright (c) 2004 Novell, Inc. All Rights Reserved
+ 
+     Kopete (c) 2002-2004 by the Kopete developers <kopete-devel@kde.org>
+- 
++
+     *************************************************************************
+     *                                                                       *
+     * This library is free software; you can redistribute it and/or         *
+@@ -28,7 +28,6 @@
+ 
+ #include <qdatastream.h>
+ #include <qdatetime.h>
+-#include <q3textstream.h>
+ #include <QByteArray>
+ 
+ 
+@@ -111,7 +110,7 @@ CoreProtocol::CoreProtocol() : QObject()
+ 	m_responseProtocol->setObjectName( "responseprotocol" );
+ }
+ 
+-CoreProtocol::~CoreProtocol() 
++CoreProtocol::~CoreProtocol()
+ {
+ }
+ 
+@@ -138,7 +137,7 @@ void CoreProtocol::addIncomingData( const QByteArray & incomingBytes )
+ 	memcpy( m_in.data() + oldsize, incomingBytes.data(), incomingBytes.size() );
+ 	m_state = Available;
+ 	// convert every event in the chunk to a Transfer, signalling it back to the clientstream
+-	
++
+ 	int parsedBytes = 0;
+ 	int transferCount = 0;
+ 	// while there is data left in the input buffer, and we are able to parse something out of it
+@@ -161,7 +160,7 @@ void CoreProtocol::addIncomingData( const QByteArray & incomingBytes )
+ 	if ( m_state == NeedMore )
+ 		debug( " - message was incomplete, waiting for more..." );
+ 	if ( m_eventProtocol->state() == EventProtocol::OutOfSync )
+-	{	
++	{
+ 		debug( " - protocol thinks it is out of sync, discarding the rest of the buffer and hoping the server regains sync soon..." );
+ 		m_in.truncate( 0 );
+ 	}
+@@ -169,7 +168,7 @@ void CoreProtocol::addIncomingData( const QByteArray & incomingBytes )
+ }
+ 
+ Transfer* CoreProtocol::incomingTransfer()
+-{	
++{
+ 	debug( "" );
+ 	if ( m_state == Available )
+ 	{
+@@ -212,17 +211,17 @@ void CoreProtocol::outgoingTransfer( Request* outgoing )
+ 		return;*/
+ 	}
+ 	// Append field containing transaction id
+-	Field::SingleField * fld = new Field::SingleField( Field::NM_A_SZ_TRANSACTION_ID, NMFIELD_METHOD_VALID, 
+-					0, NMFIELD_TYPE_UTF8, request->transactionId() ); 
++	Field::SingleField * fld = new Field::SingleField( Field::NM_A_SZ_TRANSACTION_ID, NMFIELD_METHOD_VALID,
++					0, NMFIELD_TYPE_UTF8, request->transactionId() );
+ 	fields.append( fld );
+-	
++
+ 	// convert to QByteArray
+ 	QByteArray bytesOut;
+ 	QTextStream dout( &bytesOut, QIODevice::WriteOnly );
+ 	dout.setCodec( "ISO 8859-1" );
+ 	//dout.setByteOrder( QDataStream::LittleEndian );
+ 
+-	// strip out any embedded host and port in the command string 
++	// strip out any embedded host and port in the command string
+ 	QByteArray command, host, port;
+ 	if ( request->command().section( ':', 0, 0 ) == "login" )
+ 	{
+@@ -233,12 +232,12 @@ void CoreProtocol::outgoingTransfer( Request* outgoing )
+ 	}
+ 	else
+ 		command = request->command().toAscii();
+-	
++
+ 	// add the POST
+ 	dout << "POST /";
+ 	dout << command;
+ 	dout << " HTTP/1.0\r\n";
+-	
++
+ 	// if a login, add Host arg
+ 	if ( command == "login" )
+ 	{
+@@ -252,7 +251,7 @@ void CoreProtocol::outgoingTransfer( Request* outgoing )
+ 	dout.flush();
+ 	debug( QString( "data out: %1" ).arg( bytesOut.data() ) );
+ 	emit outgoingData( bytesOut );
+-	// now convert 
++	// now convert
+ 	fieldsToWire( fields );
+ 	delete request;
+ 	delete fld;
+@@ -263,7 +262,7 @@ void CoreProtocol::fieldsToWire( Field::FieldList fields, int depth )
+ {
+ 	debug( "");
+ 	int subFieldCount = 0;
+-	
++
+ 	// TODO: consider constructing this as a QStringList and then join()ing it.
+ 	Field::FieldListIterator it;
+ 	Field::FieldListIterator end = fields.end();
+@@ -276,25 +275,25 @@ void CoreProtocol::fieldsToWire( Field::FieldList fields, int depth )
+ 		QDataStream dout( &bytesOut,QIODevice::WriteOnly );
+ 		dout.setVersion(QDataStream::Qt_3_1);
+ 		dout.setByteOrder( QDataStream::LittleEndian );
+-		
++
+ 		// these fields are ignored by Gaim's novell
+ 		if ( field->type() == NMFIELD_TYPE_BINARY  || field->method() == NMFIELD_METHOD_IGNORE )
+ 			continue;
+-			
++
+ 		// GAIM writes these tags to the secure socket separately - if we can't connect, check here
+ 		// NM Protocol 1 writes them in an apparently arbitrary order
+ 		// tag
+ 		//dout.writeRawBytes( GW_URLVAR_TAG, sizeof( GW_URLVAR_TAG ) );
+ 		//dout <<  field->tag();
+-		
++
+ 		// method
+ 		//dout.writeRawBytes( GW_URLVAR_METHOD, sizeof( GW_URLVAR_METHOD ) );
+ 		//		char methodChar = encode_method( field->method() );
+ 		//dout << (quint8)methodChar;
+-		
++
+ 		// value
+ 		//dout.writeRawBytes( GW_URLVAR_VAL, sizeof( GW_URLVAR_VAL ) );
+-		
++
+ 		char valString[ NMFIELD_MAX_STR_LENGTH ];
+ 		switch ( field->type() )
+ 		{
+@@ -329,7 +328,7 @@ void CoreProtocol::fieldsToWire( Field::FieldList fields, int depth )
+ 				snprintf( valString, NMFIELD_MAX_STR_LENGTH, "%u", sField->value().toInt() );
+ 			}
+ 		}
+-				
++
+ 		// type
+ 		//dout.writeRawBytes( GW_URLVAR_TYPE, sizeof( GW_URLVAR_TYPE ) );
+ 
+@@ -345,7 +344,7 @@ void CoreProtocol::fieldsToWire( Field::FieldList fields, int depth )
+ 		outgoing.append( valString );
+ 		outgoing.append( GW_URLVAR_TYPE );
+ 		outgoing.append( typeString );
+-								
++
+ 		debug( QString( "outgoing data: %1" ).arg( outgoing.data() ) );
+ 		dout.writeRawData( outgoing.data(), outgoing.length() );
+ 		// write what we have so far, we may be calling this function recursively
+@@ -354,7 +353,7 @@ void CoreProtocol::fieldsToWire( Field::FieldList fields, int depth )
+ 		emit outgoingData( bytesOut );
+ 
+ 		// write fields of subarray, if that's what the current field is
+-		if ( subFieldCount > 0 && 
++		if ( subFieldCount > 0 &&
+ 				( field->type() == NMFIELD_TYPE_ARRAY || field->type() == NMFIELD_TYPE_MV ) )
+ 		{
+ 			const Field::MultiField *mField = static_cast<const Field::MultiField*>( field );
+@@ -384,7 +383,7 @@ int CoreProtocol::wireToTransfer( QByteArray& wire )
+ 	m_din = new QDataStream( &wire,QIODevice::ReadOnly );
+ 	m_din->setVersion(QDataStream::Qt_3_1);
+ 	m_din->setByteOrder( QDataStream::LittleEndian );
+-	
++
+ 	// look at first four bytes and decide what to do with the chunk
+ 	quint32 val;
+ 	if ( okToProceed() )
+@@ -400,7 +399,7 @@ int CoreProtocol::wireToTransfer( QByteArray& wire )
+ 			{
+ 				m_inTransfer = t;
+ 				debug( "- got a RESPONSE " );
+-				
++
+ 				m_state = Available;
+ 				emit incomingData();
+ 			}
+@@ -408,7 +407,7 @@ int CoreProtocol::wireToTransfer( QByteArray& wire )
+ 				bytesParsed = 0;
+ 		}
+ 		else // otherwise -> Event code
+-		{	
++		{
+ 			debug( QString( "- looks like an EVENT: %1, length %2" ).arg( val ).arg( wire.size() ) );
+ 			Transfer * t = m_eventProtocol->parse( wire, bytesParsed );
+ 			if ( t )
+@@ -452,7 +451,7 @@ QLatin1Char CoreProtocol::encode_method( quint8 method )
+ 			break;
+ 		case NMFIELD_METHOD_NE:
+ 			return QLatin1Char('C');
+-			break;			
++			break;
+ 		case NMFIELD_METHOD_EXIST:
+ 			return QLatin1Char('B');
+ 			break;
+diff --git a/protocols/groupwise/libgroupwise/coreprotocol.h b/protocols/groupwise/libgroupwise/coreprotocol.h
+index 23326708d5637b2d4667ee0fee6774064603295c..0be3230be19584ab54e56480d8d93210107a7835 100644
+--- a/protocols/groupwise/libgroupwise/coreprotocol.h
++++ b/protocols/groupwise/libgroupwise/coreprotocol.h
+@@ -3,11 +3,11 @@
+     coreprotocol.h- the core GroupWise protocol
+ 
+     Copyright (c) 2004      SUSE Linux AG	 	 http://www.suse.com
+-    
++
+     Based on Iris, Copyright (C) 2003  Justin Karneges <justin@affinix.com>
+ 
+     Kopete (c) 2002-2004 by the Kopete developers <kopete-devel@kde.org>
+- 
++
+     *************************************************************************
+     *                                                                       *
+     * This library is free software; you can redistribute it and/or         *
+@@ -22,7 +22,6 @@
+ #define GW_CORE_PROTOCOL_H
+ 
+ #include <QLatin1Char>
+-#include <q3cstring.h>
+ #include <qobject.h>
+ 
+ #include "gwfield.h"
+@@ -71,7 +70,7 @@ class Transfer;
+  * CCCC... is the event source, a UTF8 encoded string, which is observed to be zero terminated
+  * DDDD... is event dependent binary data, which frequently consists of the conference the event relates to,
+  *         conference flags describing the logging, chat security and closed status, and message data.
+- * 
++ *
+  * As the DDDD portion is irregularly structured, it must be processed knowing the semantics of the event type.
+  * See the @ref EventProtocol documentation.
+  *
+@@ -119,7 +118,7 @@ public:
+ 	enum State { NeedMore, Available, NoData };
+ 
+ 	CoreProtocol();
+-	
++
+ 	virtual ~CoreProtocol();
+ 	/**
+ 	 * Debug output
+@@ -130,31 +129,31 @@ public:
+ 	 * Reset the protocol, clear buffers
+ 	 */
+ 	void reset();
+-	
++
+ 	/**
+ 	 * Accept data from the network, and buffer it into a useful message
+ 	 * @param incomingBytes Raw data in wire format.
+ 	 */
+ 	void addIncomingData( const QByteArray& incomingBytes );
+-	
++
+ 	/**
+ 	 * @return the incoming transfer or 0 if none is available.
+ 	 */
+ 	Transfer* incomingTransfer();
+-	
+-	/** 
++
++	/**
+ 	 * Convert a request into an outgoing transfer
+ 	 * emits @ref outgoingData() with each part of the transfer
+ 	 */
+ 	void outgoingTransfer( Request* outgoing );
+-	
++
+ 	/**
+-	 * Get the state of the protocol 
++	 * Get the state of the protocol
+ 	 */
+ 	int state();
+-	
++
+ signals:
+-	/** 
++	/**
+ 	 * Emitted as the core protocol converts fields to wire ready data
+ 	 */
+ 	void outgoingData( const QByteArray& );
+@@ -167,7 +166,7 @@ protected slots:
+ 	 * Just a debug method to test emitting to the socket, atm - should go to the ClientStream
+ 	 */
+ 	void slotOutgoingData( const QByteArray & );
+-	
++
+ protected:
+ 	/**
+ 	 * Check that there is data to read, and set the protocol's state if there isn't any.
+@@ -176,7 +175,7 @@ protected:
+ 	/**
+ 	 * Convert incoming wire data into a Transfer object and queue it
+ 	 * @return number of bytes from the input that were parsed into a Transfer
+-	 */ 
++	 */
+ 	int wireToTransfer( QByteArray& wire );
+ 	/**
+ 	 * Convert fields to a wire representation.  Emits outgoingData as each field is written.
+diff --git a/protocols/groupwise/libgroupwise/eventtransfer.h b/protocols/groupwise/libgroupwise/eventtransfer.h
+index bd3d89cf661d5d9030b9e1a3545a5933e5776bb9..56216fe92e84a70c5a234ebc6afa883e43505817 100644
+--- a/protocols/groupwise/libgroupwise/eventtransfer.h
++++ b/protocols/groupwise/libgroupwise/eventtransfer.h
+@@ -1,10 +1,10 @@
+ /*
+     eventtransfer.h - Kopete Groupwise Protocol
+-    
++
+     Copyright (c) 2004      SUSE Linux AG	 	 http://www.suse.com
+-    
++
+     Kopete (c) 2002-2004 by the Kopete developers <kopete-devel@kde.org>
+- 
++
+     *************************************************************************
+     *                                                                       *
+     * This library is free software; you can redistribute it and/or         *
+@@ -18,32 +18,31 @@
+ #ifndef GW_EVENTTRANSFER_H
+ #define GW_EVENTTRANSFER_H
+ 
+-#include <q3cstring.h>
+ #include <qdatetime.h>
+ 
+-#include "gwerror.h" 
++#include "gwerror.h"
+ 
+ #include "transfer.h"
+ 
+ namespace Event {
+-	
++
+ }
+ 
+ /**
+  * Transfer representing an event, a message generated by the server in response to external stimulus
+- * This class can contain varying data items depending on the type of event.  
++ * This class can contain varying data items depending on the type of event.
+  * You can query which data is present before trying to access it
+  * @author Kopete Developers
+  */
+ class EventTransfer : public Transfer
+ {
+ public:
+-	/** 
++	/**
+ 	 * Flags describing the possible contents of an event transfer
+ 	 */
+-	enum Contents { EventType = 	0x00000001, 
+-					Source = 		0x00000002, 
+-					TimeStamp = 	0x00000004, 
++	enum Contents { EventType = 	0x00000001,
++					Source = 		0x00000002,
++					TimeStamp = 	0x00000004,
+ 					Guid = 			0x00000008,
+ 					Flags = 		0x00000010,
+ 					Message = 		0x00000020,
+@@ -57,7 +56,7 @@ public:
+ 	 */
+ 	EventTransfer( const quint32 eventType, const QString & source, QDateTime timeStamp );
+ 	~EventTransfer();
+-	/** 
++	/**
+ 	 * Access the bitmask that describes the transfer's contents.  Use @ref Contents to determine what it contains
+ 	 */
+ 	quint32 contents();
+@@ -72,7 +71,7 @@ public:
+ 	bool hasMessage();
+ 	bool hasStatus();
+ 	bool hasStatusText();
+-	
++
+ 	/**
+ 	 * Accessors for the transfer's contents
+ 	 */
+@@ -85,7 +84,7 @@ public:
+ 	QString message();
+ 	quint16 status();
+ 	QString statusText();
+-	
++
+ 	/**
+ 	 * Mutators to set the transfer's contents
+ 	 */
+@@ -94,7 +93,7 @@ public:
+ 	void setMessage( const QString & message );
+ 	void setStatus( const quint16 status );
+ 	void setStatusText( const QString & statusText);
+-	
++
+ private:
+ 	quint32 m_contentFlags;
+ 	int m_eventType;
+diff --git a/protocols/groupwise/libgroupwise/gwfield.cpp b/protocols/groupwise/libgroupwise/gwfield.cpp
+index 8608cd0a391cb640670c01ede23edd49f3061a58..67c1e31cbdc594cad38e220c90c4efb7626cb22c 100644
+--- a/protocols/groupwise/libgroupwise/gwfield.cpp
++++ b/protocols/groupwise/libgroupwise/gwfield.cpp
+@@ -1,10 +1,10 @@
+ /*
+     gwfield.cpp - Fields used for Request/Response data in GroupWise
+     Copyright (c) 2004      SUSE Linux AG	 	 http://www.suse.com
+-    
+-    Based on Testbed    
++
++    Based on Testbed
+     Copyright (c) 2003      by Will Stephenson		 <will@stevello.free-online.co.uk>
+-    
++
+     Kopete    (c) 2002-2004 by the Kopete developers <kopete-devel@kde.org>
+ 
+     *************************************************************************
+@@ -19,8 +19,6 @@
+ 
+ #include "gwfield.h"
+ 
+-#include <q3cstring.h>
+-
+ #include "gwerror.h"
+ 
+ #ifdef LIBGW_USE_KDEBUG
+@@ -144,7 +142,7 @@ int FieldList::findIndex( const QByteArray & tag )
+ 	for ( ; it != theEnd; ++it, ++index )
+ 		if ( (*it)->tag() == tag )
+ 			return index;
+-			
++
+ 	return -1;
+ }
+ 
+diff --git a/protocols/groupwise/libgroupwise/tasks/eventtask.h b/protocols/groupwise/libgroupwise/tasks/eventtask.h
+index 0a9eb68ff341d70ce253453a67756b9985c5713d..9b3268e100d5abfc9f787aa5a0dc8038a098f5e1 100644
+--- a/protocols/groupwise/libgroupwise/tasks/eventtask.h
++++ b/protocols/groupwise/libgroupwise/tasks/eventtask.h
+@@ -3,11 +3,11 @@
+     eventtask.h - Ancestor of all Event Handling tasks
+ 
+     Copyright (c) 2004      SUSE Linux AG	 	 http://www.suse.com
+-    
++
+     Based on Iris, Copyright (C) 2003  Justin Karneges <justin@affinix.com>
+ 
+     Kopete (c) 2002-2004 by the Kopete developers <kopete-devel@kde.org>
+- 
++
+     *************************************************************************
+     *                                                                       *
+     * This library is free software; you can redistribute it and/or         *
+@@ -21,8 +21,6 @@
+ #ifndef GW_EVENTTASK_H
+ #define GW_EVENTTASK_H
+ 
+-#include <q3valuelist.h>
+-
+ #include "eventtransfer.h"
+ #include "task.h"
+ 
+diff --git a/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h b/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h
+index 3120a2f894ee1aeb30a8fd34b05b4edf18b8f617..ca7332c42e4fb35b914d4969c8777813310ca5aa 100644
+--- a/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h
++++ b/protocols/groupwise/libgroupwise/tasks/pollsearchresultstask.h
+@@ -3,11 +3,11 @@
+     pollsearchresultstask.h - Poll the server once to see if it has processed our search yet.
+ 
+     Copyright (c) 2004      SUSE Linux AG	 	 http://www.suse.com
+-    
++
+     Based on Iris, Copyright (C) 2003  Justin Karneges <justin@affinix.com>
+ 
+     Kopete (c) 2002-2004 by the Kopete developers <kopete-devel@kde.org>
+- 
++
+     *************************************************************************
+     *                                                                       *
+     * This library is free software; you can redistribute it and/or         *
+@@ -21,7 +21,6 @@
+ #ifndef POLLSEARCHRESULTSTASK_H
+ #define POLLSEARCHRESULTSTASK_H
+ 
+-#include <q3valuelist.h>
+ 
+ #include "gwerror.h"
+ 

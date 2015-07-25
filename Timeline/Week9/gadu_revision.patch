@@ -1,0 +1,33 @@
+diff --git a/protocols/gadu/gadueditcontact.cpp b/protocols/gadu/gadueditcontact.cpp
+index 68504ee3acc327847eb36e8a56d476699deb1421..e963be65225e88a6923f219bb782033b4f1eaa4d 100644
+--- a/protocols/gadu/gadueditcontact.cpp
++++ b/protocols/gadu/gadueditcontact.cpp
+@@ -107,7 +107,6 @@ GaduEditContact::fillGroups()
+ 		}
+ 		args = (QStringList() << g->displayName());
+ 		QTreeWidgetItem *item = new QTreeWidgetItem( ui_->groups, args );
+-		item->setFlags(Qt::ItemIsUserCheckable);
+ 		// FIXME: optimize this O(2) search
+ 		foreach( cg , cgl ) {
+ 			if ( cg->groupId() == g->groupId() ) {
+@@ -133,7 +132,7 @@ GaduEditContact::init()
+ 
+ 	show();
+ 	connect( this, SIGNAL(okClicked()), SLOT(slotApply()) );
+-	connect( ui_->groups, SIGNAL(clicked(QTreeWidgetItem*)), SLOT(listClicked(QTreeWidgetItem*)) );
++	connect( ui_->groups, SIGNAL(itemClicked(QTreeWidgetItem*, int)), SLOT(listClicked(QTreeWidgetItem*)) );
+ }
+ 
+ void
+diff --git a/protocols/gadu/gadupubdir.cpp b/protocols/gadu/gadupubdir.cpp
+index ac45a506402879919259ff280fa9c3a0fda75801..97378ec13b12377e63309b18f20efcd1339f95d6 100644
+--- a/protocols/gadu/gadupubdir.cpp
++++ b/protocols/gadu/gadupubdir.cpp
+@@ -117,7 +117,6 @@ GaduPublicDir::createWidget()
+ 	setMainWidget( w );
+ 
+ 	mMainWidget->UIN->setValidChars( "1234567890" );
+-	//mMainWidget->listFound->headerItem()->setSortIndicator(true);
+ 
+ 	setButtonGuiItem( KDialog::User1, KGuiItem( i18n( "&New Search" ) ) );
+ 	setButtonGuiItem( KDialog::User2, KGuiItem( i18n( "S&earch" ) ) );

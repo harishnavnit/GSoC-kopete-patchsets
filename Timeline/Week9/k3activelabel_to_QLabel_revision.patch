@@ -1,0 +1,41 @@
+diff --git a/libkopete/ui/addressbookselectorwidget.cpp b/libkopete/ui/addressbookselectorwidget.cpp
+index 1ccf391f7c9f998fb21e51ee3126f06c365d2c50..07cc409a1f4a3bab11da0d07a97a47f2becdfa42 100644
+--- a/libkopete/ui/addressbookselectorwidget.cpp
++++ b/libkopete/ui/addressbookselectorwidget.cpp
+@@ -141,9 +141,9 @@ void AddressBookSelectorWidget::slotLoadAddressees()
+ 
+ void AddressBookSelectorWidget::setLabelMessage( const QString &msg )
+ {
++	lblHeader->setTextFormat(Qt::PlainText);
+ 	lblHeader->setText(msg);
+-	lblHeader->setOpenExternalLinks(true);
+-	lblHeader->setTextInteractionFlags(Qt::TextEditorInteraction);
++	lblHeader->setTextInteractionFlags(Qt::NoTextInteraction);
+ }
+ 
+ void AddressBookSelectorWidget::slotAddAddresseeClicked()
+diff --git a/libkopete/ui/metacontactselectorwidget.cpp b/libkopete/ui/metacontactselectorwidget.cpp
+index 4d8040b036ca379dc8cb6e06aed0cede8fa33049..145b826d2e6f900974ab063cc4802f0426f073ae 100644
+--- a/libkopete/ui/metacontactselectorwidget.cpp
++++ b/libkopete/ui/metacontactselectorwidget.cpp
+@@ -18,7 +18,7 @@
+ #include "metacontactselectorwidget.h"
+ 
+ #include <qcheckbox.h>
+-#include <QLabel>
++#include <qlabel.h>
+ 
+ #include <qimage.h>
+ #include <qpixmap.h>
+@@ -295,9 +295,9 @@ void MetaContactSelectorWidget::slotLoadMetaContacts()
+ 
+ void MetaContactSelectorWidget::setLabelMessage( const QString &msg )
+ {
++	d->widget->lblHeader->setTextFormat(Qt::PlainText);
+ 	d->widget->lblHeader->setText(msg);
+-	d->widget->lblHeader->setOpenExternalLinks(true);
+-	d->widget->lblHeader->setTextInteractionFlags(Qt::TextEditorInteraction);
++	d->widget->lblHeader->setTextInteractionFlags(Qt::NoTextInteraction);
+ }
+ 
+ } // namespace UI

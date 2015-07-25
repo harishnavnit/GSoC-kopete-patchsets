@@ -1,0 +1,13 @@
+diff --git a/protocols/skype/ui/skypeeditaccountbase.ui b/protocols/skype/ui/skypeeditaccountbase.ui
+index ff41acc764e08410f7c4ac08402dcbd2e11ea858..15fa8d05a7508860833af3918571773ac6894e07 100644
+--- a/protocols/skype/ui/skypeeditaccountbase.ui
++++ b/protocols/skype/ui/skypeeditaccountbase.ui
+@@ -277,7 +277,7 @@
+        <item>
+         <widget class="QLabel" name="textLabel2">
+          <property name="text">
+-          <string>If you get error that Skype was not found, but in fact it is running, check the instructions at &lt;a href=&quot;https://developer.skype.com/Docs/ApiDoc/Skype_API_on_Linux&quot;&gt;https://developer.skype.com/Docs/ApiDoc/Skype_API_on_Linux&lt;/a&gt;.&lt;br /&gt;&lt;br /&gt;Note that only the dynamic linked Skype binary is supported.</string>
++             <string>If you get error that Skype was not found, but in fact it is running, check the instructions at &lt;a href=&quot;http://web.archive.org/web/20130708145207/http://dev.skype.com/desktop-api-reference#Linux&quot;&gt;http://web.archive.org/web/20130708145207/http://dev.skype.com/desktop-api-reference#Linux&lt;/a&gt;.&lt;br /&gt;&lt;br /&gt;Note that only the dynamic linked Skype binary is supported.</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::RichText</enum>
